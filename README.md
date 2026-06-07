@@ -62,4 +62,4 @@ dotnet run
 
 ## Author
 
-**Your Name** — [GitHub](https://github.com/Melvinots)
+**Melvin** — [GitHub](https://github.com/Melvinots)
