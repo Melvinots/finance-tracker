@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
     <ProjectReference Include="..\FinanceTracker.Client\FinanceTracker.Client.csproj" />
     <ProjectReference Include="..\FinanceTracker.Shared\FinanceTracker.Shared.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8" />
@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Middleware\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>

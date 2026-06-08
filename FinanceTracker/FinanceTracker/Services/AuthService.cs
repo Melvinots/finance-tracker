@@ -24,7 +24,9 @@ namespace FinanceTracker.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
         {
-            var exists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
+            var exists = await _context.Users
+                .AnyAsync(u => u.Email == dto.Email);
+
             if (exists)
                 throw new InvalidOperationException("Email already registered.");
 
@@ -35,7 +37,7 @@ namespace FinanceTracker.Services
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
 
-            _context.Users.Add(user);
+            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
             return await GenerateAuthResponseAsync(user);
@@ -43,7 +45,8 @@ namespace FinanceTracker.Services
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email.ToLower());
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == dto.Email.ToLower());
 
             if (user is null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 throw new UnauthorizedAccessException("Invalid email or password.");
@@ -143,7 +146,7 @@ namespace FinanceTracker.Services
                 ExpiresAt = DateTime.UtcNow.AddDays(expiryDays)
             };
 
-            _context.RefreshTokens.Add(refreshToken);
+            await _context.RefreshTokens.AddAsync(refreshToken);
             await _context.SaveChangesAsync();
 
             return token;
