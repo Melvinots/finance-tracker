@@ -1,0 +1,172 @@
+﻿@page "/transactions"
+@attribute [Authorize]
+
+@inject TransactionService TransactionService
+@inject CategoryService CategoryService
+
+<div class="transactions-page">
+
+    <header class="page-header">
+
+        <div>
+            <h1>Transactions</h1>
+            <p>
+                Track and manage your income and expenses.
+            </p>
+        </div>
+
+        <button class="primary-button" @onclick="OpenCreateModal">
+
+            <span>＋</span>
+            Add transaction
+
+        </button>
+
+    </header>
+
+    <LoadingWrapper IsLoading="@_isLoading"
+                    Message="Loading your transactions...">
+
+        <TransactionToolbar
+            SearchTerm="@_searchTerm"
+            SearchTermChanged="@OnSearchChanged"
+            SelectedType="@_selectedType"
+            SelectedTypeChanged="@OnTypeChanged" />
+
+        <TransactionTable
+            Transactions="@FilteredTransactions"
+            OnEdit="@OpenEditModal"
+            OnDelete="@DeleteTransaction" />
+
+    </LoadingWrapper>
+
+</div>
+
+@if (_showModal)
+{
+    <TransactionForm
+        Transaction="@_selectedTransaction"
+        Categories="@_categories"
+        OnSave="@SaveTransaction"
+        OnCancel="@CloseModal" />
+}
+
+@code {
+
+    private bool _isLoading = true;
+
+    private bool _showModal = false ;
+
+    private string _searchTerm = string.Empty;
+
+    private string _selectedType = "All";
+
+    private List<TransactionDto> _transactions = new();
+
+    private List<CategoryDto> _categories = new();
+
+    private TransactionDto? _selectedTransaction;
+
+    private IEnumerable<TransactionDto> FilteredTransactions => _transactions.Where(MatchesSearch).Where(MatchesType);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTransactions();
+        await LoadCategoriesAsync();
+    }
+
+    private async Task LoadTransactions()
+    {
+        _isLoading = true;
+
+        try
+        {
+            await Task.Delay(1000);
+            _transactions = await TransactionService.GetAllAsync();
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task LoadCategoriesAsync()
+    {
+        _categories = await CategoryService.GetAllAsync();
+    }
+
+    private bool MatchesSearch(TransactionDto transaction)
+    {
+        if (string.IsNullOrWhiteSpace(_searchTerm))
+        {
+            return true;
+        }
+
+        return transaction.Description.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase) ||
+               transaction.CategoryName.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool MatchesType(TransactionDto transaction)
+    {
+        return _selectedType switch
+        {
+            "Income" => !transaction.IsExpense,
+            "Expense" => transaction.IsExpense,
+            _ => true
+        };
+    }
+
+    private void OnSearchChanged(string value)
+    {
+        _searchTerm = value;
+    }
+
+    private void OnTypeChanged(string value)
+    {
+        _selectedType = value;
+    }
+
+    private void OpenCreateModal()
+    {
+        _selectedTransaction = null;
+
+        _showModal = true;
+    }
+
+    private void OpenEditModal(TransactionDto transaction)
+    {
+        _selectedTransaction = transaction;
+
+        _showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        _showModal = false;
+
+        _selectedTransaction = null;
+    }
+
+    private async Task SaveTransaction(SaveTransactionDto transaction)
+    {
+        if (_selectedTransaction is null)
+        {
+            await TransactionService.CreateAsync(transaction);
+        }
+        else
+        {
+            await TransactionService.UpdateAsync(_selectedTransaction.Id, transaction);
+        }
+
+        CloseModal();
+
+        await LoadTransactions();
+    }
+
+    private async Task DeleteTransaction(TransactionDto transaction)
+    {
+        await TransactionService.DeleteAsync(transaction.Id);
+
+        _transactions.Remove(transaction);
+    }
+}

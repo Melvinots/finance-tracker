@@ -1,0 +1,205 @@
+﻿/* ═══════════════════════════════════════════════════════════
+   auth.css  —  Shared styles for Login.razor & Register.razor
+   Referenced via <link> in index.html (or via _Imports.razor).
+   Do NOT duplicate this in Login.razor.css / Register.razor.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Card container ───────────────────────────────────────── */
+.auth-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--color-white);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    box-shadow: var(--shadow-card);
+}
+
+/* ── Brand mark ───────────────────────────────────────────── */
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    text-decoration: none;
+}
+
+.auth-brand-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-brand);
+    flex-shrink: 0;
+}
+
+.auth-brand-name {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--color-ink);
+}
+
+/* ── Headings ─────────────────────────────────────────────── */
+.auth-card h3 {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--color-ink);
+    margin: 0 0 4px;
+}
+
+.auth-card .subtitle {
+    font-size: 0.825rem;
+    color: var(--color-slate);
+    margin: 0 0 20px;
+}
+
+/* ── Fields ───────────────────────────────────────────────── */
+.auth-field {
+    margin-bottom: 12px;
+}
+
+    .auth-field label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--color-ink);
+        margin-bottom: 6px;
+    }
+
+/* form-control base lives in app.css; only auth overrides here */
+.auth-card .form-control:focus {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px var(--color-brand-ring);
+}
+
+/* Two-column password row (Register only) */
+.auth-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+/* ── Error alert ──────────────────────────────────────────── */
+.auth-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    border: 1px solid var(--color-danger-ring);
+    border-radius: var(--radius-md);
+    background: var(--color-danger-soft);
+    font-size: 0.8rem;
+    color: var(--color-danger);
+}
+
+/* ── Remember me / forgot row ─────────────────────────────── */
+.auth-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+    .auth-meta .form-check-label {
+        font-size: 0.775rem;
+        color: var(--color-slate);
+    }
+
+    .auth-meta .form-check-input:checked {
+        background-color: var(--color-brand);
+        border-color: var(--color-brand);
+    }
+
+.auth-forgot {
+    font-size: 0.775rem;
+    color: var(--color-brand);
+    text-decoration: none;
+}
+
+    .auth-forgot:hover {
+        text-decoration: underline;
+    }
+
+/* ── Submit button ────────────────────────────────────────── */
+.btn-auth {
+    width: 100%;
+    padding: 11px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: var(--radius-lg);
+    background: var(--color-ink);
+    color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.15s, transform 0.15s;
+}
+
+    .btn-auth:hover:not(:disabled) {
+        opacity: 0.85;
+        transform: translateY(-1px);
+    }
+
+    .btn-auth:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+/* ── Divider ──────────────────────────────────────────────── */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--color-rule);
+    }
+
+    .auth-divider span {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--color-slate);
+    }
+
+/* ── Switch link ──────────────────────────────────────────── */
+.auth-switch {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--color-slate);
+    margin: 0;
+}
+
+    .auth-switch a {
+        color: var(--color-brand);
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 24px 20px;
+        border-radius: var(--radius-lg);
+    }
+
+    .auth-field-row {
+        grid-template-columns: 1fr;
+    }
+}

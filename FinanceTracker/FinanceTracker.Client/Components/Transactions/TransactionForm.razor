@@ -1,0 +1,198 @@
+﻿@namespace FinanceTracker.Client.Components.Transactions
+
+<div class="modal-backdrop">
+
+    <div class="transaction-modal">
+
+        <div class="modal-header">
+
+            <div>
+                <h2>
+                    @(Transaction is null
+                        ? "Add transaction"
+                        : "Edit transaction")
+                </h2>
+
+                <p>
+                    Record your income or expense.
+                </p>
+            </div>
+
+            <button type="button"
+                    class="close-button"
+                    @onclick="OnCancel">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <EditForm Model="@model"
+                  OnValidSubmit="@HandleSubmit">
+
+            <DataAnnotationsValidator />
+
+            <div class="form-group">
+
+                <label>
+                    Description
+                </label>
+
+                <InputText class="form-input"
+                           @bind-Value="model.Description" />
+
+                <ValidationMessage For="@(() => model.Description)" />
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>
+                        Amount
+                    </label>
+
+                    <InputNumber class="form-input"
+                                 @bind-Value="model.Amount" />
+
+                    <ValidationMessage For="@(() => model.Amount)" />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Date
+                    </label>
+
+                    <InputDate class="form-input"
+                               @bind-Value="model.Date" />
+
+                    <ValidationMessage For="@(() => model.Date)" />
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Transaction type
+                </label>
+
+                <InputSelect class="form-input"
+                             @bind-Value="model.IsExpense">
+
+                    <option value="true">
+                        Expense
+                    </option>
+
+                    <option value="false">
+                        Income
+                    </option>
+
+                </InputSelect>
+
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+
+                <label>
+                    Category
+                </label>
+
+                <InputSelect class="form-input"
+                             @bind-Value="model.CategoryId">
+
+                    <option value="0">
+                        Select a category
+                    </option>
+
+                    @foreach (var category in Categories)
+                    {
+                        <option value="@category.Id">
+                            @category.Icon @category.Name
+                        </option>
+                    }
+
+                </InputSelect>
+
+                <ValidationMessage For="@(() => model.CategoryId)" />
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="button"
+                        class="secondary-button"
+                        @onclick="OnCancel">
+
+                    Cancel
+
+                </button>
+
+                <button type="submit"
+                        class="primary-button">
+
+                    @(Transaction is null
+                        ? "Add transaction"
+                        : "Save changes")
+
+                </button>
+
+            </div>
+
+        </EditForm>
+
+    </div>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public TransactionDto? Transaction { get; set; }
+
+    [Parameter]
+    public List<CategoryDto> Categories { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<SaveTransactionDto> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private SaveTransactionDto model = new();
+
+    protected override void OnParametersSet()
+    {
+        if (Transaction is null)
+        {
+            model = new SaveTransactionDto
+            {
+                Date = DateTime.Today,
+                IsExpense = true
+            };
+
+            return;
+        }
+
+        model = new SaveTransactionDto
+        {
+            Description = Transaction.Description,
+            Amount = Transaction.Amount,
+            Date = Transaction.Date,
+            IsExpense = Transaction.IsExpense,
+            CategoryId = Transaction.CategoryId
+        };
+    }
+
+    private async Task HandleSubmit()
+    {
+        await OnSave.InvokeAsync(model);
+    }
+
+}

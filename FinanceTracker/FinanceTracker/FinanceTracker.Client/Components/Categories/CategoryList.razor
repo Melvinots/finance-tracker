@@ -1,0 +1,25 @@
+﻿@namespace FinanceTracker.Client.Components.Categories
+
+<div class="category-list">
+
+    @foreach (var category in Categories)
+    {
+        <CategoryCard Category="@category"
+                      OnEdit="OnEdit"
+                      OnDelete="OnDelete" />
+    }
+
+</div>
+
+@code {
+
+    [Parameter]
+    public List<CategoryDto> Categories { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<CategoryDto> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<CategoryDto> OnDelete { get; set; }
+
+}

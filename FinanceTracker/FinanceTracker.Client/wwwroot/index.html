@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinanceTracker</title>
+    <base href="/" />
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script" />
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="css/auth.css" />
+    <link rel="stylesheet" href="css/landing.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="FinanceTracker.Client.styles.css" rel="stylesheet" />
+    <script type="importmap"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div style="
+        display:flex;flex-direction:column;align-items:center;
+        justify-content:center;gap:24px;min-height:100vh;
+        background:#F8FAFF;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:10px;height:10px;border-radius:50%;
+                background:#3B5BDB;animation:p 1.5s ease-in-out infinite">
+                </div>
+                <span style="font-family:Georgia,serif;font-size:1.4rem;color:#1E293B">
+                    FinanceTracker
+                </span>
+            </div>
+            <div style="width:40px;height:40px;border-radius:50%;
+            border:2px solid transparent;border-top-color:#3B5BDB;
+            animation:s 1s linear infinite">
+            </div>
+            <div style="font-family:monospace;font-size:0.7rem;
+            color:#94A3B8;letter-spacing:0.08em;text-transform:uppercase">
+                Loading...
+            </div>
+        </div>
+        <style>
+            @keyframes s {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @keyframes p {
+                0%,100% {
+                    opacity: 1
+                }
+
+                50% {
+                    opacity: 0.5
+                }
+            }
+        </style>
+    </div>
+
+    <!--<div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>-->
+
+    <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    <!--<script src="_framework/blazor.web.js"></script>-->
+    <script>
+        window.localStorage_set = (key, value) => localStorage.setItem(key, value);
+        window.localStorage_get = (key) => localStorage.getItem(key);
+        window.localStorage_remove = (key) => localStorage.removeItem(key);
+    </script>
+    <script>
+        window.animateChart = function () {
+            const heights = [35, 60, 45, 80, 55, 70, 40, 90, 65, 50, 75, 85];
+            const colors = ['#10B981', '#F43F5E', '#10B981', '#F59E0B', '#10B981', '#F43F5E',
+                '#10B981', '#10B981', '#F43F5E', '#10B981', '#F59E0B', '#10B981'];
+            const chart = document.getElementById('chart');
+            if (!chart) return;
+            heights.forEach((h, i) => {
+                const bar = document.createElement('div');
+                bar.className = 'preview-bar';
+                bar.style.height = '4px';
+                bar.style.background = colors[i];
+                bar.style.opacity = '0.7';
+                chart.appendChild(bar);
+                setTimeout(() => { bar.style.height = h + '%'; }, 100 + i * 40);
+            });
+        };
+    </script>
+    <script>
+        window.renderDashboardChart = function () {
+            const chart = document.getElementById('dashboardChart');
+            if (!chart) return;
+            chart.innerHTML = '';
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
+            const income = [42000, 38000, 45000, 41000, 46000, 44000, 48500];
+            const expense = [28000, 31000, 29000, 33000, 30000, 35000, 32140];
+            const max = Math.max(...income, ...expense);
+            months.forEach((m, i) => {
+                const group = document.createElement('div');
+                group.className = 'chart-bar-group';
+                group.innerHTML = `
+                            <div class="chart-bar-pair" style="flex:1;align-items:flex-end">
+                                <div class="chart-bar" style="height:${(income[i] / max) * 80}px;background:#10B981;opacity:0.85"></div>
+                                <div class="chart-bar" style="height:${(expense[i] / max) * 80}px;background:#F43F5E;opacity:0.7"></div>
+                            </div>
+                            <div class="chart-month-label">${m}</div>`;
+                chart.appendChild(group);
+            });
+        };
+    </script>
+</body>
+
+</html>

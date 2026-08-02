@@ -1,0 +1,54 @@
+﻿@namespace FinanceTracker.Client.Components.Dashboard
+
+<div class="stat-card">
+
+    <div class="stat-card-header">
+
+        <span class="stat-card-label">
+            @Title
+        </span>
+
+        <div class="stat-card-icon"
+             style="background: @IconBackground">
+
+            @Icon
+
+        </div>
+
+    </div>
+
+    <div class="stat-card-value @Variant.ToLowerInvariant()">
+
+        @Value
+
+    </div>
+
+    <div class="stat-card-trend @Variant.ToLowerInvariant()">
+
+        @Trend
+
+    </div>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Icon { get; set; } = string.Empty;
+
+    [Parameter]
+    public string IconBackground { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Variant { get; set; } = "Default";
+
+    [Parameter]
+    public string Trend { get; set; } = string.Empty;
+
+}
