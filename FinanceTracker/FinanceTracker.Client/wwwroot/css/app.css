@@ -1,0 +1,100 @@
+/* ═══════════════════════════════════════════════════════════
+   app.css  —  Design tokens & global resets
+   Import this once in index.html / App.razor head.
+   All component styles reference these variables.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts (add to <head> if not already there) ──────
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link href="https://fonts.googleapis.com/css2?
+     family=DM+Serif+Display&
+     family=Inter:wght@400;500;600&
+     family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+   ─────────────────────────────────────────────────────────── */
+
+/* ── Color tokens ─────────────────────────────────────────── */
+:root {
+    /* Brand */
+    --color-brand: #10B981; /* emerald — primary action  */
+    --color-brand-soft: #D1FAE5; /* emerald tint              */
+    --color-brand-ring: #10B98120; /* focus ring                */
+    /* Neutrals */
+    --color-ink: #1A1F2E; /* headings, body text       */
+    --color-slate: #64748B; /* secondary text            */
+    --color-muted: #94A3B8; /* disabled / timestamps     */
+    --color-rule: #E2E8F0; /* borders / dividers        */
+    --color-paper: #F8F9FB; /* page background           */
+    --color-white: #FFFFFF;
+    /* Semantic */
+    --color-danger: #F43F5E;
+    --color-danger-soft: #FFF1F2;
+    --color-danger-ring: #FFE4E6;
+    --color-warning: #F59E0B;
+    --color-warning-soft: #FEF3C7;
+    --color-success: #10B981; /* same as brand             */
+    --color-purple-soft: #EDE9FE;
+    /* ── Typography tokens ────────────────────────────────── */
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-serif: 'DM Serif Display', Georgia, serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
+    /* ── Radius tokens ────────────────────────────────────── */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    /* ── Shadow tokens ────────────────────────────────────── */
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
+    --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
+    /* ── Layout ───────────────────────────────────────────── */
+    --sidebar-width: 220px;
+    --topbar-height: 56px;
+}
+
+/* ── Reset ────────────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-ink);
+    background: var(--color-paper);
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: inherit;
+}
+
+/* ── Shared form-control (used by auth + app forms) ──────── */
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--color-rule);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-ink);
+    background: var(--color-white);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+}
+
+    .form-control:focus {
+        border-color: var(--color-brand);
+        box-shadow: 0 0 0 3px var(--color-brand-ring);
+    }
+
+    .form-control::placeholder {
+        color: var(--color-rule);
+    }
+
+/* ── Shared validation message ────────────────────────────── */
+.validation-message {
+    font-size: 0.75rem;
+    color: var(--color-danger);
+    margin-top: 4px;
+    display: block;
+}

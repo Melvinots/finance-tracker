@@ -1,0 +1,76 @@
+﻿.card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    background: #FAFBFC;
+}
+
+    /* Typography defaults */
+
+    .card-header h1,
+    .card-header h2,
+    .card-header h3,
+    .card-header h4 {
+        margin: 0;
+        color: var(--ink);
+        font-family: var(--font-serif);
+        font-weight: 500;
+        line-height: 1.25;
+    }
+
+    .card-header h2 {
+        font-size: 1rem;
+    }
+
+    .card-header p {
+        margin: .25rem 0 0;
+        color: var(--muted);
+        font-size: .78rem;
+        line-height: 1.4;
+    }
+
+/* =========================================
+   BODY
+   ========================================= */
+
+.card-body {
+    flex: 1;
+    padding: 1.25rem;
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+.card-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--rule);
+    background: #FAFBFC;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width:768px) {
+
+    .card-header,
+    .card-body,
+    .card-footer {
+        padding: 1rem;
+    }
+}

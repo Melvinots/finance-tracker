@@ -1,0 +1,175 @@
+﻿@page "/dashboard"
+@attribute [Authorize]
+
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject DashboardService DashboardService
+
+<div class="dashboard-page">
+
+    <header class="topbar">
+
+        <div class="topbar-heading">
+            <h1>Dashboard</h1>
+
+            <p>
+                @DateTime.Now.ToString("dddd, MMMM d, yyyy")
+            </p>
+        </div>
+
+        <div class="topbar-actions">
+
+            <select class="month-select"
+                    @bind="selectedMonth"
+                    @bind:after="LoadDashboardAsync">
+
+                @for (int i = 0; i < 6; i++)
+                {
+                    var month = DateTime.Now.AddMonths(-i);
+
+                    <option value="@month.ToString("yyyy-MM")">
+                        @month.ToString("MMMM yyyy")
+                    </option>
+                }
+
+            </select>
+
+        </div>
+
+    </header>
+
+    <main class="dashboard-content">
+
+        @if (isLoading)
+        {
+            <div class="dashboard-loading">
+
+                <div class="loading-spinner"></div>
+
+                <span>Loading your dashboard...</span>
+
+            </div>
+        }
+        else if (dashboard is null)
+        {
+            <div class="dashboard-error">
+
+                <h3>Unable to load dashboard</h3>
+
+                <p>
+                    We couldn't retrieve your dashboard data.
+                </p>
+
+                <button @onclick="LoadDashboardAsync">
+                    Try again
+                </button>
+
+            </div>
+        }
+        else
+        {
+            <!-- ============================= -->
+            <!-- STAT CARDS                     -->
+            <!-- ============================= -->
+
+            <section class="stats-grid">
+
+                <StatCard Title="Total Income"
+                          Value="@FormatCurrency(dashboard.TotalIncome)"
+                          Icon="💰"
+                          IconBackground="#D1FAE5"
+                          Variant="Income"
+                          Trend="↑ this month" />
+
+                <StatCard Title="Total Expenses"
+                          Value="@FormatCurrency(dashboard.TotalExpenses)"
+                          Icon="💳"
+                          IconBackground="#FFE4E6"
+                          Variant="Expense"
+                          Trend="↑ this month" />
+
+                <StatCard Title="Net Savings"
+                          Value="@FormatCurrency(dashboard.NetSavings)"
+                          Icon="🏦"
+                          IconBackground="#EDE9FE"
+                          Variant="Default"
+                          Trend="↑ this month" />
+
+                <StatCard Title="Transactions"
+                          Value="@dashboard.TransactionCount.ToString()"
+                          Icon="📋"
+                          IconBackground="#FEF3C7"
+                          Variant="Default"
+                          Trend="This month" />
+
+            </section>
+
+
+            <!-- ============================= -->
+            <!-- SPENDING + CATEGORIES          -->
+            <!-- ============================= -->
+
+            <section class="dashboard-grid dashboard-grid-primary">
+
+                <SpendingOverview Data="@dashboard.MonthlySpending" />
+
+                <CategorySpending Categories="@dashboard.CategorySpending" />
+
+            </section>
+
+
+            <!-- ============================= -->
+            <!-- TRANSACTIONS + BUDGETS         -->
+            <!-- ============================= -->
+
+            <section class="dashboard-grid dashboard-grid-secondary">
+
+                <RecentTransactions Transactions="@dashboard.RecentTransactions" />
+
+                <BudgetOverview Budgets="@dashboard.Budgets" />
+
+            </section>
+        }
+
+    </main>
+
+</div>
+
+@code
+{
+    private bool isLoading = true;
+
+    private string selectedMonth = "2026-07"; /* DateTime.Now.ToString("yyyy-MM"); */
+
+    private DashboardDto? dashboard;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDashboardAsync();
+    }
+
+    private async Task LoadDashboardAsync()
+    {
+        isLoading = true;
+
+        try
+        {
+            var selectedDate = DateTime.ParseExact(selectedMonth, "yyyy-MM", null);
+            dashboard = await DashboardService.GetDashboardAsync(selectedDate.Month, selectedDate.Year);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to load dashboard: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private static string FormatCurrency(decimal amount)
+    {
+        return $"₱{amount:N0}";
+    }
+
+}

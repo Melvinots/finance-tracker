@@ -1,0 +1,84 @@
+﻿.panel {
+    min-width: 0;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.panel-title {
+    margin: 0;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.panel-link {
+    color: var(--primary);
+    font-size: .8rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .panel-link:hover {
+        text-decoration: underline;
+    }
+
+.budget-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.budget-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: .6rem;
+}
+
+.budget-name {
+    color: var(--text);
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.budget-amounts {
+    color: var(--text-muted);
+    font-size: .75rem;
+    white-space: nowrap;
+}
+
+.budget-bar-background {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--surface-alt);
+}
+
+.budget-bar-fill {
+    height: 100%;
+    border-radius: inherit;
+    transition: width .3s ease;
+}
+
+.badge-over {
+    display: inline-flex;
+    margin-left: .5rem;
+    padding: .2rem .45rem;
+    border-radius: 999px;
+    background: var(--danger);
+    color: white;
+    font-size: .65rem;
+    font-weight: 700;
+}

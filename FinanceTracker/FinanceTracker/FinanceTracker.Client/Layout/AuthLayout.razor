@@ -1,0 +1,88 @@
+﻿@namespace FinanceTracker.Client.Layout
+@inherits LayoutComponentBase
+
+<div class="auth-layout">
+
+    <section class="auth-brand">
+
+        <div class="brand-content">
+
+            <a class="brand" href="/">
+                <span class="brand-mark">₱</span>
+
+                <span class="brand-name">
+                    Finance Tracker
+                </span>
+            </a>
+
+            <div class="brand-copy">
+
+                <span class="brand-eyebrow">
+                    PERSONAL FINANCE, SIMPLIFIED
+                </span>
+
+                <h1>
+                    Take control of
+                    <span>your money.</span>
+                </h1>
+
+                <p>
+                    Track your income, manage your expenses, and build
+                    better financial habits with a clearer view of your money.
+                </p>
+
+            </div>
+
+            <div class="brand-features">
+
+                <div class="brand-feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Track income and expenses</span>
+                </div>
+
+                <div class="brand-feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Set and monitor monthly budgets</span>
+                </div>
+
+                <div class="brand-feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Understand your spending habits</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="brand-decoration brand-decoration-one"></div>
+        <div class="brand-decoration brand-decoration-two"></div>
+
+    </section>
+
+    <main class="auth-content">
+
+        <div class="mobile-brand">
+
+            <a class="brand" href="/">
+                <span class="brand-mark">₱</span>
+
+                <span class="brand-name">
+                    Finance Tracker
+                </span>
+            </a>
+
+        </div>
+
+        <div class="auth-card-container">
+
+            @Body
+
+        </div>
+
+        <p class="auth-footer">
+            © @DateTime.Now.Year Finance Tracker
+        </p>
+
+    </main>
+
+</div>

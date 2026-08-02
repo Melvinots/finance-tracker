@@ -1,0 +1,94 @@
+﻿@namespace FinanceTracker.Client.Components.Transactions
+
+<div class="transaction-row">
+
+    <div class="transaction-description">
+
+        <div class="transaction-icon"
+             style="background-color:
+            @Transaction.CategoryColor">
+
+            @Transaction.CategoryIcon
+
+        </div>
+
+        <div>
+
+            <strong>
+                @Transaction.Description
+            </strong>
+
+            <small>
+                @Transaction.CategoryName
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="transaction-category">
+
+        @Transaction.CategoryName
+
+    </div>
+
+    <div class="transaction-date">
+
+        @Transaction.Date.ToString("MMM d, yyyy")
+
+    </div>
+
+    <div class="transaction-amount
+        @(Transaction.IsExpense
+                     ? "expense"
+                     : "income")">
+
+        @(Transaction.IsExpense ? "-" : "+")
+        ₱@Transaction.Amount.ToString("N0")
+
+    </div>
+
+    <div class="transaction-actions">
+
+        <button class="icon-button"
+                title="Edit"
+                @onclick="Edit">
+
+            ✏️
+
+        </button>
+
+        <button class="icon-button danger"
+                title="Delete"
+                @onclick="Delete">
+
+            🗑️
+
+        </button>
+
+    </div>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public TransactionDto Transaction { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<TransactionDto> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<TransactionDto> OnDelete { get; set; }
+
+    private Task Edit()
+    {
+        return OnEdit.InvokeAsync(Transaction);
+    }
+
+    private Task Delete()
+    {
+        return OnDelete.InvokeAsync(Transaction);
+    }
+
+}

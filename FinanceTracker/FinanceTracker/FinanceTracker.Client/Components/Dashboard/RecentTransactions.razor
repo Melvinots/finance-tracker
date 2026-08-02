@@ -1,0 +1,47 @@
+﻿@namespace FinanceTracker.Client.Components.Dashboard
+
+<Card>
+
+    <Header>
+
+        <div class="card-heading">
+            <div>
+                <h2>Recent Transactions</h2>
+                <p>Your latest financial activity.</p>
+            </div>
+
+            <a href="/transactions" class="view-all">
+                View all
+            </a>
+        </div>
+
+    </Header>
+
+    <ChildContent>
+
+        <div class="transaction-list">
+            @foreach (var transaction in Transactions)
+            {
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <strong>@transaction.Description</strong>
+                        <span>@transaction.Category</span>
+                    </div>
+
+                    <span class="transaction-amount @(transaction.IsIncome ? "income" : "expense")">
+                        @(transaction.IsIncome ? "+" : "-")@transaction.Amount
+                    </span>
+                </div>
+            }
+        </div>
+
+    </ChildContent>
+
+</Card>
+
+@code {
+
+    [Parameter]
+    public List<RecentTransactionDto> Transactions { get; set; } = new();
+
+}

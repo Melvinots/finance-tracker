@@ -1,0 +1,38 @@
+﻿@namespace FinanceTracker.Client.Components
+
+@if (IsLoading)
+{
+    <div class="overlay">
+        <div class="inner">
+            <div class="brand">
+                <span class="brand-dot"></span>
+                <span class="brand-name">FinanceTracker</span>
+            </div>
+            <div class="spinner">
+                <div class="ring ring-outer"></div>
+                <div class="ring ring-inner"></div>
+            </div>
+            <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="label">@Message</div>
+        </div>
+    </div>
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public string Message { get; set; } = "Loading...";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}
