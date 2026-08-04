@@ -1,0 +1,116 @@
+﻿@namespace FinanceTracker.Client.Components.Budgets
+
+<div class="budget-card">
+
+    <div class="budget-card-header">
+
+        <div class="budget-category">
+
+            <div class="category-icon"
+                 style="background-color: @IconBackground">
+
+                @Budget.CategoryIcon
+
+            </div>
+
+            <div class="category-info">
+
+                <h3>
+                    @Budget.CategoryName
+                </h3>
+
+                <span>
+                    @Budget.Percentage.ToString("0")% used
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="budget-actions">
+
+            <button class="action-button"
+                    title="Edit"
+                    @onclick="() => OnEdit.InvokeAsync(Budget)">
+                ✎
+            </button>
+
+            <button class="action-button delete"
+                    title="Delete"
+                    @onclick="() => OnDelete.InvokeAsync(Budget)">
+                ×
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="budget-amounts">
+
+        <div>
+            <span class="spent">
+                ₱@Budget.AmountSpent.ToString("N0")
+            </span>
+
+            <span class="limit">
+                / ₱@Budget.LimitAmount.ToString("N0")
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="progress-track">
+
+        <div class="progress-bar"
+             style="
+            width: @Budget.Percentage%;
+            background-color: @Budget.CategoryColor;
+            ">
+        </div>
+
+    </div>
+
+
+    <div class="budget-footer">
+
+        <span class="@RemainingClass">
+            @RemainingText
+        </span>
+
+        <span class="percentage">
+            @Budget.Percentage.ToString("0")%
+        </span>
+
+    </div>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public BudgetDto Budget { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<BudgetDto> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<BudgetDto> OnDelete { get; set; }
+
+    private string IconBackground =>
+        string.IsNullOrWhiteSpace(Budget.CategoryColor)
+            ? "var(--primary-dim)"
+            : $"{Budget.CategoryColor}18";
+
+    private string RemainingText =>
+        Budget.RemainingAmount >= 0
+            ? $"₱{Budget.RemainingAmount:N0} remaining"
+            : $"₱{Math.Abs(Budget.RemainingAmount):N0} over budget";
+
+    private string RemainingClass =>
+        Budget.RemainingAmount < 0
+            ? "remaining danger"
+            : "remaining";
+
+}

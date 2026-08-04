@@ -1,5 +1,5 @@
-﻿using FinanceTracker.Data;
-using FinanceTracker.Services;
+﻿using FinanceTracker.Services;
+using FinanceTracker.Shared.DTOs.Budgets;
 using FinanceTracker.Shared.DTOs.Categories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,20 +10,20 @@ namespace FinanceTracker.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class CategoriesController : Controller
+    public class BudgetsController : Controller
     {
-        private readonly ICategoryService _service;
+        private readonly IBudgetService _service;
 
-        public CategoriesController(ICategoryService service)
+        public BudgetsController(IBudgetService service)
         {
             _service = service;
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<List<CategoryDto>>> GetAll()
+        public async Task<ActionResult<List<BudgetDto>>> GetAll([FromQuery] int month, [FromQuery] int year)
         {
             var userId = GetUserId();
-            var result = await _service.GetAllByUserAsync(userId);
+            var result = await _service.GetAllByUserAsync(userId, month, year);
             return Ok(result);
         }
 
@@ -32,25 +32,37 @@ namespace FinanceTracker.Controllers
         {
             var userId = GetUserId();
             var result = await _service.GetByIdAsync(id, userId);
-
-            return result is null ? NotFound() : Ok(result);
+            return result is null
+                ? NotFound()
+                : Ok(result);
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(SaveCategoryDto dto)
+        public async Task<IActionResult> Create(SaveBudgetDto dto)
         {
             var userId = GetUserId();
             var result = await _service.CreateAsync(dto, userId);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = result.Id },
+                result
+            );
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int id, SaveCategoryDto dto)
+        public async Task<IActionResult> Update(
+            int id,
+            SaveBudgetDto dto)
         {
             try
             {
                 var userId = GetUserId();
-                var result = await _service.UpdateAsync(id, dto, userId);
+                var result = await _service.UpdateAsync(
+                    id,
+                    dto,
+                    userId
+                );
+
                 return Ok(result);
             }
             catch (KeyNotFoundException)

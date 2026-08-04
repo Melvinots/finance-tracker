@@ -1,19 +1,192 @@
 ﻿@page "/budgets"
 @attribute [Authorize]
 
-<LoadingWrapper IsLoading="@isLoading" Message="Loading your dashboard...">
-    <h1>Budgets</h1>
-    <p>Coming soon.</p>
-</LoadingWrapper>
+@inject BudgetService BudgetService
+@inject CategoryService CategoryService
+
+<div class="budgets-page">
+
+    <header class="page-header">
+
+        <div>
+            <h1>Budgets</h1>
+
+            <p>
+                Set spending limits and keep your expenses on track.
+            </p>
+        </div>
+
+        <div class="page-actions">
+
+            <select class="month-select"
+                    @bind="_selectedMonth"
+                    @bind:after="LoadBudgets">
+
+                @for (int i = 0; i < 6; i++)
+                {
+                    var month = DateTime.Now.AddMonths(-i);
+
+                    <option value="@month.ToString("yyyy-MM")">
+                        @month.ToString("MMMM yyyy")
+                    </option>
+                }
+
+            </select>
+
+            <button class="primary-button"
+                    @onclick="OpenCreateModal">
+
+                <span>＋</span>
+                Add budget
+
+            </button>
+
+        </div>
+
+    </header>
+
+    <LoadingWrapper IsLoading="@_isLoading"
+                    Message="Loading your budgets...">
+
+        @if (!_budgets.Any())
+        {
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🎯
+                </div>
+
+                <h3>No budgets for this month</h3>
+
+                <p>
+                    Create a budget to start tracking your spending.
+                </p>
+
+                <button class="primary-button"
+                        @onclick="OpenCreateModal">
+
+                    Add your first budget
+
+                </button>
+
+            </div>
+        }
+        else
+        {
+            <main class="page-content">
+
+                <BudgetList Budgets="@_budgets"
+                            OnEdit="@OpenEditModal"
+                            OnDelete="@DeleteBudget" />
+
+            </main>
+        }
+
+    </LoadingWrapper>
+
+</div>
+
+@if (_showModal)
+{
+    <BudgetForm Budget="@_selectedBudget"
+                Categories="@_categories"
+                Month="@SelectedDate.Month"
+                Year="@SelectedDate.Year"
+                OnSave="@SaveBudget"
+                OnCancel="@CloseModal" />
+}
 
 @code {
 
-    private bool isLoading = true;
+    private bool _isLoading = true;
+
+    private bool _showModal;
+
+    private string _selectedMonth =
+        DateTime.Now.ToString("yyyy-MM");
+
+    private List<BudgetDto> _budgets = new();
+
+    private List<CategoryDto> _categories = new();
+
+    private BudgetDto? _selectedBudget;
+
+    private DateTime SelectedDate =>
+        DateTime.ParseExact(
+            _selectedMonth,
+            "yyyy-MM",
+            null);
+
     protected override async Task OnInitializedAsync()
     {
-        // Simulate loading delay
-        await Task.Delay(1000);
-        isLoading = false;
+        await LoadCategoriesAsync();
+        await LoadBudgets();
     }
 
+    private async Task LoadBudgets()
+    {
+        _isLoading = true;
+
+        try
+        {
+            _budgets = await BudgetService.GetAllAsync(
+                SelectedDate.Month,
+                SelectedDate.Year);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task LoadCategoriesAsync()
+    {
+        _categories =
+            await CategoryService.GetAllAsync();
+    }
+
+    private void OpenCreateModal()
+    {
+        _selectedBudget = null;
+        _showModal = true;
+    }
+
+    private void OpenEditModal(BudgetDto budget)
+    {
+        _selectedBudget = budget;
+        _showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        _showModal = false;
+        _selectedBudget = null;
+    }
+
+    private async Task SaveBudget(
+        SaveBudgetDto budget)
+    {
+        if (_selectedBudget is null)
+        {
+            await BudgetService.CreateAsync(budget);
+        }
+        else
+        {
+            await BudgetService.UpdateAsync(
+                _selectedBudget.Id,
+                budget);
+        }
+
+        CloseModal();
+
+        await LoadBudgets();
+    }
+
+    private async Task DeleteBudget(
+        BudgetDto budget)
+    {
+        await BudgetService.DeleteAsync(budget.Id);
+
+        _budgets.Remove(budget);
+    }
 }

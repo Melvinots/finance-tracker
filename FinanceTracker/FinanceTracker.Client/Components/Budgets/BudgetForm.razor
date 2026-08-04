@@ -1,0 +1,206 @@
+﻿@namespace FinanceTracker.Client.Components.Budgets
+
+<div class="modal-backdrop"
+     @onclick="HandleBackdropClick">
+
+    <div class="modal-box"
+         @onclick:stopPropagation>
+
+        <div class="modal-header">
+
+            <div>
+                <h2>
+                    @(Budget is null
+                        ? "Add budget"
+                        : "Edit budget")
+                </h2>
+
+                <p>
+                    Set a spending limit for a category.
+                </p>
+            </div>
+
+            <button class="modal-close"
+                    type="button"
+                    @onclick="Cancel">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <EditForm Model="@_model"
+                  OnValidSubmit="@HandleSubmit">
+
+            <DataAnnotationsValidator />
+
+            <div class="modal-body">
+
+                <div class="form-group">
+
+                    <label>
+                        Category
+                    </label>
+
+                    <InputSelect class="form-control"
+                                 @bind-Value="_model.CategoryId">
+
+                        <option value="0">
+                            Select category
+                        </option>
+
+                        @foreach (var category in Categories)
+                        {
+                            <option value="@category.Id">
+                                @category.Icon @category.Name
+                            </option>
+                        }
+
+                    </InputSelect>
+
+                    <ValidationMessage For="@(() => _model.CategoryId)" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Monthly limit
+                    </label>
+
+                    <div class="amount-input">
+
+                        <span>₱</span>
+
+                        <InputNumber class="form-control"
+                                     @bind-Value="_model.LimitAmount"
+                                     placeholder="10,000" />
+
+                    </div>
+
+                    <ValidationMessage For="@(() => _model.LimitAmount)" />
+
+                </div>
+
+
+                <div class="budget-period">
+
+                    <span class="period-label">
+                        Budget period
+                    </span>
+
+                    <strong>
+                        @BudgetMonth.ToString("MMMM yyyy")
+                    </strong>
+
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                {
+                    <div class="form-error">
+                        @ErrorMessage
+                    </div>
+                }
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn-cancel"
+                        @onclick="Cancel"
+                        disabled="@IsLoading">
+
+                    Cancel
+
+                </button>
+
+                <button type="submit"
+                        class="btn-save"
+                        disabled="@IsLoading">
+
+                    @if (IsLoading)
+                    {
+                        <span class="loading-spinner"></span>
+                        <span>Saving...</span>
+                    }
+                    else
+                    {
+                        <span>
+                            @(Budget is null
+                                ? "Add budget"
+                                : "Save changes")
+                        </span>
+                    }
+
+                </button>
+
+            </div>
+
+        </EditForm>
+
+    </div>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public BudgetDto? Budget { get; set; }
+
+    [Parameter]
+    public IEnumerable<CategoryDto> Categories { get; set; }
+        = Enumerable.Empty<CategoryDto>();
+
+    [Parameter]
+    public int Month { get; set; }
+
+    [Parameter]
+    public int Year { get; set; }
+
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public string? ErrorMessage { get; set; }
+
+    [Parameter]
+    public EventCallback<SaveBudgetDto> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private SaveBudgetDto _model = new();
+
+    private DateTime BudgetMonth =>
+        new(Year, Month, 1);
+
+    protected override void OnParametersSet()
+    {
+        _model = new SaveBudgetDto
+        {
+            CategoryId = Budget?.CategoryId ?? 0,
+            LimitAmount = Budget?.LimitAmount ?? 0,
+            Month = Month,
+            Year = Year
+        };
+    }
+
+    private async Task HandleSubmit()
+    {
+        await OnSave.InvokeAsync(_model);
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+    private async Task HandleBackdropClick()
+    {
+        await Cancel();
+    }
+}

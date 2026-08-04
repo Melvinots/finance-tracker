@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceTracker.Repositories
 {
-    public class CategoriesRepository : ICategoriesRepository
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly AppDbContext _context;
 
-        public CategoriesRepository(AppDbContext context)
+        public CategoryRepository(AppDbContext context)
         {
             _context = context;
         }
