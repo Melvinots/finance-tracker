@@ -111,7 +111,7 @@
 
             <section class="dashboard-grid dashboard-grid-primary">
 
-                <SpendingOverview Data="@dashboard.MonthlySpending" />
+                <SpendingOverview Data="@dashboard.MonthlySpending" SelectedMonth="@selectedMonth" />
 
                 <CategorySpending Categories="@dashboard.CategorySpending" />
 
@@ -139,7 +139,7 @@
 {
     private bool isLoading = true;
 
-    private string selectedMonth = "2026-07"; /* DateTime.Now.ToString("yyyy-MM"); */
+    private string selectedMonth = DateTime.Now.ToString("yyyy-MM");
 
     private DashboardDto? dashboard;
 

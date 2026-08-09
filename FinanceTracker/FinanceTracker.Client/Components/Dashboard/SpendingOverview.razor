@@ -18,15 +18,15 @@
                     @bind="selectedPeriod"
                     @bind:after="UpdateChart">
 
-                <option value="month">
+                <option value="@SpendingPeriod.ThisMonth">
                     This Month
                 </option>
 
-                <option value="last">
+                <option value="@SpendingPeriod.LastMonth">
                     Last Month
                 </option>
 
-                <option value="6months">
+                <option value="@SpendingPeriod.Last6Months">
                     Last 6 Months
                 </option>
 
@@ -76,10 +76,16 @@
 
 @code {
 
-    [Parameter] public List<MonthlySpendingDto>? Data { get; set; }
+    [Parameter]
+    public List<MonthlySpendingDto> Data { get; set; } = new();
 
-    private string selectedPeriod = "6months";
-    private List<MonthlySpendingDto> chartData = new();
+    [Parameter]
+    public string SelectedMonth { get; set; } = DateTime.Now.ToString("yyyy-MM");
+
+    private SpendingPeriod selectedPeriod = SpendingPeriod.ThisMonth;
+
+    private IEnumerable<MonthlySpendingDto> chartData =
+        Enumerable.Empty<MonthlySpendingDto>();
 
     protected override void OnParametersSet()
     {
@@ -88,27 +94,67 @@
 
     private void UpdateChart()
     {
-        if (Data is null || Data.Count == 0)
+        if (string.IsNullOrWhiteSpace(SelectedMonth))
         {
-            Data = new()
-            {
-                new MonthlySpendingDto { Month = "Jan", Income = 42000, Expenses = 28000 },
-                new MonthlySpendingDto { Month = "Feb", Income = 38000, Expenses = 31000 },
-                new MonthlySpendingDto { Month = "Mar", Income = 45000, Expenses = 29000 },
-                new MonthlySpendingDto { Month = "Apr", Income = 41000, Expenses = 33000 },
-                new MonthlySpendingDto { Month = "May", Income = 46000, Expenses = 30000 },
-                new MonthlySpendingDto { Month = "Jun", Income = 44000, Expenses = 35000 },
-                new MonthlySpendingDto { Month = "Jul", Income = 48500, Expenses = 32140 },
-            };
+            chartData = Enumerable.Empty<MonthlySpendingDto>();
+            return;
         }
+
+        var parts = SelectedMonth.Split('-');
+
+        if (parts.Length != 2 ||
+            !int.TryParse(parts[0], out var year) ||
+            !int.TryParse(parts[1], out var month) ||
+            month < 1 ||
+            month > 12)
+        {
+            chartData = Enumerable.Empty<MonthlySpendingDto>();
+            return;
+        }
+
+        var selectedMonth = new DateTime(year, month, 1);
 
         chartData = selectedPeriod switch
         {
-            "month" => Data.TakeLast(1).ToList(),
-            "last" => Data.TakeLast(2).Take(1).ToList(),
-            "6months" => Data.TakeLast(6).ToList(),
+            SpendingPeriod.ThisMonth =>
+                Data.Where(x =>
+                    x.Year == selectedMonth.Year &&
+                    x.MonthNumber == selectedMonth.Month),
+
+            SpendingPeriod.LastMonth =>
+                GetLastMonthData(selectedMonth),
+
+            SpendingPeriod.Last6Months =>
+                GetLastSixMonthsData(selectedMonth),
+
             _ => Data
         };
     }
 
+    private IEnumerable<MonthlySpendingDto> GetLastMonthData(
+        DateTime selectedMonth)
+    {
+        var lastMonth = selectedMonth.AddMonths(-1);
+
+        return Data.Where(x =>
+            x.Year == lastMonth.Year &&
+            x.MonthNumber == lastMonth.Month);
+    }
+
+    private IEnumerable<MonthlySpendingDto> GetLastSixMonthsData(
+        DateTime selectedMonth)
+    {
+        var startMonth = selectedMonth.AddMonths(-5);
+
+        return Data.Where(x =>
+        {
+            var itemMonth = new DateTime(
+                x.Year,
+                x.MonthNumber,
+                1);
+
+            return itemMonth >= startMonth &&
+                   itemMonth <= selectedMonth;
+        });
+    }
 }

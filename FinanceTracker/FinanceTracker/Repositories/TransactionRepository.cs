@@ -19,6 +19,7 @@ namespace FinanceTracker.Repositories
                 .Include(t => t.Category)
                 .Where(t => t.UserId == userId)
                 .OrderByDescending(t => t.Date)
+                .ThenByDescending(t => t.Id)
                 .ToListAsync();
         }
 

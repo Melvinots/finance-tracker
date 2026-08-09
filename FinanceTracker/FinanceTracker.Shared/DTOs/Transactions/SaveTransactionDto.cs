@@ -13,7 +13,7 @@ namespace FinanceTracker.Shared.DTOs.Transactions
 
         [Required]
         [MaxLength(100)]
-        public string Description { get; set; } = string.Empty;
+        public string Description { get; set; } = default!;
 
         [Required]
         public DateTime Date { get; set; } = DateTime.Today;
@@ -23,7 +23,6 @@ namespace FinanceTracker.Shared.DTOs.Transactions
         [MaxLength(300)]
         public string? Notes { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a category.")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
     }
 }

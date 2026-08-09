@@ -81,9 +81,9 @@ namespace FinanceTracker.Services
             IsExpense = t.IsExpense,
             Notes = t.Notes,
             CategoryId = t.CategoryId,
-            CategoryName = t.Category.Name,
-            CategoryColor = t.Category.Color,
-            CategoryIcon = t.Category.Icon
+            CategoryName = t?.Category?.Name,
+            CategoryColor = t?.Category?.Color,
+            CategoryIcon = t?.Category?.Icon
         };
     }
 }

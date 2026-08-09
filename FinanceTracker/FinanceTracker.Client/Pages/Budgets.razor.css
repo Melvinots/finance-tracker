@@ -1,0 +1,232 @@
+/* =========================================
+   PAGE
+   ========================================= */
+
+.budgets-page {
+    min-height: 100%;
+    background: var(--paper);
+}
+
+
+/* =========================================
+   PAGE HEADER
+   ========================================= */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    background: var(--white);
+    border-bottom: 1px solid var(--rule);
+}
+
+.page-heading {
+    min-width: 0;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--ink);
+}
+
+.page-header p {
+    margin: .35rem 0 0;
+    font-size: .8rem;
+    line-height: 1.4;
+    color: var(--muted);
+}
+
+
+/* =========================================
+   PAGE ACTIONS
+   ========================================= */
+
+.page-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .75rem;
+    flex-shrink: 0;
+}
+
+
+/* =========================================
+   MONTH SELECT
+   ========================================= */
+
+.month-select {
+    height: 38px;
+    min-width: 145px;
+    padding: 0 .875rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: .8rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+    .month-select:hover {
+        border-color: var(--primary);
+    }
+
+    .month-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-ring);
+    }
+
+
+/* =========================================
+   PRIMARY BUTTON
+   ========================================= */
+
+.primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    min-height: 38px;
+    padding: 0 .9rem;
+    border: 1px solid var(--primary);
+    border-radius: var(--radius-md);
+    background: var(--primary);
+    color: var(--white);
+    font-family: var(--font-sans);
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+    .primary-button:hover {
+        background: var(--primary-hover);
+        border-color: var(--primary-hover);
+        box-shadow: 0 4px 12px var(--primary-ring);
+    }
+
+    .primary-button:active {
+        transform: translateY(1px);
+    }
+
+    .primary-button span {
+        font-size: 1rem;
+        line-height: 1;
+    }
+
+
+/* =========================================
+   CONTENT
+   ========================================= */
+
+.page-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.75rem 2rem;
+}
+
+
+/* =========================================
+   EMPTY STATE
+   ========================================= */
+
+.empty-state {
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.empty-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    border-radius: 16px;
+    background: var(--primary-ring);
+    font-size: 1.5rem;
+}
+
+.empty-state h3 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--ink);
+}
+
+.empty-state p {
+    max-width: 360px;
+    margin: .4rem 0 1.25rem;
+    font-size: .8rem;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 1.25rem;
+    }
+
+    .page-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .month-select {
+        flex: 1;
+    }
+
+    .primary-button {
+        flex-shrink: 0;
+    }
+
+    .page-content {
+        padding: 1.25rem;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .page-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .page-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .month-select,
+    .primary-button {
+        width: 100%;
+    }
+
+    .page-content {
+        padding: 1rem;
+    }
+}

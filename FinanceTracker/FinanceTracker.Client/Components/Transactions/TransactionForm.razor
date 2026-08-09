@@ -186,7 +186,7 @@
             Amount = Transaction.Amount,
             Date = Transaction.Date,
             IsExpense = Transaction.IsExpense,
-            CategoryId = Transaction.CategoryId
+            CategoryId = Transaction?.CategoryId ?? 0
         };
     }
 

@@ -8,7 +8,7 @@
 
     <header class="page-header">
 
-        <div>
+        <div class="page-heading">
             <h1>Budgets</h1>
 
             <p>
@@ -45,44 +45,44 @@
 
     </header>
 
-    <LoadingWrapper IsLoading="@_isLoading"
-                    Message="Loading your budgets...">
+    <main class="page-content">
 
-        @if (!_budgets.Any())
-        {
-            <div class="empty-state">
+        <LoadingWrapper IsLoading="@_isLoading"
+                        Message="Loading your budgets...">
 
-                <div class="empty-icon">
-                    🎯
+            @if (!_budgets.Any())
+            {
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        🎯
+                    </div>
+
+                    <h3>No budgets for this month</h3>
+
+                    <p>
+                        Create a budget to start tracking your spending.
+                    </p>
+
+                    <button class="primary-button"
+                            @onclick="OpenCreateModal">
+
+                        Add your first budget
+
+                    </button>
+
                 </div>
-
-                <h3>No budgets for this month</h3>
-
-                <p>
-                    Create a budget to start tracking your spending.
-                </p>
-
-                <button class="primary-button"
-                        @onclick="OpenCreateModal">
-
-                    Add your first budget
-
-                </button>
-
-            </div>
-        }
-        else
-        {
-            <main class="page-content">
-
+            }
+            else
+            {
                 <BudgetList Budgets="@_budgets"
                             OnEdit="@OpenEditModal"
                             OnDelete="@DeleteBudget" />
+            }
 
-            </main>
-        }
+        </LoadingWrapper>
 
-    </LoadingWrapper>
+    </main>
 
 </div>
 
@@ -90,8 +90,7 @@
 {
     <BudgetForm Budget="@_selectedBudget"
                 Categories="@_categories"
-                Month="@SelectedDate.Month"
-                Year="@SelectedDate.Year"
+                SelectedMonth="@_selectedMonth"
                 OnSave="@SaveBudget"
                 OnCancel="@CloseModal" />
 }
