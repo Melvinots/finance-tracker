@@ -1,73 +1,112 @@
 ﻿@namespace FinanceTracker.Client.Components.Categories
 
-<EditForm Model="@Model" OnValidSubmit="HandleSubmit">
-    <DataAnnotationsValidator />
+@if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <div class="form-error">
+        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+        <span>@ErrorMessage</span>
+    </div>
+}
 
-    @if (!string.IsNullOrEmpty(ErrorMessage))
-    {
-        <div class="form-error">⚠ @ErrorMessage</div>
-    }
+<div class="form-group">
+    <label>Icon</label>
 
-    <div class="form-group">
-        <label>Icon</label>
-        <div class="emoji-picker">
-            @foreach (var emoji in _emojis)
-            {
-                <button type="button"
-                        class="emoji-btn @(Model.Icon == emoji ? "selected" : "")"
-                        @onclick="() => Model.Icon = emoji">
-                    @emoji
-                </button>
-            }
-        </div>
+    <div class="icon-picker">
+        @foreach (var icon in _icons)
+        {
+            <button type="button"
+                    class="icon-btn @(Model.Icon == icon ? "selected" : "")"
+                    aria-label="Select category icon"
+                    aria-pressed="@(Model.Icon == icon)"
+                    @onclick="() => SelectIcon(icon)">
+
+                <i class="@icon" aria-hidden="true"></i>
+
+            </button>
+        }
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="category-name">Name</label>
+
+    <InputText id="category-name"
+               class="form-control"
+               @bind-Value="Model.Name"
+               placeholder="e.g. Food, Transport..." />
+
+    <ValidationMessage For="@(() => Model.Name)" />
+</div>
+
+<div class="form-group">
+    <label>Color</label>
+
+    <div class="color-picker">
+        @foreach (var color in _colors)
+        {
+            <button type="button"
+                    class="color-btn @(Model.Color == color ? "selected" : "")"
+                    style="background-color: @color"
+                    aria-label="Select color @color"
+                    aria-pressed="@(Model.Color == color)"
+                    @onclick="() => SelectColor(color)">
+            </button>
+        }
+    </div>
+</div>
+
+<div class="preview-row">
+
+    <span class="preview-label">
+        Preview
+    </span>
+
+    <div class="preview-chip"
+         style="--category-color: @Model.Color; --category-color-soft: @(Model.Color + "20");">
+
+        <span class="preview-icon">
+            <i class="@Model.Icon" aria-hidden="true"></i>
+        </span>
+
+        <span class="preview-name">
+            @(string.IsNullOrWhiteSpace(Model.Name)
+                ? "Category name"
+                : Model.Name)
+        </span>
+
     </div>
 
-    <div class="form-group">
-        <label>Name</label>
-        <InputText class="form-control"
-                   @bind-Value="Model.Name"
-                   placeholder="e.g. Food, Transport..." />
-        <ValidationMessage For="@(() => Model.Name)" />
-    </div>
+</div>
 
-    <div class="form-group">
-        <label>Color</label>
-        <div class="color-picker">
-            @foreach (var color in _colors)
-            {
-                <button type="button"
-                        class="color-btn @(Model.Color == color ? "selected" : "")"
-                        style="background: @color"
-                        @onclick="() => Model.Color = color">
-                </button>
-            }
-        </div>
-    </div>
+<div class="form-actions">
 
-    <div class="preview-row">
-        <span class="preview-label">Preview</span>
-        <div class="preview-chip" style="background: @(Model.Color + "20")">
-            <span>@Model.Icon</span>
-            <span style="color: @Model.Color; font-weight: 600; font-size: 0.825rem">
-                @(string.IsNullOrEmpty(Model.Name) ? "Category name" : Model.Name)
-            </span>
-        </div>
-    </div>
+    <button type="button"
+            class="btn-cancel"
+            @onclick="OnCancel"
+            disabled="@IsLoading">
 
-    <div class="form-actions">
-        <button type="button" class="btn-cancel" @onclick="OnCancel">
-            Cancel
-        </button>
-        <button type="submit" class="btn-save" disabled="@IsLoading">
-            @if (IsLoading)
-            {
-                <span class="spinner-border spinner-border-sm"></span>
-            }
-            @(IsLoading ? "Saving..." : "Save category")
-        </button>
-    </div>
+        Cancel
 
-</EditForm>
+    </button>
+
+    <button type="submit"
+            class="btn-save"
+            disabled="@IsLoading">
+
+        @if (IsLoading)
+        {
+            <span class="loading-spinner"></span>
+            <span>Saving...</span>
+        }
+        else
+        {
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+            <span>Save category</span>
+        }
+
+    </button>
+
+</div>
 
 @code {
 
@@ -86,22 +125,54 @@
     [Parameter]
     public EventCallback OnCancel { get; set; }
 
-    private readonly List<string> _emojis = new()
+    private readonly List<string> _icons = new()
     {
-        "🛒", "🚌", "⚡", "🎬", "🏥", "🏠", "👕", "📚",
-        "🍔", "✈️", "💼", "🎮", "💊", "🐾", "🎁", "📁"
+        "fa-solid fa-cart-shopping",
+        "fa-solid fa-bus",
+        "fa-solid fa-bolt",
+        "fa-solid fa-film",
+        "fa-solid fa-heart-pulse",
+        "fa-solid fa-house",
+        "fa-solid fa-shirt",
+        "fa-solid fa-book",
+        "fa-solid fa-utensils",
+        "fa-solid fa-plane",
+        "fa-solid fa-briefcase",
+        "fa-solid fa-gamepad",
+        "fa-solid fa-pills",
+        "fa-solid fa-paw",
+        "fa-solid fa-gift",
+        "fa-solid fa-inbox"
     };
 
     private readonly List<string> _colors = new()
     {
-        "#3B5BDB", "#10B981", "#F59E0B", "#F43F5E",
-        "#8B5CF6", "#06B6D4", "#EC4899", "#64748B",
-        "#059669", "#DC2626", "#D97706", "#7C3AED"
+        "#3B5BDB",
+        "#10B981",
+        "#F59E0B",
+        "#F43F5E",
+        "#8B5CF6",
+        "#06B6D4",
+        "#EC4899",
+        "#64748B",
+        "#059669",
+        "#DC2626",
+        "#D97706",
+        "#7C3AED"
     };
+
+    private void SelectIcon(string icon)
+    {
+        Model.Icon = icon;
+    }
+
+    private void SelectColor(string color)
+    {
+        Model.Color = color;
+    }
 
     private async Task HandleSubmit()
     {
         await OnSave.InvokeAsync(Model);
     }
-
 }

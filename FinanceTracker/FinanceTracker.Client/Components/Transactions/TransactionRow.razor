@@ -1,72 +1,75 @@
 ﻿@namespace FinanceTracker.Client.Components.Transactions
 
-<div class="transaction-row">
+<div class="transaction-description">
 
-    <div class="transaction-description">
+    <div class="transaction-icon"
+         style="--category-color: @(Transaction.CategoryColor ?? "#64748B");
+        --category-color-soft: @((Transaction.CategoryColor ?? "#64748B") + "20");">
 
-        <div class="transaction-icon"
-             style="background-color:
-            @Transaction.CategoryColor">
-
-            @Transaction.CategoryIcon
-
-        </div>
-
-        <div>
-
-            <strong>
-                @Transaction.Description
-            </strong>
-
-            <small>
-                @Transaction.CategoryName
-            </small>
-
-        </div>
+        <i class="@Transaction.CategoryIcon"
+           aria-hidden="true"></i>
 
     </div>
 
-    <div class="transaction-category">
+    <div class="transaction-info">
 
-        @Transaction.CategoryName
+        <strong>
+            @Transaction.Description
+        </strong>
+
+        <small>
+            @Transaction.CategoryName
+        </small>
 
     </div>
 
-    <div class="transaction-date">
+</div>
 
-        @Transaction.Date.ToString("MMM d, yyyy")
+<div class="transaction-category">
 
-    </div>
+    @Transaction.CategoryName
 
-    <div class="transaction-amount
-        @(Transaction.IsExpense
-                     ? "expense"
-                     : "income")">
+</div>
 
+<div class="transaction-date">
+
+    @Transaction.Date.ToString("MMM d, yyyy")
+
+</div>
+
+<div class="transaction-amount @(Transaction.IsExpense ? "expense" : "income")">
+
+    <span class="amount-sign">
         @(Transaction.IsExpense ? "-" : "+")
+    </span>
+
+    <span>
         ₱@Transaction.Amount.ToString("N0")
+    </span>
 
-    </div>
+</div>
 
-    <div class="transaction-actions">
+<div class="transaction-actions">
 
-        <button class="icon-button"
-                title="Edit"
-                @onclick="Edit">
+    <button class="icon-button"
+            type="button"
+            title="Edit"
+            aria-label="Edit transaction"
+            @onclick="Edit">
 
-            ✏️
+        <i class="fa-solid fa-pen" aria-hidden="true"></i>
 
-        </button>
+    </button>
 
-        <button class="icon-button danger"
-                title="Delete"
-                @onclick="Delete">
+    <button class="icon-button danger"
+            type="button"
+            title="Delete"
+            aria-label="Delete transaction"
+            @onclick="Delete">
 
-            🗑️
+        <i class="fa-solid fa-trash" aria-hidden="true"></i>
 
-        </button>
-
-    </div>
+    </button>
 
 </div>
 
@@ -90,5 +93,4 @@
     {
         return OnDelete.InvokeAsync(Transaction);
     }
-
 }

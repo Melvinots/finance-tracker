@@ -49,5 +49,26 @@ namespace FinanceTracker.Repositories
             _context.Transactions.Remove(transaction);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Category> GetOrCreateUncategorizedAsync(int userId)
+        {
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(c => c.UserId == userId && c.Name == "Uncategorized");
+
+            if (category is null)
+            {
+                category = new Category
+                {
+                    Name = "Uncategorized",
+                    Icon = "fa-solid fa-inbox",
+                    Color = "#64748B",
+                    UserId = userId
+                };
+                await _context.Categories.AddAsync(category);
+                await _context.SaveChangesAsync();
+            }
+
+            return category;
+        }
     }
 }

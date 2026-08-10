@@ -2,8 +2,9 @@
 {
     public enum SpendingPeriod
     {
-        ThisMonth,
-        LastMonth,
-        Last6Months
+        Last3Months,
+        Last6Months,
+        Last9Months,
+        Last12Months
     }
 }

@@ -27,6 +27,14 @@ namespace FinanceTracker.Services
 
         public async Task<TransactionDto> CreateAsync(SaveTransactionDto dto, int userId)
         {
+            var categoryId = dto.CategoryId;
+
+            if (categoryId is null || categoryId == 0)
+            {
+                var category = await _repo.GetOrCreateUncategorizedAsync(userId);
+                categoryId = category.Id;
+            }
+
             var transaction = new Transaction
             {
                 Amount = dto.Amount,
@@ -34,7 +42,7 @@ namespace FinanceTracker.Services
                 Date = dto.Date,
                 IsExpense = dto.IsExpense,
                 Notes = dto.Notes,
-                CategoryId = dto.CategoryId,
+                CategoryId = categoryId,
                 UserId = userId
             };
 
