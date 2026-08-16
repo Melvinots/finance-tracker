@@ -1,74 +1,94 @@
-﻿@namespace FinanceTracker.Client.Components.Categories
+@namespace FinanceTracker.Client.Components.Categories
 
 @if (!string.IsNullOrWhiteSpace(ErrorMessage))
 {
     <div class="form-error">
-        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+        <Blazicon Svg="Lucide.CircleAlert" />
         <span>@ErrorMessage</span>
     </div>
 }
 
 <div class="form-group">
-    <label>Icon</label>
+
+    <label>
+        Icon
+    </label>
 
     <div class="icon-picker">
+
         @foreach (var icon in _icons)
         {
             <button type="button"
-                    class="icon-btn @(Model.Icon == icon ? "selected" : "")"
-                    aria-label="Select category icon"
-                    aria-pressed="@(Model.Icon == icon)"
-                    @onclick="() => SelectIcon(icon)">
+                    class="icon-button @(Model.Icon == icon.Name ? "selected" : "")"
+                    aria-label="Select @icon.Name icon"
+                    aria-pressed="@(Model.Icon == icon.Name)"
+                    @onclick="() => SelectIcon(icon.Name)">
 
-                <i class="@icon" aria-hidden="true"></i>
+                <Blazicon Svg="@icon.Icon" />
 
             </button>
         }
+
     </div>
+
 </div>
 
+
 <div class="form-group">
-    <label for="category-name">Name</label>
+
+    <label for="category-name">
+        Name
+    </label>
 
     <InputText id="category-name"
-               class="form-control"
+               class="form-input"
                @bind-Value="Model.Name"
-               placeholder="e.g. Food, Transport..." />
+               placeholder="e.g. Food, Transport, Utilities..." />
 
     <ValidationMessage For="@(() => Model.Name)" />
+
 </div>
 
+
 <div class="form-group">
-    <label>Color</label>
+
+    <label>
+        Color
+    </label>
 
     <div class="color-picker">
+
         @foreach (var color in _colors)
         {
             <button type="button"
-                    class="color-btn @(Model.Color == color ? "selected" : "")"
-                    style="background-color: @color"
+                    class="color-button @(Model.Color == color ? "selected" : "")"
+                    style="--color: @color"
                     aria-label="Select color @color"
                     aria-pressed="@(Model.Color == color)"
                     @onclick="() => SelectColor(color)">
             </button>
         }
+
     </div>
+
 </div>
 
-<div class="preview-row">
+
+<div class="category-preview">
 
     <span class="preview-label">
         Preview
     </span>
 
-    <div class="preview-chip"
-         style="--category-color: @Model.Color; --category-color-soft: @(Model.Color + "20");">
+    <div class="preview-category"
+         style="--category-color: @Model.Color;
+        --category-color-soft: @(Model.Color + "18");">
 
-        <span class="preview-icon">
-            <i class="@Model.Icon" aria-hidden="true"></i>
-        </span>
+        <div class="preview-icon">
+            <Blazicon Svg="@GetIcon(Model.Icon)" />
+        </div>
 
-        <span class="preview-name">
+        <span>
             @(string.IsNullOrWhiteSpace(Model.Name)
                 ? "Category name"
                 : Model.Name)
@@ -78,11 +98,12 @@
 
 </div>
 
+
 <div class="form-actions">
 
     <button type="button"
-            class="btn-cancel"
-            @onclick="OnCancel"
+            class="cancel-button"
+            @onclick="HandleCancel"
             disabled="@IsLoading">
 
         Cancel
@@ -90,7 +111,8 @@
     </button>
 
     <button type="submit"
-            class="btn-save"
+            class="save-button"
+            @onclick="HandleSubmit"
             disabled="@IsLoading">
 
         @if (IsLoading)
@@ -100,7 +122,7 @@
         }
         else
         {
-            <i class="fa-solid fa-check" aria-hidden="true"></i>
+            <Blazicon Svg="Lucide.Check" />
             <span>Save category</span>
         }
 
@@ -125,25 +147,51 @@
     [Parameter]
     public EventCallback OnCancel { get; set; }
 
-    private readonly List<string> _icons = new()
+    private readonly List<CategoryIcon> _icons =
+    new() { new("Shopping", Lucide.ShoppingCart),
+            new("Transport", Lucide.Bus),
+            new("Utilities", Lucide.Zap),
+            new("Entertainment", Lucide.Film),
+            new("Health", Lucide.HeartPulse),
+            new("Home", Lucide.House),
+            new("Clothing", Lucide.Shirt),
+            new("Education", Lucide.BookOpen),
+            new("Food", Lucide.Utensils),
+            new("Travel", Lucide.Plane),
+            new("Work", Lucide.Briefcase),
+            new("Gaming", Lucide.Gamepad2),
+            new("Medicine", Lucide.Pill),
+            new("Pets", Lucide.PawPrint),
+            new("Gifts", Lucide.Gift),
+            new("Other", Lucide.Inbox) };
+
+    private readonly Dictionary<string, SvgIcon> _iconMap = new()
     {
-        "fa-solid fa-cart-shopping",
-        "fa-solid fa-bus",
-        "fa-solid fa-bolt",
-        "fa-solid fa-film",
-        "fa-solid fa-heart-pulse",
-        "fa-solid fa-house",
-        "fa-solid fa-shirt",
-        "fa-solid fa-book",
-        "fa-solid fa-utensils",
-        "fa-solid fa-plane",
-        "fa-solid fa-briefcase",
-        "fa-solid fa-gamepad",
-        "fa-solid fa-pills",
-        "fa-solid fa-paw",
-        "fa-solid fa-gift",
-        "fa-solid fa-inbox"
+        ["Shopping"] = Lucide.ShoppingCart,
+        ["Transport"] = Lucide.Bus,
+        ["Utilities"] = Lucide.Zap,
+        ["Entertainment"] = Lucide.Film,
+        ["Health"] = Lucide.HeartPulse,
+        ["Home"] = Lucide.House,
+        ["Clothing"] = Lucide.Shirt,
+        ["Education"] = Lucide.BookOpen,
+        ["Food"] = Lucide.Utensils,
+        ["Travel"] = Lucide.Plane,
+        ["Work"] = Lucide.Briefcase,
+        ["Gaming"] = Lucide.Gamepad2,
+        ["Medicine"] = Lucide.Pill,
+        ["Pets"] = Lucide.PawPrint,
+        ["Gifts"] = Lucide.Gift,
+        ["Other"] = Lucide.Inbox
     };
+
+    private SvgIcon GetIcon(string? iconName)
+    {
+        return iconName is not null && _iconMap.TryGetValue(iconName, out var icon)
+            ? icon
+            : Lucide.Inbox;
+    }
+
 
     private readonly List<string> _colors = new()
     {
@@ -161,18 +209,32 @@
         "#7C3AED"
     };
 
+
     private void SelectIcon(string icon)
     {
         Model.Icon = icon;
     }
+
 
     private void SelectColor(string color)
     {
         Model.Color = color;
     }
 
+
     private async Task HandleSubmit()
     {
         await OnSave.InvokeAsync(Model);
     }
+
+    private async Task HandleCancel()
+    {
+        await OnCancel.InvokeAsync(Model);
+    }
+
+    private record CategoryIcon(
+        string Name,
+        SvgIcon Icon
+    );
+
 }

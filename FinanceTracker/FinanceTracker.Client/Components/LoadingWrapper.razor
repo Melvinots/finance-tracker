@@ -1,30 +1,37 @@
 ﻿@namespace FinanceTracker.Client.Components
 
-@if (IsLoading)
-{
-    <div class="overlay">
-        <div class="inner">
-            <div class="brand">
-                <span class="brand-dot"></span>
-                <span class="brand-name">FinanceTracker</span>
-            </div>
-            <div class="spinner">
-                <div class="ring ring-outer"></div>
-                <div class="ring ring-inner"></div>
-            </div>
-            <div class="dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-            <div class="label">@Message</div>
-        </div>
-    </div>
-}
-else
-{
+<div class="loading-wrapper">
+
     @ChildContent
-}
+
+    @if (IsLoading)
+    {
+        <div class="loading-overlay">
+
+            <div class="loading-state">
+
+                <div class="loading-spinner">
+                    <span></span>
+                </div>
+
+                <div class="loading-content">
+
+                    <span class="loading-title">
+                        Loading
+                    </span>
+
+                    <span class="loading-message">
+                        @Message
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>
 
 @code {
     [Parameter]

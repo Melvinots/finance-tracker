@@ -1,75 +1,88 @@
-﻿@namespace FinanceTracker.Client.Components.Transactions
+@namespace FinanceTracker.Client.Components.Transactions
 
-<div class="transaction-description">
+<div class="transaction-row">
 
-    <div class="transaction-icon"
-         style="--category-color: @(Transaction.CategoryColor ?? "#64748B");
-        --category-color-soft: @((Transaction.CategoryColor ?? "#64748B") + "20");">
+    <div class="transaction-description">
 
-        <i class="@Transaction.CategoryIcon"
-           aria-hidden="true"></i>
+        <div class="transaction-icon"
+             style="
+            --category-color: @(Transaction.CategoryColor ?? "#64748B");
+            --category-color-soft: @((Transaction.CategoryColor ?? "#64748B") + "18");
+            ">
+
+            <Blazicon Svg="@Icons.Category(Transaction.CategoryIcon)" />
+
+        </div>
+
+        <div class="transaction-info">
+
+            <strong title="@Transaction.Description">
+                @Transaction.Description
+            </strong>
+
+            <small>
+                @(Transaction.IsExpense ? "Expense" : "Income")
+            </small>
+
+        </div>
 
     </div>
 
-    <div class="transaction-info">
+    <div class="transaction-category">
 
-        <strong>
-            @Transaction.Description
-        </strong>
+        <span class="category-badge"
+              style="
+            --category-color: @(Transaction.CategoryColor ?? "#64748B");
+            --category-color-soft: @((Transaction.CategoryColor ?? "#64748B") + "18");
+            ">
 
-        <small>
+            <span class="category-dot"></span>
+
             @Transaction.CategoryName
-        </small>
+
+        </span>
 
     </div>
 
-</div>
+    <div class="transaction-date">
+        @Transaction.Date.ToString("MMM d, yyyy")
+    </div>
 
-<div class="transaction-category">
+    <div class="transaction-amount @(Transaction.IsExpense ? "expense" : "income")">
 
-    @Transaction.CategoryName
+        <span class="amount-sign">
+            @(Transaction.IsExpense ? "−" : "+")
+        </span>
 
-</div>
+        <span class="amount-value">
+            ₱@Transaction.Amount.ToString("N0")
+        </span>
 
-<div class="transaction-date">
+    </div>
 
-    @Transaction.Date.ToString("MMM d, yyyy")
+    <div class="transaction-actions">
 
-</div>
+        <button class="icon-button"
+                type="button"
+                title="Edit transaction"
+                aria-label="Edit transaction"
+                @onclick="Edit">
 
-<div class="transaction-amount @(Transaction.IsExpense ? "expense" : "income")">
+            <Blazicon Svg="Lucide.Pencil" />
 
-    <span class="amount-sign">
-        @(Transaction.IsExpense ? "-" : "+")
-    </span>
+        </button>
 
-    <span>
-        ₱@Transaction.Amount.ToString("N0")
-    </span>
+        <button class="icon-button danger"
+                type="button"
+                title="Delete transaction"
+                aria-label="Delete transaction"
+                @onclick="Delete">
 
-</div>
+            <Blazicon Svg="Lucide.Trash2" />
 
-<div class="transaction-actions">
+        </button>
 
-    <button class="icon-button"
-            type="button"
-            title="Edit"
-            aria-label="Edit transaction"
-            @onclick="Edit">
-
-        <i class="fa-solid fa-pen" aria-hidden="true"></i>
-
-    </button>
-
-    <button class="icon-button danger"
-            type="button"
-            title="Delete"
-            aria-label="Delete transaction"
-            @onclick="Delete">
-
-        <i class="fa-solid fa-trash" aria-hidden="true"></i>
-
-    </button>
+    </div>
 
 </div>
 
@@ -84,13 +97,16 @@
     [Parameter]
     public EventCallback<TransactionDto> OnDelete { get; set; }
 
+
     private Task Edit()
     {
         return OnEdit.InvokeAsync(Transaction);
     }
 
+
     private Task Delete()
     {
         return OnDelete.InvokeAsync(Transaction);
     }
+
 }

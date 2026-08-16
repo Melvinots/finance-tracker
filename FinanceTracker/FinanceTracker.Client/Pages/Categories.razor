@@ -7,46 +7,73 @@
 
     <header class="page-header">
 
-        <div>
-            <h1>Categories</h1>
+        <div class="page-heading">
 
-            <p>
-                Organise your transactions and budgets.
-            </p>
+            <div class="page-title-row">
+
+                <div class="page-title-icon">
+                    <Blazicon Svg="Lucide.Tags" />
+                </div>
+
+                <div>
+                    <h1>Categories</h1>
+
+                    <p>
+                        Organise your transactions and budgets.
+                    </p>
+                </div>
+
+            </div>
+
         </div>
 
         <button class="primary-button"
+                type="button"
                 @onclick="OpenAddModal">
 
-            <span>＋</span>
-            Add category
+            <Blazicon Svg="Lucide.Plus" />
+
+            <span>Add category</span>
 
         </button>
 
     </header>
 
-    <LoadingWrapper IsLoading="@_isLoading"
-                    Message="Loading your categories...">
+    <section class="categories-content">
+
+        <div class="content-header">
+
+            <div>
+                <h2>All categories</h2>
+
+                <p>
+                    @_categories.Count @( _categories.Count == 1 ? "category" : "categories" )
+                </p>
+            </div>
+
+        </div>
 
         @if (!_categories.Any())
         {
             <div class="empty-state">
 
                 <div class="empty-icon">
-                    🏷️
+                    <Blazicon Svg="Lucide.Tags" />
                 </div>
 
                 <h3>No categories yet</h3>
 
                 <p>
-                    Create your first category to start organising
-                    your transactions.
+                    Create your first category to start organising your transactions.
                 </p>
 
                 <button class="primary-button"
+                        type="button"
                         @onclick="OpenAddModal">
 
-                    Add your first category
+                    <Blazicon Svg="Lucide.Plus" />
+
+                    <span>Add your first category</span>
 
                 </button>
 
@@ -59,17 +86,15 @@
                           OnDelete="HandleDelete" />
         }
 
-    </LoadingWrapper>
+    </section>
 
 </div>
 
 @if (_showModal)
 {
-    <div class="modal-backdrop"
-         @onclick="CloseModal">
+    <div class="modal-backdrop">
 
-        <div class="modal-box"
-             @onclick:stopPropagation>
+        <div class="modal-box">
 
             <div class="modal-header">
 
@@ -91,7 +116,7 @@
                         type="button"
                         @onclick="CloseModal">
 
-                    ×
+                    <Blazicon Svg="Lucide.X" />
 
                 </button>
 

@@ -60,7 +60,7 @@ namespace FinanceTracker.Repositories
                 category = new Category
                 {
                     Name = "Uncategorized",
-                    Icon = "fa-solid fa-inbox",
+                    Icon = "Other",
                     Color = "#64748B",
                     UserId = userId
                 };

@@ -38,12 +38,11 @@
 
 .topbar-heading h1 {
     margin: 0;
-    font-family: var(--font-serif);
-    font-size: 1.6rem;
-    font-weight: 400;
-    color: var(--ink);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    color: #0f172a;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
 }
 
 .topbar-heading p {

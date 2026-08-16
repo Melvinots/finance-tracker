@@ -76,28 +76,28 @@
 
                 <StatCard Title="Total Income"
                           Value="@FormatCurrency(dashboard.TotalIncome)"
-                          Icon="💰"
+                          Icon="@Lucide.CircleArrowDown"
                           IconBackground="#D1FAE5"
                           Variant="Income"
                           Trend="↑ this month" />
 
                 <StatCard Title="Total Expenses"
                           Value="@FormatCurrency(dashboard.TotalExpenses)"
-                          Icon="💳"
+                          Icon="@Lucide.CircleArrowUp"
                           IconBackground="#FFE4E6"
                           Variant="Expense"
                           Trend="↑ this month" />
 
                 <StatCard Title="Net Savings"
                           Value="@FormatCurrency(dashboard.NetSavings)"
-                          Icon="🏦"
+                          Icon="@Lucide.Wallet"
                           IconBackground="#EDE9FE"
                           Variant="Default"
                           Trend="↑ this month" />
 
                 <StatCard Title="Transactions"
                           Value="@dashboard.TransactionCount.ToString()"
-                          Icon="📋"
+                          Icon="@Lucide.ReceiptText"
                           IconBackground="#FEF3C7"
                           Variant="Default"
                           Trend="This month" />
@@ -111,7 +111,8 @@
 
             <section class="dashboard-grid dashboard-grid-primary">
 
-                <SpendingOverview Data="@dashboard.MonthlySpending" SelectedMonth="@selectedMonth" />
+                <SpendingOverview Data="@dashboard.MonthlySpending"
+                                  SelectedMonth="@selectedMonth" />
 
                 <CategorySpending Categories="@dashboard.CategorySpending" />
 
@@ -154,12 +155,21 @@
 
         try
         {
-            var selectedDate = DateTime.ParseExact(selectedMonth, "yyyy-MM", null);
-            dashboard = await DashboardService.GetDashboardAsync(selectedDate.Month, selectedDate.Year);
+            var selectedDate =
+                DateTime.ParseExact(
+                    selectedMonth,
+                    "yyyy-MM",
+                    null);
+
+            dashboard =
+                await DashboardService.GetDashboardAsync(
+                    selectedDate.Month,
+                    selectedDate.Year);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to load dashboard: {ex.Message}");
+            Console.WriteLine(
+                $"Failed to load dashboard: {ex.Message}");
         }
         finally
         {
@@ -171,5 +181,4 @@
     {
         return $"₱{amount:N0}";
     }
-
 }

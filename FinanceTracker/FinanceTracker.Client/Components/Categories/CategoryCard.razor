@@ -1,24 +1,51 @@
-﻿@namespace FinanceTracker.Client.Components.Categories
+@namespace FinanceTracker.Client.Components.Categories
 
-<div class="category-card">
+<div class="category-card"
+     style="--category-color: @Category.Color;
+    --category-color-soft: @(Category.Color + "18");">
 
-    <div class="category-card-left">
-        <div class="category-icon-wrap" style="background: @ColorWithOpacity">
-            <span class="category-icon">@Category.Icon</span>
+    <div class="category-content">
+
+        <div class="category-icon">
+            <Blazicon Svg="@GetIcon(Category.Icon)" />
         </div>
+
         <div class="category-info">
-            <div class="category-name">@Category.Name</div>
-            <div class="category-color-strip" style="background: @Category.Color"></div>
+
+            <span class="category-name">
+                @Category.Name
+            </span>
+
+            <span class="category-meta">
+                Category
+            </span>
+
         </div>
+
     </div>
 
-    <div class="category-card-actions">
-        <button class="action-btn edit-btn" @onclick="() => OnEdit.InvokeAsync(Category)">
-            ✏️
+    <div class="category-actions">
+
+        <button type="button"
+                class="action-button"
+                title="Edit category"
+                aria-label="Edit @Category.Name"
+                @onclick="() => OnEdit.InvokeAsync(Category)">
+
+            <Blazicon Svg="Lucide.Pencil" />
+
         </button>
-        <button class="action-btn delete-btn" @onclick="() => OnDelete.InvokeAsync(Category)">
-            🗑️
+
+        <button type="button"
+                class="action-button delete"
+                title="Delete category"
+                aria-label="Delete @Category.Name"
+                @onclick="() => OnDelete.InvokeAsync(Category)">
+
+            <Blazicon Svg="Lucide.Trash2" />
+
         </button>
+
     </div>
 
 </div>
@@ -34,6 +61,29 @@
     [Parameter]
     public EventCallback<CategoryDto> OnDelete { get; set; }
 
-    private string ColorWithOpacity => Category.Color + "20";
+
+    private SvgIcon GetIcon(string? iconName)
+    {
+        return iconName switch
+        {
+            "Shopping" => Lucide.ShoppingCart,
+            "Transport" => Lucide.Bus,
+            "Utilities" => Lucide.Zap,
+            "Entertainment" => Lucide.Film,
+            "Health" => Lucide.HeartPulse,
+            "Home" => Lucide.House,
+            "Clothing" => Lucide.Shirt,
+            "Education" => Lucide.BookOpen,
+            "Food" => Lucide.Utensils,
+            "Travel" => Lucide.Plane,
+            "Work" => Lucide.Briefcase,
+            "Gaming" => Lucide.Gamepad2,
+            "Medicine" => Lucide.Pill,
+            "Pets" => Lucide.PawPrint,
+            "Gifts" => Lucide.Gift,
+            "Other" => Lucide.Inbox,
+            _ => Lucide.Inbox
+        };
+    }
 
 }

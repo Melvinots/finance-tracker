@@ -1,38 +1,59 @@
-﻿@namespace FinanceTracker.Client.Components.Transactions
+@namespace FinanceTracker.Client.Components.Transactions
 
 <div class="transaction-toolbar">
 
-    <div class="search-wrapper">
+    <div class="toolbar-controls">
 
-        <span class="search-icon">
-            🔍
-        </span>
+        <div class="search-wrapper">
 
-        <input type="text"
-               class="search-input"
-               placeholder="Search transactions..."
-               value="@SearchTerm"
-               @oninput="HandleSearch" />
+            <span class="search-icon" aria-hidden="true">
+                <Blazicon Svg="Lucide.Search" />
+            </span>
+
+            <input type="text"
+                   class="search-input"
+                   placeholder="Search transactions..."
+                   aria-label="Search transactions"
+                   value="@SearchTerm"
+                   @oninput="HandleSearch" />
+
+            @if (!string.IsNullOrWhiteSpace(SearchTerm))
+            {
+                <span class="search-status">
+                    <Blazicon Svg="Lucide.Check" />
+                </span>
+            }
+
+        </div>
+
+        <div class="filter-wrapper">
+
+            <span class="filter-icon" aria-hidden="true">
+                <Blazicon Svg="Lucide.ListFilter" />
+            </span>
+
+            <select class="filter-select"
+                    aria-label="Filter transactions by type"
+                    value="@SelectedType"
+                    @onchange="HandleTypeChanged">
+
+                <option value="All">
+                    All transactions
+                </option>
+
+                <option value="Income">
+                    Income
+                </option>
+
+                <option value="Expense">
+                    Expenses
+                </option>
+
+            </select>
+
+        </div>
 
     </div>
-
-    <select class="filter-select"
-            value="@SelectedType"
-            @onchange="HandleTypeChanged">
-
-        <option value="All">
-            All transactions
-        </option>
-
-        <option value="Income">
-            Income
-        </option>
-
-        <option value="Expense">
-            Expenses
-        </option>
-
-    </select>
 
 </div>
 
@@ -60,7 +81,8 @@
     private async Task HandleTypeChanged(ChangeEventArgs args)
     {
         await SelectedTypeChanged.InvokeAsync(
-            args.Value?.ToString() ?? "All");
+            args.Value?.ToString()
+            ?? "All");
     }
 
 }

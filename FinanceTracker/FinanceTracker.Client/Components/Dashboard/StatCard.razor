@@ -11,7 +11,7 @@
         <div class="stat-card-icon"
              style="background: @IconBackground">
 
-            @Icon
+            <Blazicon Svg="@Icon" />
 
         </div>
 
@@ -40,7 +40,7 @@
     public string Value { get; set; } = string.Empty;
 
     [Parameter]
-    public string Icon { get; set; } = string.Empty;
+    public SvgIcon? Icon { get; set; }
 
     [Parameter]
     public string IconBackground { get; set; } = string.Empty;

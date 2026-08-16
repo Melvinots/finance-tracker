@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FinanceTracker.Shared.DTOs.Categories
+﻿namespace FinanceTracker.Shared.DTOs.Categories
 {
     public class CategoryDto
     {

@@ -8,54 +8,78 @@
 
     <header class="page-header">
 
-        <div>
-            <h1>Transactions</h1>
-            <p>
-                Track and manage your income and expenses.
-            </p>
+        <div class="page-heading">
+
+            <div class="page-title-row">
+
+                <div class="page-title-icon">
+                    <Blazicon Svg="Lucide.ArrowLeftRight" />
+                </div>
+
+                <div>
+                    <h1>Transactions</h1>
+
+                    <p>
+                        View, track, and manage your income and expenses.
+                    </p>
+                </div>
+
+            </div>
+
         </div>
 
-        <button class="primary-button" @onclick="OpenCreateModal">
+        <button class="primary-button"
+                type="button"
+                @onclick="OpenCreateModal">
 
-            <span>＋</span>
-            Add transaction
+            <Blazicon Svg="Lucide.Plus" />
+
+            <span>Add transaction</span>
 
         </button>
 
     </header>
 
-    <LoadingWrapper IsLoading="@_isLoading"
-                    Message="Loading your transactions...">
+        <section class="transactions-content">
 
-        <TransactionToolbar
-            SearchTerm="@_searchTerm"
-            SearchTermChanged="@OnSearchChanged"
-            SelectedType="@_selectedType"
-            SelectedTypeChanged="@OnTypeChanged" />
+            <div class="content-header">
 
-        <TransactionTable
-            Transactions="@FilteredTransactions"
-            OnEdit="@OpenEditModal"
-            OnDelete="@DeleteTransaction" />
+                <div>
+                    <h2>All transactions</h2>
 
-    </LoadingWrapper>
+                    <p>
+                        @FilteredTransactions.Count() transaction@(FilteredTransactions.Count() == 1 ? "" : "s")
+                    </p>
+                </div>
+
+            </div>
+
+            <TransactionToolbar SearchTerm="@_searchTerm"
+                                SearchTermChanged="@OnSearchChanged"
+                                SelectedType="@_selectedType"
+                                SelectedTypeChanged="@OnTypeChanged" />
+
+            <TransactionTable Transactions="@FilteredTransactions"
+                              OnEdit="@OpenEditModal"
+                              OnDelete="@DeleteTransaction" />
+
+        </section>
 
 </div>
 
 @if (_showModal)
 {
-    <TransactionForm
-        Transaction="@_selectedTransaction"
-        Categories="@_categories"
-        OnSave="@SaveTransaction"
-        OnCancel="@CloseModal" />
+    <TransactionForm Transaction="@_selectedTransaction"
+                     Categories="@_categories"
+                     OnSave="@SaveTransaction"
+                     OnCancel="@CloseModal" />
 }
 
 @code {
 
     private bool _isLoading = true;
 
-    private bool _showModal = false ;
+    private bool _showModal = false;
 
     private string _searchTerm = string.Empty;
 
@@ -67,7 +91,10 @@
 
     private TransactionDto? _selectedTransaction;
 
-    private IEnumerable<TransactionDto> FilteredTransactions => _transactions.Where(MatchesSearch).Where(MatchesType);
+    private IEnumerable<TransactionDto> FilteredTransactions =>
+        _transactions
+            .Where(MatchesSearch)
+            .Where(MatchesType);
 
     protected override async Task OnInitializedAsync()
     {
@@ -81,7 +108,6 @@
 
         try
         {
-            await Task.Delay(1000); 
             _transactions = await TransactionService.GetAllAsync();
         }
         finally
@@ -102,8 +128,12 @@
             return true;
         }
 
-        return transaction.Description.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase) ||
-               transaction.CategoryName.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase);
+        return transaction.Description.Contains(
+                   _searchTerm,
+                   StringComparison.OrdinalIgnoreCase)
+            || transaction.CategoryName.Contains(
+                   _searchTerm,
+                   StringComparison.OrdinalIgnoreCase);
     }
 
     private bool MatchesType(TransactionDto transaction)
@@ -155,7 +185,9 @@
         }
         else
         {
-            await TransactionService.UpdateAsync(_selectedTransaction.Id, transaction);
+            await TransactionService.UpdateAsync(
+                _selectedTransaction.Id,
+                transaction);
         }
 
         CloseModal();

@@ -1,4 +1,4 @@
-﻿@namespace FinanceTracker.Client.Components.Transactions
+@namespace FinanceTracker.Client.Components.Transactions
 
 <div class="transaction-panel">
 
@@ -7,14 +7,19 @@
         <div class="empty-state">
 
             <div class="empty-icon">
-                💸
+                <Blazicon Svg="Lucide.ReceiptText" />
             </div>
 
-            <h3>No transactions found</h3>
+            <div class="empty-content">
 
-            <p>
-                Try changing your search or add a new transaction.
-            </p>
+                <h3>No transactions yet</h3>
+
+                <p>
+                    Your transactions will appear here once you add them.
+                    Try adjusting your search or filters if you expected to see something.
+                </p>
+
+            </div>
 
         </div>
     }
@@ -28,7 +33,7 @@
                 <span>Category</span>
                 <span>Date</span>
                 <span>Amount</span>
-                <span></span>
+                <span class="actions-heading">Actions</span>
 
             </div>
 
