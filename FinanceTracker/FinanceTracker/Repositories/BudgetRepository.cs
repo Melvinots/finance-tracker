@@ -16,12 +16,29 @@ namespace FinanceTracker.Repositories
         public async Task<List<Budget>> GetAllByUserAsync(int userId, int month, int year)
         {
             return await _context.Budgets
-                .Where(b => 
-                    b.UserId == userId && 
-                    b.Month == month && 
-                    b.Year == year)
-                .Include(b => b.Category)
-                .ToListAsync();
+                    .Where(b =>
+                        b.UserId == userId &&
+                        b.Month == month &&
+                        b.Year == year)
+                    .Include(b => b.Category)
+                    .Select(b => new Budget
+                    {
+                        Id = b.Id,
+                        LimitAmount = b.LimitAmount,
+                        Month = b.Month,
+                        Year = b.Year,
+                        UserId = b.UserId,
+                        CategoryId = b.CategoryId,
+                        Category = b.Category,
+                        AmountSpent = b.Category.Transactions
+                            .Where(t =>
+                                t.UserId == userId &&
+                                t.IsExpense &&
+                                t.Date.Month == month &&
+                                t.Date.Year == year)
+                            .Sum(t => t.Amount)
+                    })
+                    .ToListAsync();
         }
 
         public async Task<Budget?> GetByIdAsync(int id, int userId)

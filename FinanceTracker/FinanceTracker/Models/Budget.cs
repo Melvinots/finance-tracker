@@ -1,4 +1,6 @@
-﻿namespace FinanceTracker.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FinanceTracker.Models
 {
     public class Budget
     {
@@ -12,5 +14,8 @@
 
         public User User { get; set; } = null!;
         public Category Category { get; set; } = null!;
+
+        [NotMapped]
+        public decimal AmountSpent { get; set; }
     }
 }

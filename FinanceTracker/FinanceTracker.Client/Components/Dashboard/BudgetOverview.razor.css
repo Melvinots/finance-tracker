@@ -1,36 +1,86 @@
-﻿.panel {
+﻿/* =========================================
+   PANEL
+   ========================================= */
+
+.panel {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
+    height: 100%;
     padding: 1.25rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--surface);
     box-shadow: var(--shadow-sm);
+    transition: border-color var(--transition), box-shadow var(--transition);
 }
+
+    .panel:hover {
+        border-color: var(--border-hover);
+        box-shadow: var(--shadow-md);
+    }
+
+
+/* =========================================
+   PANEL HEADER
+   ========================================= */
 
 .panel-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
     margin-bottom: 1.25rem;
 }
 
+    .panel-header > div {
+        min-width: 0;
+    }
+
 .panel-title {
     margin: 0;
     color: var(--text);
-    font-size: 1rem;
-    font-weight: 700;
+    font-family: var(--font-sans);
+    font-size: .9rem;
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: -.01em;
 }
 
+.panel-subtitle {
+    margin: .25rem 0 0;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: .7rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   PANEL LINK
+   ========================================= */
+
 .panel-link {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
     color: var(--primary);
-    font-size: .8rem;
+    font-family: var(--font-sans);
+    font-size: .7rem;
     font-weight: 600;
     text-decoration: none;
+    transition: color var(--transition), opacity var(--transition);
 }
 
     .panel-link:hover {
-        text-decoration: underline;
+        color: var(--primary-hover);
+    }
+
+    .panel-link:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+        border-radius: 3px;
     }
 
 .budget-list {

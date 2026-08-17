@@ -159,60 +159,6 @@
 
 
 /* =========================================================
-   PANEL SURFACES  (styles child .panel components via ::deep)
-   ========================================================= */
-
-.dashboard-grid ::deep .panel {
-    height: 100%;
-    background: var(--white);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
-    transition: box-shadow var(--transition), border-color var(--transition);
-}
-
-    .dashboard-grid ::deep .panel:hover {
-        border-color: #CBD5E1;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-    }
-
-
-/* =========================================================
-   PANEL HEADERS  (via ::deep)
-   ========================================================= */
-
-.dashboard-grid ::deep .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1.1rem 1.25rem;
-    border-bottom: 1px solid var(--rule);
-}
-
-.dashboard-grid ::deep .panel-title {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: -0.01em;
-}
-
-.dashboard-grid ::deep .panel-link {
-    font-size: 0.775rem;
-    font-weight: 600;
-    color: var(--primary);
-    text-decoration: none;
-    transition: color var(--transition);
-}
-
-    .dashboard-grid ::deep .panel-link:hover {
-        color: var(--primary-hover);
-        text-decoration: underline;
-    }
-
-
-/* =========================================================
    LOADING STATE
    ========================================================= */
 

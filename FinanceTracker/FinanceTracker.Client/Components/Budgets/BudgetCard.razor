@@ -9,7 +9,7 @@
             <div class="category-icon"
                  style="background-color: @IconBackground">
 
-                @Budget.CategoryIcon
+                <Blazicon Svg="@Icons.Category(Budget.CategoryIcon)" />
 
             </div>
 
@@ -32,13 +32,13 @@
             <button class="action-button"
                     title="Edit"
                     @onclick="() => OnEdit.InvokeAsync(Budget)">
-                ✎
+                <Blazicon Svg="Lucide.Pencil" />
             </button>
 
             <button class="action-button delete"
                     title="Delete"
                     @onclick="() => OnDelete.InvokeAsync(Budget)">
-                ×
+                <Blazicon Svg="Lucide.X" />
             </button>
 
         </div>
@@ -50,11 +50,11 @@
 
         <div>
             <span class="spent">
-                ₱@Budget.AmountSpent.ToString("N0")
+                PHP @Budget.AmountSpent.ToString("N0")
             </span>
 
             <span class="limit">
-                / ₱@Budget.LimitAmount.ToString("N0")
+                / PHP @Budget.LimitAmount.ToString("N0")
             </span>
         </div>
 

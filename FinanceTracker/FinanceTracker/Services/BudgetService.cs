@@ -89,7 +89,8 @@ namespace FinanceTracker.Services
             CategoryId = budget.CategoryId,
             CategoryName = budget.Category?.Name ?? string.Empty,
             CategoryColor = budget.Category?.Color,
-            CategoryIcon = budget.Category?.Icon
+            CategoryIcon = budget.Category?.Icon,
+            AmountSpent = budget.AmountSpent
         };
     }
 }
