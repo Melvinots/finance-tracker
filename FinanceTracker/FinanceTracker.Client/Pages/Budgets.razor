@@ -9,11 +9,23 @@
     <header class="page-header">
 
         <div class="page-heading">
-            <h1>Budgets</h1>
 
-            <p>
-                Set spending limits and keep your expenses on track.
-            </p>
+            <div class="page-title-row">
+
+                <div class="page-title-icon">
+                    <Blazicon Svg="Lucide.WalletCards" />
+                </div>
+
+                <div>
+                    <h1>Budgets</h1>
+
+                    <p>
+                        Set spending limits and keep your expenses on track.
+                    </p>
+                </div>
+
+            </div>
+
         </div>
 
         <div class="page-actions">
@@ -34,10 +46,12 @@
             </select>
 
             <button class="primary-button"
+                    type="button"
                     @onclick="OpenCreateModal">
 
-                <span>＋</span>
-                Add budget
+                <Blazicon Svg="Lucide.Plus" />
+
+                <span>Add budget</span>
 
             </button>
 
@@ -45,7 +59,20 @@
 
     </header>
 
-    <main class="page-content">
+    <section class="budgets-content">
+
+        <div class="content-header">
+
+            <div>
+                <h2>Budget overview</h2>
+
+                <p>
+                    @_budgets.Count
+                    @( _budgets.Count == 1 ? "budget" : "budgets" )
+                </p>
+            </div>
+
+        </div>
 
         <LoadingWrapper IsLoading="@_isLoading"
                         Message="Loading your budgets...">
@@ -55,19 +82,22 @@
                 <div class="empty-state">
 
                     <div class="empty-icon">
-                        🎯
+                        <Blazicon Svg="Lucide.WalletCards" />
                     </div>
 
-                    <h3>No budgets for this month</h3>
+                    <h3>No budgets yet</h3>
 
                     <p>
                         Create a budget to start tracking your spending.
                     </p>
 
                     <button class="primary-button"
+                            type="button"
                             @onclick="OpenCreateModal">
 
-                        Add your first budget
+                        <Blazicon Svg="Lucide.Plus" />
+
+                        <span>Add your first budget</span>
 
                     </button>
 
@@ -82,7 +112,7 @@
 
         </LoadingWrapper>
 
-    </main>
+    </section>
 
 </div>
 
@@ -90,7 +120,6 @@
 {
     <BudgetForm Budget="@_selectedBudget"
                 Categories="@_categories"
-                SelectedMonth="@_selectedMonth"
                 OnSave="@SaveBudget"
                 OnCancel="@CloseModal" />
 }

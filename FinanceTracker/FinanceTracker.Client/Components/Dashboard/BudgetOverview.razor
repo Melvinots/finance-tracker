@@ -1,94 +1,87 @@
 ﻿@namespace FinanceTracker.Client.Components.Dashboard
 
-<div class="panel">
+<Card>
 
-    <div class="panel-header">
+    <Header>
 
-        <div>
-            <h2 class="panel-title">
-                Budget progress
-            </h2>
+        <div class="card-heading">
 
-            <p class="panel-subtitle">
-                Track your spending against your budgets
-            </p>
-        </div>
+            <div>
+                <h2>Budget progress</h2>
+                <p>Track your spending against your budgets</p>
+            </div>
 
-        <a class="panel-link"
-           href="/budgets">
-            Manage →
-        </a>
-
-    </div>
-
-    @if (Budgets.Count == 0)
-    {
-        <div class="empty-state">
-            <p>No budgets found for this month.</p>
-
-            <a href="/budgets">
-                Create a budget
+            <a href="/budgets" class="view-all">
+                Manage →
             </a>
+
         </div>
-    }
-    else
-    {
-        <div class="budget-list">
 
-            @foreach (var budget in Budgets)
-            {
-                <div class="budget-item">
+    </Header>
 
-                    <div class="budget-item-header">
+    <ChildContent>
 
-                        <span class="budget-name">
+        @if (Budgets.Count == 0)
+        {
+            <div class="empty-state">
+                <p>No budgets found for this month.</p>
 
-                            @budget.Category
+                <a href="/budgets">
+                    Create a budget
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="budget-list">
 
-                            @if (budget.IsOver)
-                            {
-                                <span class="badge-over">
-                                    Over
-                                </span>
-                            }
+                @foreach (var budget in Budgets)
+                {
+                    <div class="budget-item">
 
-                        </span>
+                        <div class="budget-item-header">
 
-                        <span class="budget-amounts">
+                            <span class="budget-name">
 
-                            ₱@budget.Spent.ToString("N0")
-                            /
-                            ₱@budget.Limit.ToString("N0")
+                                @budget.Category
 
-                        </span>
+                                @if (budget.IsOver)
+                                {
+                                    <span class="badge-over">
+                                        Over
+                                    </span>
+                                }
 
-                    </div>
+                            </span>
 
-                    <div class="budget-bar-background">
+                            <span class="budget-amounts">
 
-                        <div class="budget-bar-fill
-                            @(budget.IsOver
-                                                             ? "budget-over"
-                                                             : budget.Percentage >= 80
-                                                                 ? "budget-warning"
-                                                                 : "")"
-                             style="
-                            width: @Math.Min(
-                                                                                             budget.Percentage,
-                                                                                             100
-                                                                                         )%;
-                            ">
+                                Php @budget.Spent.ToString("N0")
+                                /
+                                Php @budget.Limit.ToString("N0")
+
+                            </span>
+
+                        </div>
+
+                        <div class="budget-bar-background">
+
+                            <div class="budget-bar-fill
+                                @(budget.IsOver ? "budget-over" : budget.Percentage >= 80 ? "budget-warning" : "")"
+                                 style="width: @Math.Min(budget.Percentage, 100)%; ">
+                            </div>
+
                         </div>
 
                     </div>
+                }
 
-                </div>
-            }
+            </div>
+        }
 
-        </div>
-    }
+    </ChildContent>
 
-</div>
+</Card>
 
 @code {
 

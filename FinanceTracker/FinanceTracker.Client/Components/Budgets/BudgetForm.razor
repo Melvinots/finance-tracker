@@ -1,30 +1,38 @@
 ﻿@namespace FinanceTracker.Client.Components.Budgets
 
-<div class="modal-backdrop"
+<div class="budget-modal-backdrop"
      @onclick="HandleBackdropClick">
 
-    <div class="modal-box"
+    <div class="budget-modal"
          @onclick:stopPropagation>
 
-        <div class="modal-header">
+        <div class="budget-modal-header">
 
-            <div>
-                <h2>
-                    @(Budget is null
-                        ? "Add budget"
-                        : "Edit budget")
-                </h2>
+            <div class="budget-modal-title">
 
-                <p>
-                    Set a spending limit for a category.
-                </p>
+                <div class="budget-modal-icon">
+                    <Blazicon Svg="Lucide.Wallet" />
+                </div>
+
+                <div>
+                    <h2>
+                        @(Budget is null ? "Add budget" : "Edit budget")
+                    </h2>
+
+                    <p>
+                        @(Budget is null
+                            ? "Set a spending limit for a category."
+                            : "Update your spending limit.")
+                    </p>
+                </div>
+
             </div>
 
-            <button class="modal-close"
+            <button class="budget-modal-close"
                     type="button"
                     @onclick="Cancel">
 
-                ×
+                <Blazicon Svg="Lucide.X" />
 
             </button>
 
@@ -35,15 +43,15 @@
 
             <DataAnnotationsValidator />
 
-            <div class="modal-body">
+            <div class="budget-modal-body">
 
-                <div class="form-group">
+                <div class="budget-form-group">
 
                     <label>
                         Category
                     </label>
 
-                    <InputSelect class="form-control"
+                    <InputSelect class="budget-form-control"
                                  @bind-Value="_model.CategoryId">
 
                         <option value="0">
@@ -63,18 +71,17 @@
 
                 </div>
 
-
-                <div class="form-group">
+                <div class="budget-form-group">
 
                     <label>
                         Monthly limit
                     </label>
 
-                    <div class="amount-input">
+                    <div class="budget-amount-input">
 
                         <span>₱</span>
 
-                        <InputNumber class="form-control"
+                        <InputNumber class="budget-form-control"
                                      @bind-Value="_model.LimitAmount"
                                      placeholder="10,000" />
 
@@ -84,33 +91,41 @@
 
                 </div>
 
-
                 <div class="budget-period">
 
-                    <span class="period-label">
-                        Budget period
-                    </span>
+                    <div>
+                        <span class="period-label">
+                            Budget period
+                        </span>
 
-                    <strong>
-                        @BudgetMonth.ToString("MMMM yyyy")
-                    </strong>
+                        <strong>
+                            @BudgetMonth.ToString("MMMM yyyy")
+                        </strong>
+                    </div>
+
+                    <Blazicon Svg="Lucide.CalendarDays" />
 
                 </div>
 
                 @if (!string.IsNullOrWhiteSpace(ErrorMessage))
                 {
-                    <div class="form-error">
-                        @ErrorMessage
+                    <div class="budget-form-error">
+
+                        <Blazicon Svg="Lucide.CircleAlert" />
+
+                        <span>
+                            @ErrorMessage
+                        </span>
+
                     </div>
                 }
 
             </div>
 
-
-            <div class="modal-footer">
+            <div class="budget-modal-footer">
 
                 <button type="button"
-                        class="btn-cancel"
+                        class="budget-btn-cancel"
                         @onclick="Cancel"
                         disabled="@IsLoading">
 
@@ -119,7 +134,7 @@
                 </button>
 
                 <button type="submit"
-                        class="btn-save"
+                        class="budget-btn-save"
                         disabled="@IsLoading">
 
                     @if (IsLoading)
@@ -129,6 +144,8 @@
                     }
                     else
                     {
+                        <Blazicon Svg="Lucide.Check" />
+
                         <span>
                             @(Budget is null
                                 ? "Add budget"

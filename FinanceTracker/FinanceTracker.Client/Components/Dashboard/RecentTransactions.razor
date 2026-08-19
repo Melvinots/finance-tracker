@@ -11,7 +11,7 @@
             </div>
 
             <a href="/transactions" class="view-all">
-                View all
+                View all →
             </a>
         </div>
 
@@ -29,7 +29,7 @@
                     </div>
 
                     <span class="transaction-amount @(transaction.IsIncome ? "income" : "expense")">
-                        @(transaction.IsIncome ? "+" : "-")@transaction.Amount
+                        @(transaction.IsIncome ? "+" : "-")@transaction.Amount.ToString("N0")
                     </span>
                 </div>
             }

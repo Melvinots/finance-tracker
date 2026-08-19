@@ -119,9 +119,6 @@
                     </label>
 
                     <div class="icon-input">
-                        <span class="input-icon">
-                            <Blazicon Svg="Lucide.FileText" />
-                        </span>
                         <InputText class="form-input has-icon"
                                    placeholder="e.g. Grocery shopping"
                                    @bind-Value="model.Description" />
@@ -142,9 +139,6 @@
                         </label>
 
                         <div class="icon-input">
-                            <span class="input-icon">
-                                <Blazicon Svg="Lucide.Tag" />
-                            </span>
                             <InputSelect class="form-input has-icon"
                                          @bind-Value="model.CategoryId">
 
@@ -155,7 +149,7 @@
                                 @foreach (var category in Categories)
                                 {
                                     <option value="@category.Id">
-                                        @category.Icon @category.Name
+                                        @category.Name
                                     </option>
                                 }
 
@@ -174,9 +168,6 @@
                         </label>
 
                         <div class="icon-input">
-                            <span class="input-icon">
-                                <Blazicon Svg="Lucide.Calendar" />
-                            </span>
                             <InputDate class="form-input has-icon"
                                        @bind-Value="model.Date" />
                         </div>
