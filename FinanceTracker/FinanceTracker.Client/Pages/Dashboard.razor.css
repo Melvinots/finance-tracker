@@ -36,21 +36,30 @@
     border-bottom: 1px solid var(--rule);
 }
 
-.topbar-heading h1 {
-    margin: 0;
-    color: #0f172a;
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.025em;
+.topbar-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.topbar-heading p {
-    margin: 3px 0 0;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--muted);
-}
+    .topbar-heading h1 {
+        margin: 0;
+        color: var(--ink);
+        font-family: var(--font-sans);
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+    }
+
+    .topbar-heading p {
+        margin: 0;
+        color: var(--muted);
+        font-family: var(--font-sans);
+        font-size: 0.8rem;
+        font-weight: 400;
+        line-height: 1.4;
+    }
 
 
 /* =========================================================
@@ -60,33 +69,61 @@
 .topbar-actions {
     display: flex;
     align-items: center;
-    gap: 0.625rem;
+    gap: 10px;
+}
+
+.month-filter-label {
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
 .month-select {
-    height: 38px;
-    min-width: 150px;
-    padding: 0 12px;
+    height: 40px;
+    min-width: 165px;
+    padding: 0 38px 0 14px;
     border: 1px solid var(--rule);
     border-radius: var(--radius-md);
-    background: var(--white);
+    background-color: var(--white);
     color: var(--ink);
     font-family: var(--font-sans);
-    font-size: 0.825rem;
-    font-weight: 500;
+    font-size: 0.875rem;
+    font-weight: 600;
     cursor: pointer;
     outline: none;
-    transition: border-color var(--transition), box-shadow var(--transition);
-    appearance: auto;
+    appearance: none;
+    /* Custom dropdown arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
 }
 
     .month-select:hover {
         border-color: var(--primary);
+        background-color: var(--surface, #fafafa);
     }
 
     .month-select:focus {
         border-color: var(--primary);
         box-shadow: 0 0 0 3px var(--primary-ring);
+    }
+
+    .month-select:active {
+        background-color: var(--surface, #f8f8f8);
+    }
+
+    .month-select option {
+        padding: 8px;
+        background: var(--white);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        font-weight: 500;
     }
 
 .add-transaction-button {
@@ -189,9 +226,9 @@
 }
 
 
-/* =========================================================
-   ERROR STATE
-   ========================================================= */
+/* =========================================
+   DASHBOARD ERROR
+   ========================================= */
 
 .dashboard-error {
     display: flex;
@@ -199,44 +236,211 @@
     align-items: center;
     justify-content: center;
     min-height: 420px;
-    padding: 2rem;
+    padding: 2.5rem;
     text-align: center;
-    gap: 0;
 }
 
-    .dashboard-error h3 {
-        margin: 0 0 6px;
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--ink);
+
+/* =========================================
+   BRAND DOT
+   ========================================= */
+
+.error-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 1rem;
+}
+
+    .error-brand .brand-dot {
+        width: 10px;
+        height: 10px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: var(--color-brand);
+        box-shadow: 0 0 0 4px var(--color-brand-soft);
+        animation: errorDotPulse 2s ease-in-out infinite;
+    }
+
+
+/* =========================================
+   CONTENT
+   ========================================= */
+
+.error-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dashboard-error h3 {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+}
+
+.dashboard-error p {
+    max-width: 320px;
+    margin: 0.4rem 0 1.25rem;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 0.825rem;
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   RETRY BUTTON
+   ========================================= */
+
+.error-retry {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 1rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: color var(--transition), border-color var(--transition), background-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+    .error-retry:hover {
+        border-color: var(--primary);
+        background: var(--primary-dim);
+        color: var(--primary);
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+    }
+
+    .error-retry:active {
+        transform: translateY(1px);
+    }
+
+    .error-retry:focus-visible {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-ring);
+    }
+
+
+/* =========================================
+   ANIMATION
+   ========================================= */
+
+@keyframes errorDotPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .error-brand .brand-dot {
+        animation: none;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 480px) {
+
+    .dashboard-error {
+        min-height: 360px;
+        padding: 2rem 1.25rem;
+    }
+
+        .dashboard-error p {
+            max-width: 280px;
+        }
+}
+
+
+/* =========================================
+   RETRY BUTTON
+   ========================================= */
+
+.error-retry {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 1rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: color var(--transition), border-color var(--transition), background-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+    .error-retry:hover {
+        border-color: var(--primary);
+        background: var(--primary-dim);
+        color: var(--primary);
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+    }
+
+    .error-retry:active {
+        transform: translateY(1px);
+    }
+
+    .error-retry:focus-visible {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-ring);
+    }
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 480px) {
+
+    .dashboard-error {
+        min-height: 360px;
+        padding: 2rem 1.25rem;
+    }
+
+    .error-icon {
+        width: 44px;
+        height: 44px;
     }
 
     .dashboard-error p {
-        margin: 0 0 1.25rem;
-        font-size: 0.875rem;
-        color: var(--slate);
         max-width: 280px;
     }
-
-    .dashboard-error button {
-        height: 38px;
-        padding: 0 16px;
-        border: 1px solid var(--rule);
-        border-radius: var(--radius-md);
-        background: var(--white);
-        color: var(--ink);
-        font-family: var(--font-sans);
-        font-size: 0.825rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: border-color var(--transition), background-color var(--transition);
-    }
-
-        .dashboard-error button:hover {
-            border-color: var(--primary);
-            background: var(--primary-dim);
-            color: var(--primary);
-        }
+}
 
 
 /* =========================================================

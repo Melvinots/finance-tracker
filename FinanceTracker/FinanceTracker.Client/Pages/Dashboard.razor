@@ -18,6 +18,7 @@
         </div>
 
         <div class="topbar-actions">
+            <span class="month-filter-label">Period</span>
 
             <select class="month-select"
                     @bind="selectedMonth"
@@ -40,98 +41,86 @@
 
     <main class="dashboard-content">
 
-        @if (isLoading)
-        {
-            <div class="dashboard-loading">
+        <LoadingWrapper IsLoading="isLoading"
+                        Message="Loading your dashboard...">
 
-                <div class="loading-spinner"></div>
+            @if (dashboard is null)
+            {
+                <div class="dashboard-error">
 
-                <span>Loading your dashboard...</span>
+                    <div class="error-brand">
+                        <span class="brand-dot"></span>
+                    </div>
 
-            </div>
-        }
-        else if (dashboard is null)
-        {
-            <div class="dashboard-error">
+                    <div class="error-content">
+                        <h3>Unable to load dashboard</h3>
 
-                <h3>Unable to load dashboard</h3>
+                        <p>
+                            We couldn't retrieve your dashboard data.
+                            Please try again.
+                        </p>
+                    </div>
 
-                <p>
-                    We couldn't retrieve your dashboard data.
-                </p>
+                    <button class="error-retry"
+                            @onclick="LoadDashboardAsync">
+                        Try again
+                    </button>
 
-                <button @onclick="LoadDashboardAsync">
-                    Try again
-                </button>
+                </div>
+            }
+            else
+            {
+                <section class="stats-grid">
 
-            </div>
-        }
-        else
-        {
-            <!-- ============================= -->
-            <!-- STAT CARDS                     -->
-            <!-- ============================= -->
+                    <StatCard Title="Total Income"
+                              Value="@FormatCurrency(dashboard.TotalIncome)"
+                              Icon="@Lucide.CircleArrowDown"
+                              IconBackground="#D1FAE5"
+                              Variant="Income"
+                              Trend="↑ this month" />
 
-            <section class="stats-grid">
+                    <StatCard Title="Total Expenses"
+                              Value="@FormatCurrency(dashboard.TotalExpenses)"
+                              Icon="@Lucide.CircleArrowUp"
+                              IconBackground="#FFE4E6"
+                              Variant="Expense"
+                              Trend="↑ this month" />
 
-                <StatCard Title="Total Income"
-                          Value="@FormatCurrency(dashboard.TotalIncome)"
-                          Icon="@Lucide.CircleArrowDown"
-                          IconBackground="#D1FAE5"
-                          Variant="Income"
-                          Trend="↑ this month" />
+                    <StatCard Title="Net Savings"
+                              Value="@FormatCurrency(dashboard.NetSavings)"
+                              Icon="@Lucide.Wallet"
+                              IconBackground="#EDE9FE"
+                              Variant="Default"
+                              Trend="↑ this month" />
 
-                <StatCard Title="Total Expenses"
-                          Value="@FormatCurrency(dashboard.TotalExpenses)"
-                          Icon="@Lucide.CircleArrowUp"
-                          IconBackground="#FFE4E6"
-                          Variant="Expense"
-                          Trend="↑ this month" />
+                    <StatCard Title="Transactions"
+                              Value="@dashboard.TransactionCount.ToString()"
+                              Icon="@Lucide.ReceiptText"
+                              IconBackground="#FEF3C7"
+                              Variant="Default"
+                              Trend="This month" />
 
-                <StatCard Title="Net Savings"
-                          Value="@FormatCurrency(dashboard.NetSavings)"
-                          Icon="@Lucide.Wallet"
-                          IconBackground="#EDE9FE"
-                          Variant="Default"
-                          Trend="↑ this month" />
+                </section>
 
-                <StatCard Title="Transactions"
-                          Value="@dashboard.TransactionCount.ToString()"
-                          Icon="@Lucide.ReceiptText"
-                          IconBackground="#FEF3C7"
-                          Variant="Default"
-                          Trend="This month" />
+                <section class="dashboard-grid dashboard-grid-primary">
 
-            </section>
+                    <SpendingOverview Data="@dashboard.MonthlySpending"
+                                      SelectedMonth="@selectedMonth" />
 
+                    <CategorySpending Categories="@dashboard.CategorySpending" />
 
-            <!-- ============================= -->
-            <!-- SPENDING + CATEGORIES          -->
-            <!-- ============================= -->
+                </section>
 
-            <section class="dashboard-grid dashboard-grid-primary">
+                <section class="dashboard-grid dashboard-grid-secondary">
 
-                <SpendingOverview Data="@dashboard.MonthlySpending"
-                                  SelectedMonth="@selectedMonth" />
+                    <RecentTransactions Transactions="@dashboard.RecentTransactions" />
 
-                <CategorySpending Categories="@dashboard.CategorySpending" />
+                    <BudgetOverview Budgets="@dashboard.Budgets" />
 
-            </section>
+                </section>
+            }
 
-
-            <!-- ============================= -->
-            <!-- TRANSACTIONS + BUDGETS         -->
-            <!-- ============================= -->
-
-            <section class="dashboard-grid dashboard-grid-secondary">
-
-                <RecentTransactions Transactions="@dashboard.RecentTransactions" />
-
-                <BudgetOverview Budgets="@dashboard.Budgets" />
-
-            </section>
-        }
-
+        </LoadingWrapper>
     </main>
 
 </div>
@@ -160,7 +149,7 @@
                     selectedMonth,
                     "yyyy-MM",
                     null);
-
+            await Task.Delay(1000);
             dashboard =
                 await DashboardService.GetDashboardAsync(
                     selectedDate.Month,

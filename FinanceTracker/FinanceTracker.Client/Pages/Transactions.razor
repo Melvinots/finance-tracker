@@ -39,31 +39,35 @@
         </button>
 
     </header>
+    <LoadingWrapper IsLoading="@_isLoading" 
+                    Message="Loading your transactions...">
 
-        <section class="transactions-content">
+            <section class="transactions-content">
 
-            <div class="content-header">
+                <div class="content-header">
 
-                <div>
-                    <h2>All transactions</h2>
+                    <div>
+                        <h2>All transactions</h2>
 
-                    <p>
-                        @FilteredTransactions.Count() transaction@(FilteredTransactions.Count() == 1 ? "" : "s")
-                    </p>
+                        <p>
+                            @FilteredTransactions.Count() transaction@(FilteredTransactions.Count() == 1 ? "" : "s")
+                        </p>
+                    </div>
+
                 </div>
 
-            </div>
+                <TransactionToolbar SearchTerm="@_searchTerm"
+                                    SearchTermChanged="@OnSearchChanged"
+                                    SelectedType="@_selectedType"
+                                    SelectedTypeChanged="@OnTypeChanged" />
 
-            <TransactionToolbar SearchTerm="@_searchTerm"
-                                SearchTermChanged="@OnSearchChanged"
-                                SelectedType="@_selectedType"
-                                SelectedTypeChanged="@OnTypeChanged" />
+                <TransactionTable Transactions="@FilteredTransactions"
+                                  OnEdit="@OpenEditModal"
+                                  OnDelete="@DeleteTransaction" />
 
-            <TransactionTable Transactions="@FilteredTransactions"
-                              OnEdit="@OpenEditModal"
-                              OnDelete="@DeleteTransaction" />
+            </section>
 
-        </section>
+        </LoadingWrapper>
 
 </div>
 
@@ -108,6 +112,7 @@
 
         try
         {
+            await Task.Delay(5000);
             _transactions = await TransactionService.GetAllAsync();
         }
         finally
