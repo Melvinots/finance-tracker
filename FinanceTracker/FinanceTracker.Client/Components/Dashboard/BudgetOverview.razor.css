@@ -37,6 +37,7 @@
 .view-all {
     display: inline-flex;
     align-items: center;
+    gap: .25rem;
     flex-shrink: 0;
     color: var(--primary);
     font-family: var(--font-sans);
@@ -45,6 +46,26 @@
     text-decoration: none;
     transition: color var(--transition), opacity var(--transition);
 }
+
+    .view-all:hover {
+        color: var(--primary-hover);
+    }
+
+        .view-all:hover .view-all-arrow {
+            transform: translateX(3px);
+        }
+
+    .view-all:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+        border-radius: 3px;
+    }
+
+.view-all-arrow {
+    display: inline-block;
+    transition: transform var(--transition);
+}
+
 
 /* =========================================
    PANEL
@@ -130,6 +151,8 @@
         outline-offset: 3px;
         border-radius: 3px;
     }
+
+
 /* =========================================
    BUDGET LIST
    ========================================= */
@@ -148,7 +171,15 @@
 .budget-item {
     display: flex;
     flex-direction: column;
+    padding: .4rem .5rem;
+    margin: 0 -.5rem;
+    border-radius: var(--radius-md, 8px);
+    transition: background var(--transition);
 }
+
+    .budget-item:hover {
+        background: var(--surface-alt);
+    }
 
 
 /* =========================================
@@ -182,6 +213,7 @@
     font-size: .7rem;
     font-weight: 500;
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
 }
 
 
@@ -198,25 +230,32 @@
 }
 
 .budget-bar-fill {
-    width: 0;
+    width: var(--fill, 0%);
     height: 100%;
     border-radius: inherit;
     background: var(--primary);
-    transition: width .3s ease, background-color var(--transition);
+    transition: width .5s cubic-bezier(.34, 1.4, .64, 1), background-color var(--transition);
+    animation: fill-in .6s ease-out;
+}
+
+@keyframes fill-in {
+    from {
+        width: 0;
+    }
 }
 
 
-    /* =========================================
+/* =========================================
    BUDGET STATES
    ========================================= */
 
-    .budget-bar-fill.budget-warning {
-        background: var(--warning);
-    }
+.budget-bar-fill.budget-warning {
+    background: var(--warning);
+}
 
-    .budget-bar-fill.budget-over {
-        background: var(--danger);
-    }
+.budget-bar-fill.budget-over {
+    background: var(--danger);
+}
 
 
 /* =========================================
@@ -234,4 +273,71 @@
     font-size: .6rem;
     font-weight: 650;
     line-height: 1.2;
+    animation: badge-pop .25s ease-out;
+}
+
+@keyframes badge-pop {
+    from {
+        transform: scale(.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+/* =========================================
+   EMPTY STATE
+   ========================================= */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+    .empty-state p {
+        margin: 0;
+        color: var(--text-muted);
+        font-family: var(--font-sans);
+        font-size: .8rem;
+    }
+
+.empty-state-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    color: var(--primary);
+    font-family: var(--font-sans);
+    font-size: .75rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+    .empty-state-cta:hover {
+        color: var(--primary-hover);
+    }
+
+        .empty-state-cta:hover .view-all-arrow {
+            transform: translateX(3px);
+        }
+
+    .empty-state-cta:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+        border-radius: 3px;
+    }
+
+@media (prefers-reduced-motion: reduce) {
+    .budget-bar-fill,
+    .badge-over {
+        animation: none;
+    }
 }

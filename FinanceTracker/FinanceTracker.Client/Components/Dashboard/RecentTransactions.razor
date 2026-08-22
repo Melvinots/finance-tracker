@@ -11,7 +11,7 @@
             </div>
 
             <a href="/transactions" class="view-all">
-                View all →
+                View all <span class="view-all-arrow">→</span>
             </a>
         </div>
 
@@ -19,21 +19,34 @@
 
     <ChildContent>
 
-        <div class="transaction-list">
-            @foreach (var transaction in Transactions)
-            {
-                <div class="transaction-item">
-                    <div class="transaction-info">
-                        <strong>@transaction.Description</strong>
-                        <span>@transaction.Category</span>
-                    </div>
+        @if (Transactions.Count == 0)
+        {
+            <div class="transaction-empty">
+                <span>No transactions yet.</span>
+            </div>
+        }
+        else
+        {
+            <div class="transaction-list">
+                @foreach (var transaction in Transactions)
+                {
+                    <div class="transaction-item">
 
-                    <span class="transaction-amount @(transaction.IsIncome ? "income" : "expense")">
-                        @(transaction.IsIncome ? "+" : "-")@transaction.Amount.ToString("N0")
-                    </span>
-                </div>
-            }
-        </div>
+                        <div class="transaction-marker @(transaction.IsIncome ? "income" : "expense")"></div>
+
+                        <div class="transaction-info">
+                            <strong>@transaction.Description</strong>
+                            <span>@transaction.Category</span>
+                        </div>
+
+                        <span class="transaction-amount @(transaction.IsIncome ? "income" : "expense")">
+                            @(transaction.IsIncome ? "+" : "-")@transaction.Amount.ToString("N0")
+                        </span>
+
+                    </div>
+                }
+            </div>
+        }
 
     </ChildContent>
 

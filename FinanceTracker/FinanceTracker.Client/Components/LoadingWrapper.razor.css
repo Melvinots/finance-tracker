@@ -153,6 +153,16 @@
     }
 }
 
+@keyframes loadingSoftPulse {
+    0%, 100% {
+        opacity: 0.55;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
 
 /* =========================================
    REDUCED MOTION
@@ -165,9 +175,12 @@
         animation: none;
     }
 
-    .loading-indicator::before,
-    .loading-dot {
+    .loading-indicator::before {
         animation: none;
+    }
+
+    .loading-dot {
+        animation: loadingSoftPulse 1.6s ease-in-out infinite;
     }
 }
 

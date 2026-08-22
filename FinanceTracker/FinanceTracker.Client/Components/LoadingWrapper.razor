@@ -6,7 +6,7 @@
 
     @if (IsLoading)
     {
-        <div class="loading-overlay">
+        <div class="loading-overlay" role="status" aria-live="polite">
 
             <div class="loading-state">
 
@@ -15,6 +15,13 @@
                 </div>
 
                 <div class="loading-content">
+
+                    @if (!string.IsNullOrWhiteSpace(Title))
+                    {
+                        <span class="loading-title">
+                            @Title
+                        </span>
+                    }
 
                     <span class="loading-message">
                         @Message
@@ -32,6 +39,9 @@
 @code {
     [Parameter]
     public bool IsLoading { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
 
     [Parameter]
     public string Message { get; set; } = "Loading...";
