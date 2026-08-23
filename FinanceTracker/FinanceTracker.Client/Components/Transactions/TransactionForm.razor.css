@@ -15,6 +15,10 @@
     animation: backdrop-in 200ms ease;
 }
 
+    .modal-backdrop:focus-visible {
+        outline: none;
+    }
+
 
 /* =========================================
    MODAL
@@ -25,22 +29,22 @@
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
     overscroll-behavior: contain;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 24px 60px rgb(15 23 42 / 18%), 0 4px 12px rgb(15 23 42 / 6%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-md, 0 24px 60px rgb(15 23 42 / 18%), 0 4px 12px rgb(15 23 42 / 6%));
     animation: modal-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.transaction-modal::-webkit-scrollbar {
-    width: 8px;
-}
+    .transaction-modal::-webkit-scrollbar {
+        width: 8px;
+    }
 
-.transaction-modal::-webkit-scrollbar-thumb {
-    border: 2px solid #ffffff;
-    border-radius: 8px;
-    background: #cbd5e1;
-}
+    .transaction-modal::-webkit-scrollbar-thumb {
+        border: 2px solid var(--surface);
+        border-radius: 8px;
+        background: var(--border);
+    }
 
 .drag-handle {
     display: none;
@@ -60,8 +64,8 @@
     justify-content: space-between;
     gap: 1rem;
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #f1f5f9;
-    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
 }
 
 .modal-title-group {
@@ -77,11 +81,11 @@
     width: 38px;
     height: 38px;
     flex-shrink: 0;
-    border: 1px solid #e0e7ff;
+    border: 1px solid var(--primary-dim, var(--border));
     border-radius: 10px;
-    background: #eef2ff;
-    color: #4f46e5;
-    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    background: var(--primary-tint, var(--surface-alt));
+    color: var(--primary);
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
 }
 
     .modal-icon svg {
@@ -90,20 +94,20 @@
     }
 
     .modal-icon.expense {
-        border-color: #fecaca;
-        background: #fff1f1;
-        color: #dc2626;
+        border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+        background: var(--danger-dim);
+        color: var(--danger);
     }
 
     .modal-icon.income {
-        border-color: #a7f3d0;
-        background: #ecfdf5;
-        color: #059669;
+        border-color: color-mix(in srgb, var(--success) 35%, var(--border));
+        background: var(--success-dim, var(--surface-alt));
+        color: var(--success);
     }
 
 .modal-header h2 {
     margin: 0;
-    color: #0f172a;
+    color: var(--text);
     font-size: 0.95rem;
     font-weight: 700;
     line-height: 1.3;
@@ -111,7 +115,7 @@
 
 .modal-header p {
     margin: 0.2rem 0 0;
-    color: #64748b;
+    color: var(--text-muted);
     font-size: 0.7rem;
     line-height: 1.4;
 }
@@ -132,19 +136,24 @@
     border: 1px solid transparent;
     border-radius: 8px;
     background: transparent;
-    color: #64748b;
+    color: var(--text-muted);
     cursor: pointer;
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
 }
 
-    .close-button:hover {
-        border-color: #e2e8f0;
-        background: #f8fafc;
-        color: #0f172a;
+    .close-button:hover:not(:disabled) {
+        border-color: var(--border);
+        background: var(--surface-alt);
+        color: var(--text);
     }
 
-    .close-button:active {
+    .close-button:active:not(:disabled) {
         transform: scale(0.94);
+    }
+
+    .close-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
     .close-button svg {
@@ -162,7 +171,14 @@
     flex-direction: column;
     gap: 1.15rem;
     padding: 1.5rem;
+    margin: 0;
+    border: none;
+    transition: opacity var(--transition);
 }
+
+    .form-content:disabled {
+        opacity: 0.6;
+    }
 
 .form-group {
     display: flex;
@@ -171,7 +187,7 @@
 }
 
     .form-group label {
-        color: #475569;
+        color: var(--text-muted);
         font-size: 0.7rem;
         font-weight: 650;
         letter-spacing: 0.01em;
@@ -196,10 +212,10 @@
     justify-content: center;
     gap: 0.5rem;
     height: 44px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     border-radius: 10px;
-    background: #ffffff;
-    color: #64748b;
+    background: var(--surface);
+    color: var(--text-muted);
     font: inherit;
     font-size: 0.75rem;
     font-weight: 600;
@@ -208,52 +224,54 @@
 }
 
     .type-option:hover {
-        border-color: #cbd5e1;
-        background: #f8fafc;
+        border-color: var(--border-hover, var(--border));
+        background: var(--surface-alt);
     }
 
     .type-option:active {
         transform: scale(0.98);
     }
 
-    .type-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 22px;
-        height: 22px;
-        border-radius: 6px;
-        background: #f1f5f9;
-        color: inherit;
-        transition: background-color 150ms ease;
+.type-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--surface-alt);
+    color: inherit;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.type-option svg {
+    width: 13px;
+    height: 13px;
+}
+
+.type-option.active.expense {
+    border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+    background: var(--danger-dim);
+    color: var(--danger);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
+    .type-option.active.expense .type-icon {
+        background: color-mix(in srgb, var(--danger) 18%, transparent);
+        transform: scale(1.08);
     }
 
-    .type-option svg {
-        width: 13px;
-        height: 13px;
+.type-option.active.income {
+    border-color: color-mix(in srgb, var(--success) 35%, var(--border));
+    background: var(--success-dim, var(--surface-alt));
+    color: var(--success);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 10%, transparent);
+}
+
+    .type-option.active.income .type-icon {
+        background: color-mix(in srgb, var(--success) 18%, transparent);
+        transform: scale(1.08);
     }
-
-    .type-option.active.expense {
-        border-color: #fecaca;
-        background: #fff7f7;
-        color: #dc2626;
-        box-shadow: 0 0 0 3px rgb(220 38 38 / 6%);
-    }
-
-        .type-option.active.expense .type-icon {
-            background: #fee2e2;
-        }
-
-    .type-option.active.income {
-        border-color: #a7f3d0;
-        background: #f0fdf8;
-        color: #059669;
-        box-shadow: 0 0 0 3px rgb(5 150 105 / 6%);
-    }
-
-        .type-option.active.income .type-icon {
-            background: #d1fae5;
-        }
 
 
 /* =========================================
@@ -264,37 +282,37 @@
     width: 100%;
     min-height: 42px;
     padding: 0.65rem 0.8rem;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border);
     border-radius: 10px;
     outline: none;
-    background: #ffffff;
-    color: #1e293b;
+    background: var(--surface);
+    color: var(--text);
     font: inherit;
     font-size: 0.8rem;
     transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
 }
 
     .form-input::placeholder {
-        color: #94a3b8;
+        color: var(--text-muted);
     }
 
     .form-input:hover {
-        border-color: #94a3b8;
+        border-color: var(--border-hover, var(--border));
     }
 
     .form-input:focus {
-        border-color: #6366f1;
-        background: #ffffff;
-        box-shadow: 0 0 0 3px rgb(99 102 241 / 10%);
+        border-color: var(--primary);
+        background: var(--surface);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
     }
 
     .form-input.modified.invalid {
-        border-color: #fca5a5;
+        border-color: color-mix(in srgb, var(--danger) 55%, var(--border));
     }
 
         .form-input.modified.invalid:focus {
-            border-color: #ef4444;
-            box-shadow: 0 0 0 3px rgb(239 68 68 / 9%);
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 10%, transparent);
         }
 
 
@@ -303,18 +321,30 @@
    ========================================= */
 
 .icon-input {
-    position: relative;
     display: flex;
-    align-items: center;
+    align-items: stretch;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
+    .icon-input:hover {
+        border-color: var(--border-hover, var(--border));
+    }
+
+    .icon-input:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+
 .input-icon {
-    position: absolute;
-    left: 0.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #94a3b8;
+    flex-shrink: 0;
+    width: 2.2rem;
+    color: var(--text-muted);
     pointer-events: none;
     transition: color 150ms ease;
 }
@@ -325,12 +355,23 @@
     }
 
 .icon-input:focus-within .input-icon {
-    color: #6366f1;
+    color: var(--primary);
 }
 
+/* the input itself now has NO border/shadow/padding-left of its own —
+   the wrapper owns all of that so there's nothing left to overlap */
 .form-input.has-icon {
-    padding-left: 2.2rem;
+    flex: 1;
+    min-width: 0;
+    padding-left: 0.25rem;
+    border: none;
+    background: transparent;
+    box-shadow: none;
 }
+
+    .form-input.has-icon:focus {
+        box-shadow: none;
+    }
 
 
 /* =========================================
@@ -342,7 +383,7 @@ select.form-input {
     -webkit-appearance: none;
     padding-right: 2.4rem;
     cursor: pointer;
-    background-color: #ffffff;
+    background-color: var(--surface);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364758B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
@@ -350,11 +391,11 @@ select.form-input {
 }
 
     select.form-input:hover {
-        background-color: #fafafa;
+        background-color: var(--surface-alt);
     }
 
     select.form-input:focus {
-        background-color: #ffffff;
+        background-color: var(--surface);
     }
 
 
@@ -365,58 +406,95 @@ select.form-input {
 .amount-input {
     display: flex;
     align-items: stretch;
+    width: 100%;
+    height: 42px;
+    border: 1px solid var(--border);
     border-radius: 10px;
-    transition: box-shadow 150ms ease;
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
-    .amount-input:focus-within {
-        box-shadow: 0 0 0 3px rgb(99 102 241 / 10%);
+    .amount-input:hover {
+        border-color: var(--border-hover, var(--border));
     }
+
+    .amount-input:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+
+
+/* =========================================
+   CURRENCY PREFIX
+   ========================================= */
 
 .currency-prefix {
     display: flex;
     align-items: center;
-    padding: 0 0.7rem;
-    border: 1px solid #e2e8f0;
-    border-right: 0;
-    border-radius: 10px 0 0 10px;
-    background: #f8fafc;
-    color: #64748b;
+    justify-content: center;
+    min-width: 48px;
+    padding: 0 0.75rem;
+    border-right: 1px solid var(--border);
+    background: var(--surface-alt);
+    color: var(--text-muted);
     font-size: 0.7rem;
     font-weight: 650;
     white-space: nowrap;
-    transition: color 150ms ease;
 }
 
-.amount-field {
-    flex: 1;
-    width: auto;
+
+/* =========================================
+   AMOUNT INPUT
+   ========================================= */
+
+::deep .amount-field {
+    flex: 1 1 auto;
+    width: 100%;
     min-width: 0;
-    padding: 0.65rem 0.85rem;
-    border-radius: 0 10px 10px 0;
-    font-size: 1.05rem;
-    font-weight: 700;
+    height: 100%;
+    padding: 0.625rem 0.75rem;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
 }
 
-.amount-input:focus-within .amount-field {
-    box-shadow: none;
-}
+    ::deep .amount-field:hover {
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
 
-.amount-input.is-expense .amount-field {
-    color: #dc2626;
-}
+    ::deep .amount-field:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    ::deep .amount-field::placeholder {
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
+
+/* =========================================
+   INCOME / EXPENSE
+   ========================================= */
 
 .amount-input.is-expense .currency-prefix {
-    color: #dc2626;
-}
-
-.amount-input.is-income .amount-field {
-    color: #059669;
+    color: var(--danger);
 }
 
 .amount-input.is-income .currency-prefix {
-    color: #059669;
+    color: var(--success);
 }
 
 
@@ -467,9 +545,22 @@ input[type="date"].form-input {
     align-items: center;
     gap: 0.3rem;
     margin-top: 0.05rem;
-    color: #dc2626;
+    color: var(--danger);
     font-size: 0.68rem;
     line-height: 1.3;
+    animation: validation-in 150ms ease-out;
+}
+
+@keyframes validation-in {
+    from {
+        opacity: 0;
+        transform: translateY(-2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
@@ -485,8 +576,8 @@ input[type="date"].form-input {
     justify-content: flex-end;
     gap: 0.5rem;
     padding: 1rem 1.5rem;
-    border-top: 1px solid #f1f5f9;
-    background: #f8fafc;
+    border-top: 1px solid var(--border);
+    background: var(--surface-alt);
 }
 
 .primary-button,
@@ -502,25 +593,32 @@ input[type="date"].form-input {
     font-size: 0.72rem;
     font-weight: 650;
     cursor: pointer;
-    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, opacity 150ms ease;
 }
+
+    .primary-button:disabled,
+    .secondary-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none !important;
+    }
 
 .primary-button {
-    border: 1px solid #4f46e5;
-    background: #4f46e5;
-    color: #ffffff;
-    box-shadow: 0 1px 2px rgb(79 70 229 / 15%);
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: var(--on-primary, #ffffff);
+    box-shadow: var(--shadow-sm);
 }
 
-    .primary-button:hover {
-        border-color: #4338ca;
-        background: #4338ca;
-        box-shadow: 0 4px 10px rgb(79 70 229 / 18%);
+    .primary-button:hover:not(:disabled) {
+        border-color: var(--primary-hover);
+        background: var(--primary-hover);
+        box-shadow: var(--shadow-md);
         transform: translateY(-1px);
     }
 
-    .primary-button:active {
-        box-shadow: 0 1px 2px rgb(79 70 229 / 15%);
+    .primary-button:active:not(:disabled) {
+        box-shadow: var(--shadow-sm);
         transform: translateY(0);
     }
 
@@ -530,44 +628,62 @@ input[type="date"].form-input {
     }
 
     .primary-button.expense {
-        border-color: #dc2626;
-        background: #dc2626;
-        box-shadow: 0 1px 2px rgb(220 38 38 / 15%);
+        border-color: var(--danger);
+        background: var(--danger);
     }
 
-        .primary-button.expense:hover {
-            border-color: #b91c1c;
-            background: #b91c1c;
-            box-shadow: 0 4px 10px rgb(220 38 38 / 18%);
+        .primary-button.expense:hover:not(:disabled) {
+            border-color: var(--danger-hover, var(--danger));
+            background: var(--danger-hover, var(--danger));
+            filter: brightness(0.94);
         }
 
     .primary-button.income {
-        border-color: #059669;
-        background: #059669;
-        box-shadow: 0 1px 2px rgb(5 150 105 / 15%);
+        border-color: var(--success);
+        background: var(--success);
     }
 
-        .primary-button.income:hover {
-            border-color: #047857;
-            background: #047857;
-            box-shadow: 0 4px 10px rgb(5 150 105 / 18%);
+        .primary-button.income:hover:not(:disabled) {
+            border-color: var(--success-hover, var(--success));
+            background: var(--success-hover, var(--success));
+            filter: brightness(0.94);
         }
 
 .secondary-button {
-    border: 1px solid #cbd5e1;
-    background: #ffffff;
-    color: #475569;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
 }
 
-    .secondary-button:hover {
-        border-color: #cbd5e1;
-        background: #f8fafc;
-        color: #0f172a;
+    .secondary-button:hover:not(:disabled) {
+        border-color: var(--border-hover, var(--border));
+        background: var(--surface-alt);
+        color: var(--text);
     }
 
-    .secondary-button:active {
+    .secondary-button:active:not(:disabled) {
         transform: scale(0.98);
     }
+
+
+/* =========================================
+   BUTTON SPINNER
+   ========================================= */
+
+.button-spinner {
+    width: 13px;
+    height: 13px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spinner-rotate 0.6s linear infinite;
+}
+
+@keyframes spinner-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 
 /* =========================================
@@ -578,11 +694,12 @@ input[type="date"].form-input {
 .secondary-button:focus-visible,
 .close-button:focus-visible,
 .type-option:focus-visible {
-    outline: 2px solid #818cf8;
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
 .form-input:focus-visible {
+    border: none;
     outline: none;
 }
 
@@ -592,8 +709,13 @@ input[type="date"].form-input {
    ========================================= */
 
 @keyframes backdrop-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes modal-in {
@@ -601,6 +723,7 @@ input[type="date"].form-input {
         opacity: 0;
         transform: translateY(10px) scale(0.98);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -638,7 +761,7 @@ input[type="date"].form-input {
         height: 4px;
         margin: 0.6rem auto 0;
         border-radius: 4px;
-        background: #e2e8f0;
+        background: var(--border);
     }
 
     .modal-header {
@@ -665,8 +788,13 @@ input[type="date"].form-input {
 }
 
 @keyframes sheet-in {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
 }
 
 
@@ -682,8 +810,13 @@ input[type="date"].form-input {
     .type-option,
     .close-button,
     .primary-button,
-    .secondary-button {
+    .secondary-button,
+    .validation-message {
         animation: none;
         transition: none;
+    }
+
+    .button-spinner {
+        animation-duration: 1.2s;
     }
 }

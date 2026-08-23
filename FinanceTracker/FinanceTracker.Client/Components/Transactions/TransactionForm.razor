@@ -1,8 +1,14 @@
 @namespace FinanceTracker.Client.Components.Transactions
 
-<div class="modal-backdrop">
+<div class="modal-backdrop"
+     tabindex="-1"
+     @onkeydown="HandleKeyDown">
 
-    <div class="transaction-modal">
+    <div class="transaction-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="transaction-modal-title"
+         @onclick:stopPropagation="true">
 
         <div class="drag-handle"></div>
 
@@ -16,7 +22,7 @@
                 </div>
 
                 <div>
-                    <h2>
+                    <h2 id="transaction-modal-title">
                         @(Transaction is null ? "Add transaction" : "Edit transaction")
                     </h2>
 
@@ -33,6 +39,7 @@
                     class="close-button"
                     title="Close"
                     aria-label="Close"
+                    disabled="@_isSubmitting"
                     @onclick="OnCancel">
 
                 <Blazicon Svg="Lucide.X" />
@@ -47,7 +54,7 @@
 
             <DataAnnotationsValidator />
 
-            <div class="form-content">
+            <fieldset class="form-content" disabled="@_isSubmitting">
 
                 <!-- Type -->
                 <div class="form-group">
@@ -100,7 +107,7 @@
                             PHP
                         </span>
 
-                        <InputNumber class="form-input amount-field"
+                        <InputNumber class="amount-field"
                                      placeholder="0.00"
                                      @bind-Value="model.Amount" />
 
@@ -119,9 +126,14 @@
                     </label>
 
                     <div class="icon-input">
+
+                        <span class="input-icon">
+                            <Blazicon Svg="Lucide.FileText" />
+                        </span>
                         <InputText class="form-input has-icon"
                                    placeholder="e.g. Grocery shopping"
                                    @bind-Value="model.Description" />
+
                     </div>
 
                     <ValidationMessage For="@(() => model.Description)" />
@@ -139,6 +151,11 @@
                         </label>
 
                         <div class="icon-input">
+
+                            <span class="input-icon">
+                                <Blazicon Svg="Lucide.Tag" />
+                            </span>
+
                             <InputSelect class="form-input has-icon"
                                          @bind-Value="model.CategoryId">
 
@@ -154,6 +171,7 @@
                                 }
 
                             </InputSelect>
+
                         </div>
 
                         <ValidationMessage For="@(() => model.CategoryId)" />
@@ -168,8 +186,14 @@
                         </label>
 
                         <div class="icon-input">
+
+                            <span class="input-icon">
+                                <Blazicon Svg="Lucide.Calendar" />
+                            </span>
+
                             <InputDate class="form-input has-icon"
                                        @bind-Value="model.Date" />
+
                         </div>
 
                         <ValidationMessage For="@(() => model.Date)" />
@@ -178,7 +202,7 @@
 
                 </div>
 
-            </div>
+            </fieldset>
 
 
             <!-- Footer -->
@@ -186,6 +210,7 @@
 
                 <button type="button"
                         class="secondary-button"
+                        disabled="@_isSubmitting"
                         @onclick="OnCancel">
 
                     Cancel
@@ -193,9 +218,17 @@
                 </button>
 
                 <button type="submit"
-                        class="primary-button @(model.IsExpense ? "expense" : "income")">
+                        class="primary-button @(model.IsExpense ? "expense" : "income")"
+                        disabled="@_isSubmitting">
 
-                    <Blazicon Svg="@(Transaction is null ? Lucide.Plus : Lucide.Check)" />
+                    @if (_isSubmitting)
+                    {
+                        <span class="button-spinner"></span>
+                    }
+                    else
+                    {
+                        <Blazicon Svg="@(Transaction is null ? Lucide.Plus : Lucide.Check)" />
+                    }
 
                     @(Transaction is null ? "Add transaction" : "Save changes")
 
@@ -225,6 +258,8 @@
 
     private SaveTransactionDto model = new();
 
+    private bool _isSubmitting;
+
     protected override void OnParametersSet()
     {
         if (Transaction is null)
@@ -250,7 +285,31 @@
 
     private async Task HandleSubmit()
     {
-        await OnSave.InvokeAsync(model);
+        if (_isSubmitting)
+        {
+            return;
+        }
+
+        _isSubmitting = true;
+
+        try
+        {
+            await OnSave.InvokeAsync(model);
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape" && !_isSubmitting)
+        {
+            return OnCancel.InvokeAsync();
+        }
+
+        return Task.CompletedTask;
     }
 
 }

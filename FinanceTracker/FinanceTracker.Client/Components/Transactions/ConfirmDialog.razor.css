@@ -1,0 +1,186 @@
+/* =========================================
+   OVERLAY
+   ========================================= */
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: rgba(15, 23, 42, 0.32);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    animation: confirm-backdrop-in 160ms ease-out;
+}
+
+
+/* =========================================
+   DIALOG
+   ========================================= */
+
+.confirm-dialog {
+    width: 100%;
+    max-width: 380px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-md, 0 12px 32px rgba(15, 23, 42, 0.14));
+    font-family: var(--font-sans);
+    animation: confirm-dialog-in 180ms cubic-bezier(.22, 1, .36, 1);
+}
+
+
+/* =========================================
+   TEXT
+   ========================================= */
+
+.confirm-title {
+    margin: 0 0 .5rem;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: -.01em;
+}
+
+.confirm-message {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: .825rem;
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   ACTIONS
+   ========================================= */
+
+.confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: .6rem;
+    margin-top: 1.5rem;
+}
+
+.confirm-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: .5rem .9rem;
+    border-radius: 8px;
+    font-size: .8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform 100ms ease;
+}
+
+    .confirm-button:active {
+        transform: translateY(1px);
+    }
+
+    .confirm-button:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
+
+.confirm-cancel {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+}
+
+    .confirm-cancel:hover {
+        background: var(--surface-alt);
+        border-color: var(--border-hover, var(--border));
+    }
+
+.confirm-primary {
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: var(--on-primary, #ffffff);
+    box-shadow: var(--shadow-sm);
+}
+
+    .confirm-primary:hover {
+        background: var(--primary-hover);
+        border-color: var(--primary-hover);
+    }
+
+.confirm-danger {
+    border: 1px solid var(--danger);
+    background: var(--danger);
+    color: var(--on-primary, #ffffff);
+    box-shadow: var(--shadow-sm);
+}
+
+    .confirm-danger:hover {
+        background: var(--danger-hover, var(--danger));
+        border-color: var(--danger-hover, var(--danger));
+        filter: brightness(0.92);
+    }
+
+
+/* =========================================
+   ANIMATIONS
+   ========================================= */
+
+@keyframes confirm-backdrop-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes confirm-dialog-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .confirm-overlay,
+    .confirm-dialog {
+        animation: none;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 480px) {
+
+    .confirm-dialog {
+        padding: 1.25rem;
+    }
+
+    .confirm-actions {
+        flex-direction: column-reverse;
+        gap: .5rem;
+    }
+
+    .confirm-button {
+        width: 100%;
+    }
+}

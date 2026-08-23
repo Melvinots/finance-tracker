@@ -6,7 +6,7 @@ namespace FinanceTracker.Shared.DTOs.Transactions
     {
         [Required]
         [Range(0.01, 10_000_000, ErrorMessage = "Amount must be greater than zero.")]
-        public decimal Amount { get; set; }
+        public decimal? Amount { get; set; } = null;
 
         [Required]
         [MaxLength(100)]
