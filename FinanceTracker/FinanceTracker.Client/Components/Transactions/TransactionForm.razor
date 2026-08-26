@@ -7,8 +7,7 @@
     <div class="transaction-modal"
          role="dialog"
          aria-modal="true"
-         aria-labelledby="transaction-modal-title"
-         @onclick:stopPropagation="true">
+         aria-labelledby="transaction-modal-title">
 
         <div class="drag-handle"></div>
 
@@ -130,7 +129,8 @@
                         <span class="input-icon">
                             <Blazicon Svg="Lucide.FileText" />
                         </span>
-                        <InputText class="form-input has-icon"
+
+                        <InputText class="description-field"
                                    placeholder="e.g. Grocery shopping"
                                    @bind-Value="model.Description" />
 
@@ -150,13 +150,13 @@
                             Category
                         </label>
 
-                        <div class="icon-input">
+                        <div class="compact-input">
 
-                            <span class="input-icon">
+                            <span class="compact-input-icon">
                                 <Blazicon Svg="Lucide.Tag" />
                             </span>
 
-                            <InputSelect class="form-input has-icon"
+                            <InputSelect class="category-field"
                                          @bind-Value="model.CategoryId">
 
                                 <option value="0">
@@ -178,20 +178,19 @@
 
                     </div>
 
-
                     <div class="form-group">
 
                         <label>
                             Date
                         </label>
 
-                        <div class="icon-input">
+                        <div class="compact-input">
 
-                            <span class="input-icon">
+                            <span class="compact-input-icon">
                                 <Blazicon Svg="Lucide.Calendar" />
                             </span>
 
-                            <InputDate class="form-input has-icon"
+                            <InputDate class="date-field"
                                        @bind-Value="model.Date" />
 
                         </div>

@@ -59,36 +59,30 @@
 
     </header>
 
-    <section class="budgets-content">
+    <LoadingWrapper IsLoading="@_isLoading"
+                    Message="Loading your budgets...">
 
-        <div class="content-header">
+        <section class="budgets-content">
 
-            <div>
-                <h2>Budget overview</h2>
+            <div class="content-header">
 
-                <p>
-                    @_budgets.Count
-                    @( _budgets.Count == 1 ? "budget" : "budgets" )
-                </p>
+                <div>
+                    <h2>Budget overview</h2>
+
+                    <p>
+                        @_budgets.Count
+                        @(_budgets.Count == 1 ? "budget" : "budgets")
+                    </p>
+                </div>
+
             </div>
-
-        </div>
-
-        <LoadingWrapper IsLoading="@_isLoading"
-                        Message="Loading your budgets...">
 
             @if (!_budgets.Any())
             {
-                <div class="empty-state">
-
-                    <div class="empty-icon">
-                        <Blazicon Svg="Lucide.WalletCards" />
-                    </div>
-
-                    <h3>No budgets yet</h3>
+                <div class="empty-budgets">
 
                     <p>
-                        Create a budget to start tracking your spending.
+                        No budgets have been created for this month.
                     </p>
 
                     <button class="primary-button"
@@ -110,9 +104,9 @@
                             OnDelete="@DeleteBudget" />
             }
 
-        </LoadingWrapper>
+        </section>
 
-    </section>
+    </LoadingWrapper>
 
 </div>
 
@@ -122,6 +116,16 @@
                 Categories="@_categories"
                 OnSave="@SaveBudget"
                 OnCancel="@CloseModal" />
+}
+
+@if (_pendingDelete is not null)
+{
+    <ConfirmDialog IsOpen="true"
+                   Title="Delete budget?"
+                   Message="@($"This will permanently remove \"{_pendingDelete.CategoryName}\". This can't be undone.")"
+                   ConfirmLabel="Delete"
+                   OnConfirm="@ConfirmDelete"
+                   OnCancel="@(() => _pendingDelete = null)" />
 }
 
 @code {
@@ -138,6 +142,10 @@
     private List<CategoryDto> _categories = new();
 
     private BudgetDto? _selectedBudget;
+
+    private BudgetDto? _pendingDelete;
+
+    private string? _errorMessage;
 
     private DateTime SelectedDate =>
         DateTime.ParseExact(
@@ -169,8 +177,7 @@
 
     private async Task LoadCategoriesAsync()
     {
-        _categories =
-            await CategoryService.GetAllAsync();
+        _categories = await CategoryService.GetAllAsync();
     }
 
     private void OpenCreateModal()
@@ -191,8 +198,7 @@
         _selectedBudget = null;
     }
 
-    private async Task SaveBudget(
-        SaveBudgetDto budget)
+    private async Task SaveBudget(SaveBudgetDto budget)
     {
         if (_selectedBudget is null)
         {
@@ -210,11 +216,31 @@
         await LoadBudgets();
     }
 
-    private async Task DeleteBudget(
-        BudgetDto budget)
+    private void DeleteBudget(BudgetDto budget)
     {
-        await BudgetService.DeleteAsync(budget.Id);
+        _pendingDelete = budget;
+    }
 
-        _budgets.Remove(budget);
+    private async Task ConfirmDelete()
+    {
+        if (_pendingDelete is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await BudgetService.DeleteAsync(_pendingDelete.Id);
+
+            _budgets.Remove(_pendingDelete);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "We couldn't delete this transaction. Please try again.";
+        }
+        finally
+        {
+            _pendingDelete = null;
+        }
     }
 }
