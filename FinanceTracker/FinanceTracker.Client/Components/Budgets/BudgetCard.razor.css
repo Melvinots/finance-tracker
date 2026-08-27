@@ -3,20 +3,37 @@
    ========================================= */
 
 .budget-card {
+    position: relative;
     min-width: 0;
     padding: 1.1rem;
+    overflow: hidden;
     border: 1px solid var(--rule);
     border-radius: var(--radius-lg);
     background: var(--white);
     box-shadow: var(--shadow-sm);
-    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 
-    .budget-card:hover {
-        border-color: #CBD5E1;
-        box-shadow: 0 6px 18px rgba(15, 23, 42, .06), var(--shadow-sm);
-        transform: translateY(-1px);
+    .budget-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: var(--accent, var(--rule));
+        opacity: .55;
+        transition: opacity var(--transition), height var(--transition);
     }
+
+    .budget-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md, 0 6px 18px rgba(15, 23, 42, .06));
+        border-color: color-mix(in srgb, var(--accent, var(--rule)) 40%, var(--rule));
+    }
+
+        .budget-card:hover::before {
+            opacity: 1;
+            height: 4px;
+        }
 
 
 /* =========================================
@@ -50,12 +67,26 @@
     height: 38px;
     flex-shrink: 0;
     border-radius: var(--radius-md);
-    color: var(--ink);
+    background: color-mix(in srgb, var(--accent, var(--primary)) 16%, var(--surface-alt));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent, var(--rule)) 30%, transparent);
+    color: var(--accent, var(--ink));
+    transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
     .category-icon svg {
         width: 17px;
         height: 17px;
+        transition: color var(--transition);
+    }
+
+.budget-card:hover .category-icon {
+    background: var(--accent, var(--primary));
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent, var(--rule)) 18%, transparent);
+    transform: scale(1.08) rotate(-4deg);
+}
+
+    .budget-card:hover .category-icon svg {
+        color: var(--white);
     }
 
 
@@ -73,6 +104,7 @@
         line-height: 1.3;
         text-overflow: ellipsis;
         white-space: nowrap;
+        transition: color var(--transition);
     }
 
     .category-info span {
@@ -83,6 +115,10 @@
         font-size: .65rem;
         line-height: 1.3;
     }
+
+.budget-card:hover .category-info h3 {
+    color: var(--accent, var(--ink));
+}
 
 
 /* =========================================
@@ -157,6 +193,11 @@
     font-size: 1.15rem;
     font-weight: 700;
     letter-spacing: -.015em;
+    transition: color var(--transition);
+}
+
+.budget-card:hover .spent {
+    color: var(--accent, var(--ink));
 }
 
 .limit {
@@ -181,10 +222,18 @@
 }
 
 .progress-bar {
+    width: var(--fill, 0%);
     height: 100%;
     min-width: 2px;
     border-radius: inherit;
-    transition: width .3s ease;
+    transition: width .5s cubic-bezier(.34, 1.4, .64, 1);
+    animation: budget-fill-in .6s ease-out;
+}
+
+@keyframes budget-fill-in {
+    from {
+        width: 0;
+    }
 }
 
 
@@ -217,6 +266,35 @@
     font-family: var(--font-mono);
     font-size: .6rem;
     font-weight: 500;
+}
+
+.category-icon svg {
+    width: 17px;
+    height: 17px;
+    color: currentColor;
+    fill: currentColor;
+    stroke: currentColor;
+    transition: color var(--transition);
+}
+
+.budget-card:hover .category-icon svg {
+    color: #ffffff;
+    fill: #ffffff;
+    stroke: #ffffff;
+}
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .budget-card,
+    .category-icon,
+    .progress-bar {
+        animation: none;
+        transition: none;
+    }
 }
 
 

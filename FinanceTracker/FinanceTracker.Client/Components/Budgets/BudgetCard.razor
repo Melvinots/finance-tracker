@@ -1,13 +1,12 @@
 ﻿@namespace FinanceTracker.Client.Components.Budgets
 
-<div class="budget-card">
+<div class="budget-card" style="--accent: @AccentColor">
 
     <div class="budget-card-header">
 
         <div class="budget-category">
 
-            <div class="category-icon"
-                 style="background-color: @IconBackground">
+            <div class="category-icon">
 
                 <Blazicon Svg="@Icons.Category(Budget.CategoryIcon)" />
 
@@ -64,10 +63,7 @@
     <div class="progress-track">
 
         <div class="progress-bar"
-             style="
-            width: @Budget.Percentage%;
-            background-color: @Budget.CategoryColor;
-            ">
+             style="--fill: @Budget.Percentage%; background-color: @Budget.CategoryColor;">
         </div>
 
     </div>
@@ -98,10 +94,10 @@
     [Parameter]
     public EventCallback<BudgetDto> OnDelete { get; set; }
 
-    private string IconBackground =>
+    private string AccentColor =>
         string.IsNullOrWhiteSpace(Budget.CategoryColor)
-            ? "var(--primary-dim)"
-            : $"{Budget.CategoryColor}18";
+            ? "var(--primary)"
+            : Budget.CategoryColor;
 
     private string RemainingText =>
         Budget.RemainingAmount >= 0

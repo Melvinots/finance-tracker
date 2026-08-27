@@ -34,12 +34,15 @@
                     @bind="_selectedMonth"
                     @bind:after="LoadBudgets">
 
-                @for (int i = 0; i < 6; i++)
+                @for (int month = DateTime.Now.Month; month >= 1; month--)
                 {
-                    var month = DateTime.Now.AddMonths(-i);
+                    var date = new DateTime(
+                        DateTime.Now.Year,
+                        month,
+                        1);
 
-                    <option value="@month.ToString("yyyy-MM")">
-                        @month.ToString("MMMM yyyy")
+                    <option value="@date.ToString("yyyy-MM")">
+                        @date.ToString("MMMM yyyy")
                     </option>
                 }
 
@@ -114,6 +117,8 @@
 {
     <BudgetForm Budget="@_selectedBudget"
                 Categories="@_categories"
+                Year="2026"
+                Month="8"
                 OnSave="@SaveBudget"
                 OnCancel="@CloseModal" />
 }
@@ -122,7 +127,7 @@
 {
     <ConfirmDialog IsOpen="true"
                    Title="Delete budget?"
-                   Message="@($"This will permanently remove \"{_pendingDelete.CategoryName}\". This can't be undone.")"
+                   Message="@($"This will permanently remove budget for \"{_pendingDelete.CategoryName}\". This can't be undone.")"
                    ConfirmLabel="Delete"
                    OnConfirm="@ConfirmDelete"
                    OnCancel="@(() => _pendingDelete = null)" />

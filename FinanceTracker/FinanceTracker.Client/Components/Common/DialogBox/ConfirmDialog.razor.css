@@ -23,7 +23,7 @@
 
 .confirm-dialog {
     width: 100%;
-    max-width: 380px;
+    max-width: 450px;
     padding: 1.5rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);

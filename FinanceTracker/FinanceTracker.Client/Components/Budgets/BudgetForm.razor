@@ -6,7 +6,7 @@
     <div class="budget-modal"
          @onclick:stopPropagation>
 
-        <div class="budget-modal-header">
+        <header class="budget-modal-header">
 
             <div class="budget-modal-title">
 
@@ -30,13 +30,14 @@
 
             <button class="budget-modal-close"
                     type="button"
-                    @onclick="Cancel">
+                    @onclick="Cancel"
+                    aria-label="Close">
 
                 <Blazicon Svg="Lucide.X" />
 
             </button>
 
-        </div>
+        </header>
 
         <EditForm Model="@_model"
                   OnValidSubmit="@HandleSubmit">
@@ -47,11 +48,12 @@
 
                 <div class="budget-form-group">
 
-                    <label>
+                    <label for="budget-category">
                         Category
                     </label>
 
-                    <InputSelect class="budget-form-control"
+                    <InputSelect id="budget-category"
+                                 class="budget-form-control"
                                  @bind-Value="_model.CategoryId">
 
                         <option value="0">
@@ -73,17 +75,18 @@
 
                 <div class="budget-form-group">
 
-                    <label>
+                    <label for="budget-limit">
                         Monthly limit
                     </label>
 
                     <div class="budget-amount-input">
 
-                        <span>₱</span>
+                        <span class="currency-prefix">₱</span>
 
-                        <InputNumber class="budget-form-control"
+                        <InputNumber id="budget-limit"
+                                     class="budget-form-control budget-amount-field"
                                      @bind-Value="_model.LimitAmount"
-                                     placeholder="10,000" />
+                                     placeholder="0.00" />
 
                     </div>
 
@@ -93,7 +96,8 @@
 
                 <div class="budget-period">
 
-                    <div>
+                    <div class="budget-period-info">
+
                         <span class="period-label">
                             Budget period
                         </span>
@@ -101,6 +105,7 @@
                         <strong>
                             @BudgetMonth.ToString("MMMM yyyy")
                         </strong>
+
                     </div>
 
                     <Blazicon Svg="Lucide.CalendarDays" />
@@ -109,7 +114,8 @@
 
                 @if (!string.IsNullOrWhiteSpace(ErrorMessage))
                 {
-                    <div class="budget-form-error">
+                    <div class="budget-form-error"
+                         role="alert">
 
                         <Blazicon Svg="Lucide.CircleAlert" />
 
@@ -122,7 +128,7 @@
 
             </div>
 
-            <div class="budget-modal-footer">
+            <footer class="budget-modal-footer">
 
                 <button type="button"
                         class="budget-btn-cancel"
@@ -147,15 +153,13 @@
                         <Blazicon Svg="Lucide.Check" />
 
                         <span>
-                            @(Budget is null
-                                ? "Add budget"
-                                : "Save changes")
+                            @(Budget is null ? "Add budget" : "Save changes")
                         </span>
                     }
 
                 </button>
 
-            </div>
+            </footer>
 
         </EditForm>
 
