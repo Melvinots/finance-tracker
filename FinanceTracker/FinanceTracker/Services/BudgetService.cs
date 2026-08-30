@@ -34,7 +34,7 @@ namespace FinanceTracker.Services
         {
             var budget = new Budget
             {
-                LimitAmount = dto.LimitAmount,
+                LimitAmount = dto.LimitAmount ?? 0,
                 Month = dto.Month,
                 Year = dto.Year,
                 CategoryId = dto.CategoryId,
@@ -58,7 +58,7 @@ namespace FinanceTracker.Services
             var budget = await _repo.GetByIdAsync(id, userId)
                 ?? throw new KeyNotFoundException("Budget not found.");
 
-            budget.LimitAmount = dto.LimitAmount;
+            budget.LimitAmount = dto.LimitAmount ?? 0;
             budget.Month = dto.Month;
             budget.Year = dto.Year;
             budget.CategoryId = dto.CategoryId;
