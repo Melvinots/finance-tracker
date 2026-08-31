@@ -1,73 +1,167 @@
-﻿@namespace FinanceTracker.Client.Components.Categories
+@namespace FinanceTracker.Client.Components.Categories
 
-<EditForm Model="@Model" OnValidSubmit="HandleSubmit">
-    <DataAnnotationsValidator />
+<div class="modal-backdrop">
 
-    @if (!string.IsNullOrEmpty(ErrorMessage))
-    {
-        <div class="form-error">⚠ @ErrorMessage</div>
-    }
+    <div class="modal-box">
 
-    <div class="form-group">
-        <label>Icon</label>
-        <div class="emoji-picker">
-            @foreach (var emoji in _emojis)
-            {
-                <button type="button"
-                        class="emoji-btn @(Model.Icon == emoji ? "selected" : "")"
-                        @onclick="() => Model.Icon = emoji">
-                    @emoji
-                </button>
-            }
+        <div class="modal-header">
+
+            <div>
+                <h2>
+                    @(Model is null
+                        ? "Add category"
+                        : "Edit category")
+                </h2>
+
+                <p>
+                    @(Model is null
+                        ? "Create a category for your transactions."
+                        : "Update your category details.")
+                </p>
+            </div>
+
+            <button class="modal-close"
+                    type="button"
+                    @onclick="HandleCancel">
+
+                <Blazicon Svg="Lucide.X" />
+
+            </button>
+
         </div>
-    </div>
 
-    <div class="form-group">
-        <label>Name</label>
-        <InputText class="form-control"
-                   @bind-Value="Model.Name"
-                   placeholder="e.g. Food, Transport..." />
-        <ValidationMessage For="@(() => Model.Name)" />
-    </div>
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="form-error">
+                <Blazicon Svg="Lucide.CircleAlert" />
+                <span>@ErrorMessage</span>
+            </div>
+        }
 
-    <div class="form-group">
-        <label>Color</label>
-        <div class="color-picker">
-            @foreach (var color in _colors)
-            {
-                <button type="button"
-                        class="color-btn @(Model.Color == color ? "selected" : "")"
-                        style="background: @color"
-                        @onclick="() => Model.Color = color">
-                </button>
-            }
+        <div class="form-group">
+
+            <label>
+                Icon
+            </label>
+
+            <div class="icon-picker">
+
+                @foreach (var icon in _icons)
+                {
+                    <button type="button"
+                            class="icon-button @(Model.Icon == icon.Name ? "selected" : "")"
+                            aria-label="Select @icon.Name icon"
+                            aria-pressed="@(Model.Icon == icon.Name)"
+                            @onclick="() => SelectIcon(icon.Name)">
+
+                        <Blazicon Svg="@icon.Icon" />
+
+                    </button>
+                }
+
+            </div>
+
         </div>
-    </div>
 
-    <div class="preview-row">
-        <span class="preview-label">Preview</span>
-        <div class="preview-chip" style="background: @(Model.Color + "20")">
-            <span>@Model.Icon</span>
-            <span style="color: @Model.Color; font-weight: 600; font-size: 0.825rem">
-                @(string.IsNullOrEmpty(Model.Name) ? "Category name" : Model.Name)
+
+        <div class="form-group">
+
+            <label for="category-name">
+                Name
+            </label>
+
+            <InputText id="category-name"
+                       class="form-input"
+                       @bind-Value="Model.Name"
+                       placeholder="e.g. Food, Transport, Utilities..." />
+
+            <ValidationMessage For="@(() => Model.Name)" />
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Color
+            </label>
+
+            <div class="color-picker">
+
+                @foreach (var color in _colors)
+                {
+                    <button type="button"
+                            class="color-button @(Model.Color == color ? "selected" : "")"
+                            style="--color: @color"
+                            aria-label="Select color @color"
+                            aria-pressed="@(Model.Color == color)"
+                            @onclick="() => SelectColor(color)">
+                    </button>
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="category-preview">
+
+            <span class="preview-label">
+                Preview
             </span>
+
+            <div class="preview-category"
+                 style="--category-color: @Model.Color;
+                --category-color-soft: @(Model.Color + "18");">
+
+                <div class="preview-icon">
+                    <Blazicon Svg="@GetIcon(Model.Icon)" />
+                </div>
+
+                <span>
+                    @(string.IsNullOrWhiteSpace(Model.Name)
+                        ? "Category name"
+                        : Model.Name)
+                </span>
+
+            </div>
+
         </div>
+
+        <footer class="modal-actions">
+
+            <button type="button"
+                    class="cancel-button"
+                    @onclick="HandleCancel"
+                    disabled="@IsLoading">
+
+                Cancel
+
+            </button>
+
+            <button type="submit"
+                    class="save-button"
+                    @onclick="HandleSubmit"
+                    disabled="@IsLoading">
+
+                @if (IsLoading)
+                {
+                    <span class="loading-spinner"></span>
+                    <span>Saving...</span>
+                }
+                else
+                {
+                    <Blazicon Svg="Lucide.Check" />
+                    <span>Save category</span>
+                }
+
+            </button>
+
+        </footer>
+
     </div>
 
-    <div class="form-actions">
-        <button type="button" class="btn-cancel" @onclick="OnCancel">
-            Cancel
-        </button>
-        <button type="submit" class="btn-save" disabled="@IsLoading">
-            @if (IsLoading)
-            {
-                <span class="spinner-border spinner-border-sm"></span>
-            }
-            @(IsLoading ? "Saving..." : "Save category")
-        </button>
-    </div>
-
-</EditForm>
+</div>
 
 @code {
 
@@ -86,22 +180,94 @@
     [Parameter]
     public EventCallback OnCancel { get; set; }
 
-    private readonly List<string> _emojis = new()
+    private readonly List<CategoryIcon> _icons =
+    new() { new("Shopping", Lucide.ShoppingCart),
+            new("Transport", Lucide.Bus),
+            new("Utilities", Lucide.Zap),
+            new("Entertainment", Lucide.Film),
+            new("Health", Lucide.HeartPulse),
+            new("Home", Lucide.House),
+            new("Clothing", Lucide.Shirt),
+            new("Education", Lucide.BookOpen),
+            new("Food", Lucide.Utensils),
+            new("Travel", Lucide.Plane),
+            new("Work", Lucide.Briefcase),
+            new("Gaming", Lucide.Gamepad2),
+            new("Medicine", Lucide.Pill),
+            new("Pets", Lucide.PawPrint),
+            new("Gifts", Lucide.Gift),
+            new("Other", Lucide.Inbox) };
+
+    private readonly Dictionary<string, SvgIcon> _iconMap = new()
     {
-        "🛒", "🚌", "⚡", "🎬", "🏥", "🏠", "👕", "📚",
-        "🍔", "✈️", "💼", "🎮", "💊", "🐾", "🎁", "📁"
+        ["Shopping"] = Lucide.ShoppingCart,
+        ["Transport"] = Lucide.Bus,
+        ["Utilities"] = Lucide.Zap,
+        ["Entertainment"] = Lucide.Film,
+        ["Health"] = Lucide.HeartPulse,
+        ["Home"] = Lucide.House,
+        ["Clothing"] = Lucide.Shirt,
+        ["Education"] = Lucide.BookOpen,
+        ["Food"] = Lucide.Utensils,
+        ["Travel"] = Lucide.Plane,
+        ["Work"] = Lucide.Briefcase,
+        ["Gaming"] = Lucide.Gamepad2,
+        ["Medicine"] = Lucide.Pill,
+        ["Pets"] = Lucide.PawPrint,
+        ["Gifts"] = Lucide.Gift,
+        ["Other"] = Lucide.Inbox
     };
+
+    private SvgIcon GetIcon(string? iconName)
+    {
+        return iconName is not null && _iconMap.TryGetValue(iconName, out var icon)
+            ? icon
+            : Lucide.Inbox;
+    }
+
 
     private readonly List<string> _colors = new()
     {
-        "#3B5BDB", "#10B981", "#F59E0B", "#F43F5E",
-        "#8B5CF6", "#06B6D4", "#EC4899", "#64748B",
-        "#059669", "#DC2626", "#D97706", "#7C3AED"
+        "#3B5BDB",
+        "#10B981",
+        "#F59E0B",
+        "#F43F5E",
+        "#8B5CF6",
+        "#06B6D4",
+        "#EC4899",
+        "#64748B",
+        "#059669",
+        "#DC2626",
+        "#D97706",
+        "#7C3AED"
     };
+
+
+    private void SelectIcon(string icon)
+    {
+        Model.Icon = icon;
+    }
+
+
+    private void SelectColor(string color)
+    {
+        Model.Color = color;
+    }
+
 
     private async Task HandleSubmit()
     {
         await OnSave.InvokeAsync(Model);
     }
+
+    private async Task HandleCancel()
+    {
+        await OnCancel.InvokeAsync(Model);
+    }
+
+    private record CategoryIcon(
+        string Name,
+        SvgIcon Icon
+    );
 
 }

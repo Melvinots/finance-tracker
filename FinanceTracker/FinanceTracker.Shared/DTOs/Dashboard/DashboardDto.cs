@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FinanceTracker.Shared.DTOs.Dashboard
+﻿namespace FinanceTracker.Shared.DTOs.Dashboard
 {
     public class DashboardDto
     {

@@ -121,7 +121,7 @@ namespace FinanceTracker.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Date")
@@ -223,9 +223,7 @@ namespace FinanceTracker.Migrations
                 {
                     b.HasOne("FinanceTracker.Models.Category", "Category")
                         .WithMany("Transactions")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("FinanceTracker.Models.User", "User")
                         .WithMany("Transactions")

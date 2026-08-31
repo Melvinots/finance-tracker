@@ -9,5 +9,6 @@ namespace FinanceTracker.Repositories
         Task<Transaction> CreateAsync(Transaction transaction);
         Task<Transaction> UpdateAsync(Transaction transaction);
         Task DeleteAsync(Transaction transaction);
+        Task<Category> GetOrCreateUncategorizedAsync(int userId);
     }
 }

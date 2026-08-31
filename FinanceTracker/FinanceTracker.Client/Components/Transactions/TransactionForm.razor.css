@@ -1,4 +1,8 @@
-﻿.modal-backdrop {
+/* =========================================
+   BACKDROP
+   ========================================= */
+
+.modal-backdrop {
     position: fixed;
     inset: 0;
     z-index: 1000;
@@ -6,155 +10,720 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    background: rgb(15 23 42 / 45%);
+    background: rgb(15 23 42 / 50%);
+    backdrop-filter: blur(4px);
+    animation: backdrop-in 200ms ease;
 }
+
+    .modal-backdrop:focus-visible {
+        outline: none;
+    }
+
+
+/* =========================================
+   MODAL CONTAINER
+   ========================================= */
 
 .transaction-modal {
-    width: min(100%, 540px);
+    width: min(100%, 500px);
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
-    padding: 1.5rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
-    background: #ffffff;
-    box-shadow: 0 20px 50px rgb(15 23 42 / 20%);
+    overscroll-behavior: contain;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-md, 0 24px 60px rgb(15 23 42 / 18%), 0 4px 12px rgb(15 23 42 / 6%));
+    animation: modal-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+    .transaction-modal::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .transaction-modal::-webkit-scrollbar-thumb {
+        border: 2px solid var(--surface);
+        border-radius: 8px;
+        background: var(--border);
+    }
+
+.drag-handle {
+    display: none;
+}
+
+
+/* =========================================
+   HEADER
+   ========================================= */
+
 .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
 }
 
-    .modal-header h2 {
-        margin: 0;
-        color: #0f172a;
-        font-size: 1.25rem;
-        font-weight: 700;
+.modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.modal-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border: 1px solid var(--primary-dim, var(--border));
+    border-radius: 10px;
+    background: var(--primary-tint, var(--surface-alt));
+    color: var(--primary);
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+    .modal-icon svg {
+        width: 18px;
+        height: 18px;
     }
 
-    .modal-header p {
-        margin: 0.375rem 0 0;
-        color: #64748b;
-        font-size: 0.875rem;
+    .modal-icon.expense {
+        border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+        background: var(--danger-dim);
+        color: var(--danger);
     }
+
+    .modal-icon.income {
+        border-color: color-mix(in srgb, var(--success) 35%, var(--border));
+        background: var(--success-dim, var(--surface-alt));
+        color: var(--success);
+    }
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.modal-header p {
+    margin: 0.2rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   CLOSE BUTTON
+   ========================================= */
 
 .close-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: none;
-    border-radius: 0.5rem;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 8px;
     background: transparent;
-    color: #64748b;
-    font-size: 1.5rem;
-    line-height: 1;
+    color: var(--text-muted);
     cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
 }
 
-    .close-button:hover {
-        background: #f1f5f9;
-        color: #0f172a;
+    .close-button:hover:not(:disabled) {
+        border-color: var(--border);
+        background: var(--surface-alt);
+        color: var(--text);
+    }
+
+    .close-button:active:not(:disabled) {
+        transform: scale(0.94);
+    }
+
+    .close-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .close-button svg {
+        width: 16px;
+        height: 16px;
+    }
+
+
+/* =========================================
+   FORM LAYOUT
+   ========================================= */
+
+.form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    padding: 1.5rem;
+    margin: 0;
+    border: none;
+    transition: opacity var(--transition);
+}
+
+    .form-content:disabled {
+        opacity: 0.6;
     }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    gap: 0.4rem;
 }
 
     .form-group label {
-        color: #334155;
-        font-size: 0.875rem;
-        font-weight: 600;
-    }
-
-.form-input {
-    width: 100%;
-    min-height: 2.75rem;
-    padding: 0.625rem 0.75rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 0.625rem;
-    background: #ffffff;
-    color: #1e293b;
-    font: inherit;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-    .form-input:focus {
-        border-color: #6366f1;
-        outline: none;
-        box-shadow: 0 0 0 3px rgb(99 102 241 / 12%);
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        font-weight: 650;
+        letter-spacing: 0.01em;
+        line-height: 1.3;
+        text-transform: uppercase;
     }
 
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 0.75rem;
 }
+
+
+/* =========================================
+   TYPE SELECTOR
+   ========================================= */
+
+.type-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.type-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+    .type-option:hover {
+        border-color: var(--border-hover, var(--border));
+        background: var(--surface-alt);
+    }
+
+    .type-option:active {
+        transform: scale(0.98);
+    }
+
+    .type-option svg {
+        width: 13px;
+        height: 13px;
+    }
+
+    .type-option.active.expense {
+        border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+        background: var(--danger-dim);
+        color: var(--danger);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 10%, transparent);
+    }
+
+        .type-option.active.expense .type-icon {
+            background: color-mix(in srgb, var(--danger) 18%, transparent);
+            transform: scale(1.08);
+        }
+
+    .type-option.active.income {
+        border-color: color-mix(in srgb, var(--success) 35%, var(--border));
+        background: var(--success-dim, var(--surface-alt));
+        color: var(--success);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 10%, transparent);
+    }
+
+        .type-option.active.income .type-icon {
+            background: color-mix(in srgb, var(--success) 18%, transparent);
+            transform: scale(1.08);
+        }
+
+.type-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--surface-alt);
+    color: inherit;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+
+/* =========================================
+   FIELD SHELLS
+   (icon-input, amount-input, compact-input share
+   the same wrapper + hover/focus behaviour; only
+   height, radius and icon size differ)
+   ========================================= */
+
+.icon-input,
+.amount-input,
+.compact-input {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+    .icon-input:hover,
+    .amount-input:hover,
+    .compact-input:hover {
+        border-color: var(--border-hover, var(--border));
+    }
+
+    .icon-input:focus-within,
+    .amount-input:focus-within,
+    .compact-input:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+
+.icon-input,
+.amount-input {
+    height: 42px;
+    border-radius: 10px;
+}
+
+.compact-input {
+    height: 38px;
+    border-radius: 9px;
+}
+
+/* Amount shell also tints its currency prefix by transaction type */
+.amount-input.is-expense .currency-prefix {
+    color: var(--danger);
+}
+
+.amount-input.is-income .currency-prefix {
+    color: var(--success);
+}
+
+
+/* -- Field shell icon/prefix slots -- */
+
+.input-icon,
+.compact-input-icon,
+.currency-prefix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    background: var(--surface-alt);
+    color: var(--text-muted);
+}
+
+.input-icon {
+    width: 48px;
+}
+
+    .input-icon svg {
+        width: 16px;
+        height: 16px;
+        stroke-width: 1.9;
+    }
+
+.compact-input-icon {
+    width: 42px;
+}
+
+    .compact-input-icon svg {
+        width: 15px;
+        height: 15px;
+        stroke-width: 1.9;
+    }
+
+.currency-prefix {
+    min-width: 48px;
+    padding: 0 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+
+/* -- Embedded field inputs (rendered inside the shells above) -- */
+
+::deep .description-field,
+::deep .amount-field,
+::deep .category-field,
+::deep .date-field {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+}
+
+    ::deep .description-field:hover,
+    ::deep .amount-field:hover,
+    ::deep .category-field:hover,
+    ::deep .date-field:hover {
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
+
+    ::deep .description-field:focus,
+    ::deep .amount-field:focus,
+    ::deep .category-field:focus,
+    ::deep .date-field:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+::deep .description-field {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+    ::deep .description-field::placeholder {
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
+::deep .amount-field {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+    ::deep .amount-field::placeholder {
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
+::deep .category-field {
+    padding: 0.5rem 0.7rem;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: auto;
+}
+
+::deep .date-field {
+    padding: 0.5rem 0.7rem;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+
+/* =========================================
+   VALIDATION
+   ========================================= */
 
 .validation-message {
-    color: #e11d48;
-    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.05rem;
+    color: var(--danger);
+    font-size: 0.68rem;
+    line-height: 1.3;
+    animation: validation-in 150ms ease-out;
 }
 
+
+/* =========================================
+   ACTIONS
+   ========================================= */
+
 .modal-actions {
+    position: sticky;
+    bottom: 0;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid #f1f5f9;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface-alt);
 }
 
 .primary-button,
 .secondary-button {
-    min-height: 2.75rem;
-    padding: 0.625rem 1rem;
-    border-radius: 0.625rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 38px;
+    padding: 0.55rem 0.95rem;
+    border-radius: 9px;
     font: inherit;
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 0.72rem;
+    font-weight: 650;
     cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, opacity 150ms ease;
 }
+
+    .primary-button:disabled,
+    .secondary-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none !important;
+    }
+
+    .primary-button svg {
+        width: 15px;
+        height: 15px;
+    }
 
 .primary-button {
-    border: 1px solid #4f46e5;
-    background: #4f46e5;
-    color: #ffffff;
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: var(--on-primary, #ffffff);
+    box-shadow: var(--shadow-sm);
 }
 
-    .primary-button:hover {
-        background: #4338ca;
+    .primary-button:hover:not(:disabled) {
+        border-color: var(--primary-hover);
+        background: var(--primary-hover);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
     }
+
+    .primary-button:active:not(:disabled) {
+        box-shadow: var(--shadow-sm);
+        transform: translateY(0);
+    }
+
+    .primary-button.expense {
+        border-color: var(--danger);
+        background: var(--danger);
+    }
+
+        .primary-button.expense:hover:not(:disabled) {
+            border-color: var(--danger-hover, var(--danger));
+            background: var(--danger-hover, var(--danger));
+            filter: brightness(0.94);
+        }
+
+    .primary-button.income {
+        border-color: var(--success);
+        background: var(--success);
+    }
+
+        .primary-button.income:hover:not(:disabled) {
+            border-color: var(--success-hover, var(--success));
+            background: var(--success-hover, var(--success));
+            filter: brightness(0.94);
+        }
 
 .secondary-button {
-    border: 1px solid #e2e8f0;
-    background: #ffffff;
-    color: #475569;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
 }
 
-    .secondary-button:hover {
-        background: #f8fafc;
+    .secondary-button:hover:not(:disabled) {
+        border-color: var(--border-hover, var(--border));
+        background: var(--surface-alt);
+        color: var(--text);
     }
 
+    .secondary-button:active:not(:disabled) {
+        transform: scale(0.98);
+    }
+
+.button-spinner {
+    width: 13px;
+    height: 13px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spinner-rotate 0.6s linear infinite;
+}
+
+
+/* =========================================
+   FOCUS
+   ========================================= */
+
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.close-button:focus-visible,
+.type-option:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+
+/* =========================================
+   ANIMATIONS
+   ========================================= */
+
+@keyframes backdrop-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes sheet-in {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes spinner-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes validation-in {
+    from {
+        opacity: 0;
+        transform: translateY(-2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
 @media (max-width: 600px) {
+
+    .modal-backdrop {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .transaction-modal {
+        width: 100%;
+        max-height: 94vh;
+        border-right: 0;
+        border-bottom: 0;
+        border-left: 0;
+        border-radius: 18px 18px 0 0;
+        animation: sheet-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .drag-handle {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: block;
+        width: 36px;
+        height: 4px;
+        margin: 0.6rem auto 0;
+        border-radius: 4px;
+        background: var(--border);
+    }
+
+    .modal-header {
+        padding: 0.85rem 1rem 1rem;
+    }
+
+    .form-content {
+        padding: 1rem;
+    }
+
     .form-row {
         grid-template-columns: 1fr;
-        gap: 0;
+        gap: 1rem;
     }
 
     .modal-actions {
-        flex-direction: column-reverse;
+        padding: 0.9rem 1rem calc(0.9rem + env(safe-area-inset-bottom));
     }
 
     .primary-button,
     .secondary-button {
-        width: 100%;
+        flex: 1;
+    }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .modal-backdrop,
+    .transaction-modal,
+    .type-option,
+    .close-button,
+    .primary-button,
+    .secondary-button,
+    .validation-message {
+        animation: none;
+        transition: none;
+    }
+
+    .button-spinner {
+        animation-duration: 1.2s;
     }
 }

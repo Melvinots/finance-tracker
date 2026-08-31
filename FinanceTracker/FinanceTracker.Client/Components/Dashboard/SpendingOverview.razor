@@ -18,16 +18,20 @@
                     @bind="selectedPeriod"
                     @bind:after="UpdateChart">
 
-                <option value="month">
-                    This Month
+                <option value="@SpendingPeriod.Last3Months">
+                    Last 3 Months
                 </option>
 
-                <option value="last">
-                    Last Month
-                </option>
-
-                <option value="6months">
+                <option value="@SpendingPeriod.Last6Months">
                     Last 6 Months
+                </option>
+
+                <option value="@SpendingPeriod.Last9Months">
+                    Last 9 Months
+                </option>
+
+                <option value="@SpendingPeriod.Last12Months">
+                    Last 12 Months
                 </option>
 
             </select>
@@ -42,17 +46,15 @@
 
             <RadzenChart>
 
-                <RadzenBarSeries Data="@chartData"
-                                 CategoryProperty="Month"
-                                 ValueProperty="Income"
-                                 Title="Income"
-                                 Fill="#3B5BDB" />
+                <RadzenColumnSeries Data="@chartData"
+                                    CategoryProperty="Month"
+                                    ValueProperty="Income"
+                                    Title="Income" />
 
-                <RadzenBarSeries Data="@chartData"
-                                 CategoryProperty="Month"
-                                 ValueProperty="Expenses"
-                                 Title="Expenses"
-                                 Fill="#F43F5E" />
+                <RadzenColumnSeries Data="@chartData"
+                                    CategoryProperty="Month"
+                                    ValueProperty="Expenses"
+                                    Title="Expenses" />
 
                 <RadzenCategoryAxis Padding="20" />
 
@@ -76,10 +78,16 @@
 
 @code {
 
-    [Parameter] public List<MonthlySpendingDto>? Data { get; set; }
+    [Parameter]
+    public List<MonthlySpendingDto> Data { get; set; } = new();
 
-    private string selectedPeriod = "6months";
-    private List<MonthlySpendingDto> chartData = new();
+    [Parameter]
+    public string SelectedMonth { get; set; } = DateTime.Now.ToString("yyyy-MM");
+
+    private SpendingPeriod selectedPeriod = SpendingPeriod.Last6Months;
+
+    private IEnumerable<MonthlySpendingDto> chartData =
+        Enumerable.Empty<MonthlySpendingDto>();
 
     protected override void OnParametersSet()
     {
@@ -88,27 +96,77 @@
 
     private void UpdateChart()
     {
-        if (Data is null || Data.Count == 0)
+        if (string.IsNullOrWhiteSpace(SelectedMonth))
         {
-            Data = new()
-            {
-                new MonthlySpendingDto { Month = "Jan", Income = 42000, Expenses = 28000 },
-                new MonthlySpendingDto { Month = "Feb", Income = 38000, Expenses = 31000 },
-                new MonthlySpendingDto { Month = "Mar", Income = 45000, Expenses = 29000 },
-                new MonthlySpendingDto { Month = "Apr", Income = 41000, Expenses = 33000 },
-                new MonthlySpendingDto { Month = "May", Income = 46000, Expenses = 30000 },
-                new MonthlySpendingDto { Month = "Jun", Income = 44000, Expenses = 35000 },
-                new MonthlySpendingDto { Month = "Jul", Income = 48500, Expenses = 32140 },
-            };
+            chartData = Enumerable.Empty<MonthlySpendingDto>();
+            return;
         }
 
-        chartData = selectedPeriod switch
+        if (!DateTime.TryParseExact(
+                SelectedMonth,
+                "yyyy-MM",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var selectedDate))
         {
-            "month" => Data.TakeLast(1).ToList(),
-            "last" => Data.TakeLast(2).Take(1).ToList(),
-            "6months" => Data.TakeLast(6).ToList(),
-            _ => Data
+            chartData = Enumerable.Empty<MonthlySpendingDto>();
+            return;
+        }
+
+        var monthCount = selectedPeriod switch
+        {
+            SpendingPeriod.Last3Months => 3,
+            SpendingPeriod.Last6Months => 6,
+            SpendingPeriod.Last9Months => 9,
+            SpendingPeriod.Last12Months => 12,
+            _ => 6
         };
+
+        var startMonth = new DateTime(
+            selectedDate.Year,
+            selectedDate.Month,
+            1).AddMonths(-(monthCount - 1));
+
+        chartData = Data
+            .Where(x =>
+            {
+                var itemMonth = new DateTime(
+                    x.Year,
+                    x.MonthNumber,
+                    1);
+
+                return itemMonth >= startMonth &&
+                       itemMonth <= selectedDate;
+            })
+            .OrderBy(x => x.Year)
+            .ThenBy(x => x.MonthNumber)
+            .ToList();
     }
 
+    private IEnumerable<MonthlySpendingDto> GetLastMonthData(
+        DateTime selectedMonth)
+    {
+        var lastMonth = selectedMonth.AddMonths(-1);
+
+        return Data.Where(x =>
+            x.Year == lastMonth.Year &&
+            x.MonthNumber == lastMonth.Month);
+    }
+
+    private IEnumerable<MonthlySpendingDto> GetLastSixMonthsData(
+        DateTime selectedMonth)
+    {
+        var startMonth = selectedMonth.AddMonths(-5);
+
+        return Data.Where(x =>
+        {
+            var itemMonth = new DateTime(
+                x.Year,
+                x.MonthNumber,
+                1);
+
+            return itemMonth >= startMonth &&
+                   itemMonth <= selectedMonth;
+        });
+    }
 }

@@ -1,0 +1,26 @@
+﻿@namespace FinanceTracker.Client.Components.Budgets
+
+<div class="budget-list">
+
+    @foreach (var budget in Budgets)
+    {
+        <BudgetCard Budget="@budget"
+                    OnEdit="@OnEdit"
+                    OnDelete="@OnDelete" />
+    }
+
+</div>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<BudgetDto> Budgets { get; set; }
+        = Enumerable.Empty<BudgetDto>();
+
+    [Parameter]
+    public EventCallback<BudgetDto> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<BudgetDto> OnDelete { get; set; }
+
+}

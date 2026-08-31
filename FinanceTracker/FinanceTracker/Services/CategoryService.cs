@@ -4,11 +4,11 @@ using FinanceTracker.Shared.DTOs.Categories;
 
 namespace FinanceTracker.Services
 {
-    public class CategoriesService : ICategoriesService
+    public class CategoryService : ICategoryService
     {
-        private readonly ICategoriesRepository _repo;
+        private readonly ICategoryRepository _repo;
 
-        public CategoriesService(ICategoriesRepository repo)
+        public CategoryService(ICategoryRepository repo)
         {
             _repo = repo;
         }

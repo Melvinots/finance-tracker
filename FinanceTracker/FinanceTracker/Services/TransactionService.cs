@@ -27,14 +27,22 @@ namespace FinanceTracker.Services
 
         public async Task<TransactionDto> CreateAsync(SaveTransactionDto dto, int userId)
         {
+            var categoryId = dto.CategoryId;
+
+            if (categoryId is null || categoryId == 0)
+            {
+                var category = await _repo.GetOrCreateUncategorizedAsync(userId);
+                categoryId = category.Id;
+            }
+
             var transaction = new Transaction
             {
-                Amount = dto.Amount,
+                Amount = dto.Amount ?? 0,
                 Description = dto.Description,
                 Date = dto.Date,
                 IsExpense = dto.IsExpense,
                 Notes = dto.Notes,
-                CategoryId = dto.CategoryId,
+                CategoryId = categoryId,
                 UserId = userId
             };
 
@@ -49,7 +57,7 @@ namespace FinanceTracker.Services
             var transaction = await _repo.GetByIdAsync(id, userId)
                 ?? throw new KeyNotFoundException("Transaction not found.");
 
-            transaction.Amount = dto.Amount;
+            transaction.Amount = dto.Amount ?? 0;
             transaction.Description = dto.Description;
             transaction.Date = dto.Date;
             transaction.IsExpense = dto.IsExpense;
@@ -81,9 +89,9 @@ namespace FinanceTracker.Services
             IsExpense = t.IsExpense,
             Notes = t.Notes,
             CategoryId = t.CategoryId,
-            CategoryName = t.Category.Name,
-            CategoryColor = t.Category.Color,
-            CategoryIcon = t.Category.Icon
+            CategoryName = t?.Category?.Name,
+            CategoryColor = t?.Category?.Color,
+            CategoryIcon = t?.Category?.Icon
         };
     }
 }

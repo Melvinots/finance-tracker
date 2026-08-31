@@ -8,35 +8,84 @@
 
     <header class="page-header">
 
-        <div>
-            <h1>Transactions</h1>
-            <p>
-                Track and manage your income and expenses.
-            </p>
+        <div class="page-heading">
+
+            <div class="page-title-row">
+
+                <div class="page-title-icon">
+                    <Blazicon Svg="Lucide.ArrowLeftRight" />
+                </div>
+
+                <div>
+                    <h1>Transactions</h1>
+
+                    <p>
+                        View, track, and manage your income and expenses.
+                    </p>
+                </div>
+
+            </div>
+
         </div>
 
-        <button class="primary-button" @onclick="OpenCreateModal">
+        <button class="primary-button"
+                type="button"
+                @onclick="OpenCreateModal">
 
-            <span>＋</span>
-            Add transaction
+            <Blazicon Svg="Lucide.Plus" />
+
+            <span>Add transaction</span>
 
         </button>
 
     </header>
 
+    @if (_errorMessage is not null)
+    {
+        <div class="error-banner" role="alert">
+            <span>@_errorMessage</span>
+            <button type="button" class="error-dismiss" @onclick="() => _errorMessage = null">
+                Dismiss
+            </button>
+        </div>
+    }
+
     <LoadingWrapper IsLoading="@_isLoading"
                     Message="Loading your transactions...">
 
-        <TransactionToolbar
-            SearchTerm="@_searchTerm"
-            SearchTermChanged="@OnSearchChanged"
-            SelectedType="@_selectedType"
-            SelectedTypeChanged="@OnTypeChanged" />
+        <section class="transactions-content">
 
-        <TransactionTable
-            Transactions="@FilteredTransactions"
-            OnEdit="@OpenEditModal"
-            OnDelete="@DeleteTransaction" />
+            <div class="content-header">
+
+                <div>
+                    <h2>All transactions</h2>
+
+                    <p>
+                        @_filteredTransactions.Count transaction@(_filteredTransactions.Count == 1 ? "" : "s")
+                    </p>
+                </div>
+
+            </div>
+
+            <TransactionToolbar SearchTerm="@_searchTerm"
+                                SearchTermChanged="@OnSearchChanged"
+                                SelectedType="@_selectedType"
+                                SelectedTypeChanged="@OnTypeChanged" />
+
+            @if (_filteredTransactions.Count == 0)
+            {
+                <div class="empty-transactions">
+                    <p>No transactions match your filters.</p>
+                </div>
+            }
+            else
+            {
+                <TransactionTable Transactions="@_filteredTransactions"
+                                  OnEdit="@OpenEditModal"
+                                  OnDelete="@DeleteTransaction" />
+            }
+
+        </section>
 
     </LoadingWrapper>
 
@@ -44,18 +93,29 @@
 
 @if (_showModal)
 {
-    <TransactionForm
-        Transaction="@_selectedTransaction"
-        Categories="@_categories"
-        OnSave="@SaveTransaction"
-        OnCancel="@CloseModal" />
+    <TransactionForm Transaction="@_selectedTransaction"
+                     Categories="@_categories"
+                     OnSave="@SaveTransaction"
+                     OnCancel="@CloseModal" />
+}
+
+@if (_pendingDelete is not null)
+{
+    <ConfirmDialog IsOpen="true"
+                   Title="Delete transaction?"
+                   Message="@($"This will permanently remove \"{_pendingDelete.Description}\". This can't be undone.")"
+                   ConfirmLabel="Delete"
+                   OnConfirm="@ConfirmDelete"
+                   OnCancel="@(() => _pendingDelete = null)" />
 }
 
 @code {
 
     private bool _isLoading = true;
 
-    private bool _showModal = false ;
+    private bool _showModal = false;
+
+    private string? _errorMessage;
 
     private string _searchTerm = string.Empty;
 
@@ -63,11 +123,13 @@
 
     private List<TransactionDto> _transactions = new();
 
+    private List<TransactionDto> _filteredTransactions = new();
+
     private List<CategoryDto> _categories = new();
 
     private TransactionDto? _selectedTransaction;
 
-    private IEnumerable<TransactionDto> FilteredTransactions => _transactions.Where(MatchesSearch).Where(MatchesType);
+    private TransactionDto? _pendingDelete;
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,11 +140,16 @@
     private async Task LoadTransactions()
     {
         _isLoading = true;
+        _errorMessage = null;
 
         try
         {
-            await Task.Delay(1000);
             _transactions = await TransactionService.GetAllAsync();
+            ApplyFilters();
+        }
+        catch (Exception)
+        {
+            _errorMessage = "We couldn't load your transactions. Please try again.";
         }
         finally
         {
@@ -92,7 +159,22 @@
 
     private async Task LoadCategoriesAsync()
     {
-        _categories = await CategoryService.GetAllAsync();
+        try
+        {
+            _categories = await CategoryService.GetAllAsync();
+        }
+        catch (Exception)
+        {
+            _errorMessage ??= "We couldn't load your categories.";
+        }
+    }
+
+    private void ApplyFilters()
+    {
+        _filteredTransactions = _transactions
+            .Where(MatchesSearch)
+            .Where(MatchesType)
+            .ToList();
     }
 
     private bool MatchesSearch(TransactionDto transaction)
@@ -102,8 +184,12 @@
             return true;
         }
 
-        return transaction.Description.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase) ||
-               transaction.CategoryName.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase);
+        return transaction.Description.Contains(
+                   _searchTerm,
+                   StringComparison.OrdinalIgnoreCase)
+            || transaction.CategoryName.Contains(
+                   _searchTerm,
+                   StringComparison.OrdinalIgnoreCase);
     }
 
     private bool MatchesType(TransactionDto transaction)
@@ -119,54 +205,84 @@
     private void OnSearchChanged(string value)
     {
         _searchTerm = value;
+        ApplyFilters();
     }
 
     private void OnTypeChanged(string value)
     {
         _selectedType = value;
+        ApplyFilters();
     }
 
     private void OpenCreateModal()
     {
         _selectedTransaction = null;
-
         _showModal = true;
     }
 
     private void OpenEditModal(TransactionDto transaction)
     {
         _selectedTransaction = transaction;
-
         _showModal = true;
     }
 
     private void CloseModal()
     {
         _showModal = false;
-
         _selectedTransaction = null;
     }
 
     private async Task SaveTransaction(SaveTransactionDto transaction)
     {
-        if (_selectedTransaction is null)
+        try
         {
-            await TransactionService.CreateAsync(transaction);
+            if (_selectedTransaction is null)
+            {
+                await TransactionService.CreateAsync(transaction);
+            }
+            else
+            {
+                await TransactionService.UpdateAsync(
+                    _selectedTransaction.Id,
+                    transaction);
+            }
+
+            CloseModal();
+
+            await LoadTransactions();
         }
-        else
+        catch (Exception)
         {
-            await TransactionService.UpdateAsync(_selectedTransaction.Id, transaction);
+            _errorMessage = "We couldn't save this transaction. Please try again.";
         }
-
-        CloseModal();
-
-        await LoadTransactions();
     }
 
-    private async Task DeleteTransaction(TransactionDto transaction)
+    private void DeleteTransaction(TransactionDto transaction)
     {
-        await TransactionService.DeleteAsync(transaction.Id);
+        _pendingDelete = transaction;
+    }
 
-        _transactions.Remove(transaction);
+    private async Task ConfirmDelete()
+    {
+        if (_pendingDelete is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await TransactionService.DeleteAsync(_pendingDelete.Id);
+
+            _transactions.Remove(_pendingDelete);
+            ApplyFilters();
+        }
+        catch (Exception)
+        {
+            _errorMessage = "We couldn't delete this transaction. Please try again.";
+        }
+        finally
+        {
+            _pendingDelete = null;
+        }
     }
 }

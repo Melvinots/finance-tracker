@@ -19,6 +19,7 @@ namespace FinanceTracker.Repositories
                 .Include(t => t.Category)
                 .Where(t => t.UserId == userId)
                 .OrderByDescending(t => t.Date)
+                .ThenByDescending(t => t.Id)
                 .ToListAsync();
         }
 
@@ -47,6 +48,27 @@ namespace FinanceTracker.Repositories
         {
             _context.Transactions.Remove(transaction);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Category> GetOrCreateUncategorizedAsync(int userId)
+        {
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(c => c.UserId == userId && c.Name == "Uncategorized");
+
+            if (category is null)
+            {
+                category = new Category
+                {
+                    Name = "Uncategorized",
+                    Icon = "Other",
+                    Color = "#64748B",
+                    UserId = userId
+                };
+                await _context.Categories.AddAsync(category);
+                await _context.SaveChangesAsync();
+            }
+
+            return category;
         }
     }
 }

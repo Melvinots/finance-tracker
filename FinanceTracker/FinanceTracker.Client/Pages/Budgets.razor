@@ -1,19 +1,266 @@
 ﻿@page "/budgets"
 @attribute [Authorize]
 
-<LoadingWrapper IsLoading="@isLoading" Message="Loading your dashboard...">
-    <h1>Budgets</h1>
-    <p>Coming soon.</p>
-</LoadingWrapper>
+@inject BudgetService BudgetService
+@inject CategoryService CategoryService
+
+<div class="budgets-page">
+
+    <header class="page-header">
+
+        <div class="page-heading">
+
+            <div class="page-title-row">
+
+                <div class="page-title-icon">
+                    <Blazicon Svg="Lucide.WalletCards" />
+                </div>
+
+                <div>
+                    <h1>Budgets</h1>
+
+                    <p>
+                        Set spending limits and keep your expenses on track.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="page-actions">
+
+            <select class="month-select"
+                    @bind="_selectedMonth"
+                    @bind:after="LoadBudgets">
+
+                @for (int month = DateTime.Now.Month; month >= 1; month--)
+                {
+                    var date = new DateTime(
+                        DateTime.Now.Year,
+                        month,
+                        1);
+
+                    <option value="@date.ToString("yyyy-MM")">
+                        @date.ToString("MMMM yyyy")
+                    </option>
+                }
+
+            </select>
+
+            <button class="primary-button"
+                    type="button"
+                    @onclick="OpenCreateModal">
+
+                <Blazicon Svg="Lucide.Plus" />
+
+                <span>Add budget</span>
+
+            </button>
+
+        </div>
+
+    </header>
+
+    <LoadingWrapper IsLoading="@_isLoading"
+                    Message="Loading your budgets...">
+
+        <section class="budgets-content">
+
+            <div class="content-header">
+
+                <div>
+                    <h2>Budget overview</h2>
+
+                    <p>
+                        @_budgets.Count
+                        @(_budgets.Count == 1 ? "budget" : "budgets")
+                    </p>
+                </div>
+
+            </div>
+
+            @if (!_budgets.Any())
+            {
+                <div class="empty-budgets">
+
+                    <p>
+                        No budgets have been created for this month.
+                    </p>
+
+                    <button class="primary-button"
+                            type="button"
+                            @onclick="OpenCreateModal">
+
+                        <Blazicon Svg="Lucide.Plus" />
+
+                        <span>Add your first budget</span>
+
+                    </button>
+
+                </div>
+            }
+            else
+            {
+                <BudgetList Budgets="@_budgets"
+                            OnEdit="@OpenEditModal"
+                            OnDelete="@DeleteBudget" />
+            }
+
+        </section>
+
+    </LoadingWrapper>
+
+</div>
+
+@if (_showModal)
+{
+    <BudgetForm Budget="@_selectedBudget"
+                Categories="@_categories"
+                Year="2026"
+                Month="8"
+                OnSave="@SaveBudget"
+                OnCancel="@CloseModal" />
+}
+
+@if (_pendingDelete is not null)
+{
+    <ConfirmDialog IsOpen="true"
+                   Title="Delete budget?"
+                   Message="@($"This will permanently remove budget for \"{_pendingDelete.CategoryName}\". This can't be undone.")"
+                   ConfirmLabel="Delete"
+                   OnConfirm="@ConfirmDelete"
+                   OnCancel="@(() => _pendingDelete = null)" />
+}
 
 @code {
 
-    private bool isLoading = true;
+    private bool _isLoading = true;
+
+    private bool _showModal;
+
+    private string _selectedMonth =
+        DateTime.Now.ToString("yyyy-MM");
+
+    private List<BudgetDto> _budgets = new();
+
+    private List<CategoryDto> _allCategories = new();
+
+    private List<CategoryDto> _categories = new();
+
+    private BudgetDto? _selectedBudget;
+
+    private BudgetDto? _pendingDelete;
+
+    private string? _errorMessage;
+
+    private DateTime SelectedDate =>
+        DateTime.ParseExact(
+            _selectedMonth,
+            "yyyy-MM",
+            null);
+
     protected override async Task OnInitializedAsync()
     {
-        // Simulate loading delay
-        await Task.Delay(1000);
-        isLoading = false;
+        await LoadBudgets();
+        await LoadCategoriesAsync();
     }
 
+    private async Task LoadBudgets()
+    {
+        _isLoading = true;
+
+        try
+        {
+            _budgets = await BudgetService.GetAllAsync(
+                SelectedDate.Month,
+                SelectedDate.Year);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task LoadCategoriesAsync()
+    {
+        _allCategories = await CategoryService.GetAllAsync();
+
+        UpdateAvailableCategories();
+    }
+
+    private void UpdateAvailableCategories()
+    {
+        _categories = _allCategories
+            .Where(category => !_budgets.Any(
+                budget => budget.CategoryId == category.Id))
+            .ToList();
+    }
+
+    private void OpenCreateModal()
+    {
+        _selectedBudget = null;
+        _showModal = true;
+    }
+
+    private void OpenEditModal(BudgetDto budget)
+    {
+        _selectedBudget = budget;
+        _showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        _showModal = false;
+        _selectedBudget = null;
+    }
+
+    private async Task SaveBudget(SaveBudgetDto budget)
+    {
+        if (_selectedBudget is null)
+        {
+            await BudgetService.CreateAsync(budget);
+        }
+        else
+        {
+            await BudgetService.UpdateAsync(
+                _selectedBudget.Id,
+                budget);
+        }
+
+        CloseModal();
+
+        await LoadBudgets();
+        UpdateAvailableCategories();
+    }
+
+    private void DeleteBudget(BudgetDto budget)
+    {
+        _pendingDelete = budget;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (_pendingDelete is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await BudgetService.DeleteAsync(_pendingDelete.Id);
+
+            _budgets.Remove(_pendingDelete);
+
+            UpdateAvailableCategories();
+        }
+        catch (Exception)
+        {
+            _errorMessage = "We couldn't delete this transaction. Please try again.";
+        }
+        finally
+        {
+            _pendingDelete = null;
+        }
+    }
 }

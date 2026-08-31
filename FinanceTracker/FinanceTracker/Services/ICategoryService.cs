@@ -3,7 +3,7 @@ using FinanceTracker.Shared.DTOs.Categories;
 
 namespace FinanceTracker.Services
 {
-    public interface ICategoriesService
+    public interface ICategoryService
     {
         Task<List<CategoryDto>> GetAllByUserAsync(int userId);
         Task<CategoryDto?> GetByIdAsync(int id, int userId);

@@ -1,0 +1,640 @@
+﻿/* =========================================
+   BACKDROP
+   ========================================= */
+
+.budget-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgb(15 23 42 / 50%);
+    backdrop-filter: blur(4px);
+    animation: backdrop-in 200ms ease;
+}
+
+    .budget-modal-backdrop:focus-visible {
+        outline: none;
+    }
+
+
+/* =========================================
+   MODAL CONTAINER
+   ========================================= */
+
+.budget-modal {
+    width: min(100%, 480px);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-md, 0 24px 60px rgb(15 23 42 / 18%), 0 4px 12px rgb(15 23 42 / 6%));
+    animation: modal-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+    .budget-modal::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .budget-modal::-webkit-scrollbar-thumb {
+        border: 2px solid var(--surface);
+        border-radius: 8px;
+        background: var(--border);
+    }
+
+.drag-handle {
+    display: none;
+}
+
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.budget-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.budget-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.budget-modal-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border: 1px solid var(--primary-dim, var(--border));
+    border-radius: 10px;
+    background: var(--primary-tint, var(--surface-alt));
+    color: var(--primary);
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+    .budget-modal-icon svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2;
+    }
+
+.budget-modal-header h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.budget-modal-header p {
+    margin: 0.2rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   CLOSE BUTTON
+   ========================================= */
+
+.close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+    .close-button:hover:not(:disabled) {
+        border-color: var(--border);
+        background: var(--surface-alt);
+        color: var(--text);
+    }
+
+    .close-button:active:not(:disabled) {
+        transform: scale(0.94);
+    }
+
+    .close-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .close-button svg {
+        width: 16px;
+        height: 16px;
+    }
+
+
+/* =========================================
+   FORM LAYOUT
+   ========================================= */
+
+.form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    padding: 1.5rem;
+    margin: 0;
+    border: none;
+    transition: opacity var(--transition);
+}
+
+    .form-content:disabled {
+        opacity: 0.6;
+    }
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+    .form-group label {
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        font-weight: 650;
+        letter-spacing: 0.01em;
+        line-height: 1.3;
+        text-transform: uppercase;
+    }
+
+
+/* =========================================
+   FIELD SHELLS
+   (compact-input + amount-input share the same
+   wrapper + hover/focus behaviour as the
+   transaction form)
+   ========================================= */
+
+.compact-input,
+.amount-input {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+    .compact-input:hover,
+    .amount-input:hover {
+        border-color: var(--border-hover, var(--border));
+    }
+
+    .compact-input:focus-within,
+    .amount-input:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+
+    .compact-input.readonly {
+        background: var(--surface-alt);
+        cursor: not-allowed;
+    }
+
+        .compact-input.readonly:hover {
+            border-color: var(--border);
+        }
+
+.compact-input-icon,
+.currency-prefix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 42px;
+    border-right: 1px solid var(--border);
+    background: var(--surface-alt);
+    color: var(--text-muted);
+}
+
+    .compact-input-icon svg {
+        width: 15px;
+        height: 15px;
+        stroke-width: 1.9;
+    }
+
+.currency-prefix {
+    min-width: 42px;
+    padding: 0 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.readonly-value {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    min-width: 0;
+    padding: 0 0.75rem;
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.readonly-lock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    color: var(--text-muted);
+}
+
+    .readonly-lock svg {
+        width: 14px;
+        height: 14px;
+    }
+
+
+/* -- Embedded field inputs -- */
+
+::deep .category-field,
+::deep .amount-field {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+}
+
+    ::deep .category-field:hover,
+    ::deep .amount-field:hover,
+    ::deep .category-field:focus,
+    ::deep .amount-field:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+::deep .category-field {
+    padding: 0.5rem 0.7rem;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: auto;
+}
+
+::deep .amount-field {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+    ::deep .amount-field::placeholder {
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
+
+/* =========================================
+   PERIOD
+   ========================================= */
+
+.budget-period {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-alt);
+}
+
+.budget-period-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.period-label {
+    color: var(--text-muted);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.budget-period strong {
+    color: var(--text);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.budget-period > svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+}
+
+
+/* =========================================
+   VALIDATION & ERROR
+   ========================================= */
+
+.validation-message {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.05rem;
+    color: var(--danger);
+    font-size: 0.68rem;
+    line-height: 1.3;
+    animation: validation-in 150ms ease-out;
+}
+
+.form-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--border));
+    border-radius: 10px;
+    background: var(--danger-dim);
+    color: var(--danger);
+    font-size: 0.7rem;
+    line-height: 1.4;
+    animation: validation-in 150ms ease-out;
+}
+
+    .form-error svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+    }
+
+
+/* =========================================
+   ACTIONS
+   ========================================= */
+
+.modal-actions {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface-alt);
+}
+
+.primary-button,
+.secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 38px;
+    padding: 0.55rem 0.95rem;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, opacity 150ms ease;
+}
+
+    .primary-button:disabled,
+    .secondary-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none !important;
+    }
+
+    .primary-button svg {
+        width: 15px;
+        height: 15px;
+    }
+
+.primary-button {
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: var(--on-primary, #ffffff);
+    box-shadow: var(--shadow-sm);
+}
+
+    .primary-button:hover:not(:disabled) {
+        border-color: var(--primary-hover);
+        background: var(--primary-hover);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
+    }
+
+    .primary-button:active:not(:disabled) {
+        box-shadow: var(--shadow-sm);
+        transform: translateY(0);
+    }
+
+.secondary-button {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+}
+
+    .secondary-button:hover:not(:disabled) {
+        border-color: var(--border-hover, var(--border));
+        background: var(--surface-alt);
+        color: var(--text);
+    }
+
+    .secondary-button:active:not(:disabled) {
+        transform: scale(0.98);
+    }
+
+.button-spinner {
+    width: 13px;
+    height: 13px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spinner-rotate 0.6s linear infinite;
+}
+
+
+/* =========================================
+   FOCUS
+   ========================================= */
+
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.close-button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+
+/* =========================================
+   ANIMATIONS
+   ========================================= */
+
+@keyframes backdrop-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes sheet-in {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes spinner-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes validation-in {
+    from {
+        opacity: 0;
+        transform: translateY(-2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .budget-modal-backdrop {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .budget-modal {
+        width: 100%;
+        max-height: 94vh;
+        border-right: 0;
+        border-bottom: 0;
+        border-left: 0;
+        border-radius: 18px 18px 0 0;
+        animation: sheet-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .drag-handle {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: block;
+        width: 36px;
+        height: 4px;
+        margin: 0.6rem auto 0;
+        border-radius: 4px;
+        background: var(--border);
+    }
+
+    .budget-modal-header {
+        padding: 0.85rem 1rem 1rem;
+    }
+
+    .form-content {
+        padding: 1rem;
+    }
+
+    .modal-actions {
+        padding: 0.9rem 1rem calc(0.9rem + env(safe-area-inset-bottom));
+    }
+
+    .primary-button,
+    .secondary-button {
+        flex: 1;
+    }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .budget-modal-backdrop,
+    .budget-modal,
+    .close-button,
+    .primary-button,
+    .secondary-button,
+    .validation-message,
+    .form-error {
+        animation: none;
+        transition: none;
+    }
+
+    .button-spinner {
+        animation-duration: 1.2s;
+    }
+}

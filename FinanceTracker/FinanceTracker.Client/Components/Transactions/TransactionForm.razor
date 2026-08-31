@@ -1,133 +1,215 @@
-﻿@namespace FinanceTracker.Client.Components.Transactions
+@namespace FinanceTracker.Client.Components.Transactions
 
-<div class="modal-backdrop">
+<div class="modal-backdrop"
+     tabindex="-1"
+     @onkeydown="HandleKeyDown">
 
-    <div class="transaction-modal">
+    <div class="transaction-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="transaction-modal-title">
 
-        <div class="modal-header">
+        <div class="drag-handle"></div>
 
-            <div>
-                <h2>
-                    @(Transaction is null
-                        ? "Add transaction"
-                        : "Edit transaction")
-                </h2>
+        <!-- Header -->
+        <header class="modal-header">
 
-                <p>
-                    Record your income or expense.
-                </p>
+            <div class="modal-title-group">
+
+                <div class="modal-icon @(model.IsExpense ? "expense" : "income")">
+                    <Blazicon Svg="@(Transaction is null ? Lucide.Plus : Lucide.Pencil)" />
+                </div>
+
+                <div>
+                    <h2 id="transaction-modal-title">
+                        @(Transaction is null ? "Add transaction" : "Edit transaction")
+                    </h2>
+
+                    <p>
+                        @(Transaction is null
+                            ? "Add a new transaction to your records."
+                            : "Update your transaction details.")
+                    </p>
+                </div>
+
             </div>
 
             <button type="button"
                     class="close-button"
+                    title="Close"
+                    aria-label="Close"
+                    disabled="@_isSubmitting"
                     @onclick="OnCancel">
 
-                ×
+                <Blazicon Svg="Lucide.X" />
 
             </button>
 
-        </div>
+        </header>
+
 
         <EditForm Model="@model"
                   OnValidSubmit="@HandleSubmit">
 
             <DataAnnotationsValidator />
 
-            <div class="form-group">
+            <fieldset class="form-content" disabled="@_isSubmitting">
 
-                <label>
-                    Description
-                </label>
+                <!-- Type -->
+                <div class="form-group">
 
-                <InputText class="form-input"
-                           @bind-Value="model.Description" />
+                    <label>
+                        Transaction type
+                    </label>
 
-                <ValidationMessage For="@(() => model.Description)" />
+                    <div class="type-selector">
 
-            </div>
+                        <button type="button"
+                                class="type-option @(model.IsExpense ? "active expense" : "")"
+                                @onclick="() => model.IsExpense = true">
 
-            <div class="form-row">
+                            <span class="type-icon">
+                                <Blazicon Svg="Lucide.ArrowDownRight" />
+                            </span>
 
+                            <span>Expense</span>
+
+                        </button>
+
+                        <button type="button"
+                                class="type-option @(!model.IsExpense ? "active income" : "")"
+                                @onclick="() => model.IsExpense = false">
+
+                            <span class="type-icon">
+                                <Blazicon Svg="Lucide.ArrowUpRight" />
+                            </span>
+
+                            <span>Income</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Amount -->
                 <div class="form-group">
 
                     <label>
                         Amount
                     </label>
 
-                    <InputNumber class="form-input"
-                                 @bind-Value="model.Amount" />
+                    <div class="amount-input @(model.IsExpense ? "is-expense" : "is-income")">
+
+                        <span class="currency-prefix">
+                            PHP
+                        </span>
+
+                        <InputNumber class="amount-field"
+                                     placeholder="0.00"
+                                     @bind-Value="model.Amount" />
+
+                    </div>
 
                     <ValidationMessage For="@(() => model.Amount)" />
 
                 </div>
 
+
+                <!-- Description -->
                 <div class="form-group">
 
                     <label>
-                        Date
+                        Description
                     </label>
 
-                    <InputDate class="form-input"
-                               @bind-Value="model.Date" />
+                    <div class="icon-input">
 
-                    <ValidationMessage For="@(() => model.Date)" />
+                        <span class="input-icon">
+                            <Blazicon Svg="Lucide.FileText" />
+                        </span>
+
+                        <InputText class="description-field"
+                                   placeholder="e.g. Grocery shopping"
+                                   @bind-Value="model.Description" />
+
+                    </div>
+
+                    <ValidationMessage For="@(() => model.Description)" />
 
                 </div>
 
-            </div>
 
-            <div class="form-group">
+                <!-- Category + Date -->
+                <div class="form-row">
 
-                <label>
-                    Transaction type
-                </label>
+                    <div class="form-group">
 
-                <InputSelect class="form-input"
-                             @bind-Value="model.IsExpense">
+                        <label for="category-field">
+                            Category
+                        </label>
 
-                    <option value="true">
-                        Expense
-                    </option>
+                        <div class="compact-input">
 
-                    <option value="false">
-                        Income
-                    </option>
+                            <span class="compact-input-icon">
+                                <Blazicon Svg="Lucide.Tag" />
+                            </span>
 
-                </InputSelect>
+                            <InputSelect class="category-field"
+                                         @bind-Value="model.CategoryId">
 
-            </div>
+                                <option value="0">
+                                    Select category
+                                </option>
 
-            <!-- Category -->
-            <div class="form-group">
+                                @foreach (var category in Categories)
+                                {
+                                    <option value="@category.Id">
+                                        @category.Name
+                                    </option>
+                                }
 
-                <label>
-                    Category
-                </label>
+                            </InputSelect>
 
-                <InputSelect class="form-input"
-                             @bind-Value="model.CategoryId">
+                        </div>
 
-                    <option value="0">
-                        Select a category
-                    </option>
+                        <ValidationMessage For="@(() => model.CategoryId)" />
 
-                    @foreach (var category in Categories)
-                    {
-                        <option value="@category.Id">
-                            @category.Icon @category.Name
-                        </option>
-                    }
+                    </div>
 
-                </InputSelect>
+                    <div class="form-group">
 
-                <ValidationMessage For="@(() => model.CategoryId)" />
+                        <label for="date-field">
+                            Date
+                        </label>
 
-            </div>
+                        <div class="compact-input">
 
-            <div class="modal-actions">
+                            <span class="compact-input-icon">
+                                <Blazicon Svg="Lucide.Calendar" />
+                            </span>
+
+                            <InputDate class="date-field"
+                                       @bind-Value="model.Date" />
+
+                        </div>
+
+                        <ValidationMessage For="@(() => model.Date)" />
+
+                    </div>
+
+                </div>
+
+            </fieldset>
+
+
+            <!-- Footer -->
+            <footer class="modal-actions">
 
                 <button type="button"
                         class="secondary-button"
+                        disabled="@_isSubmitting"
                         @onclick="OnCancel">
 
                     Cancel
@@ -135,15 +217,23 @@
                 </button>
 
                 <button type="submit"
-                        class="primary-button">
+                        class="primary-button @(model.IsExpense ? "expense" : "income")"
+                        disabled="@_isSubmitting">
 
-                    @(Transaction is null
-                        ? "Add transaction"
-                        : "Save changes")
+                    @if (_isSubmitting)
+                    {
+                        <span class="button-spinner"></span>
+                    }
+                    else
+                    {
+                        <Blazicon Svg="@(Transaction is null ? Lucide.Plus : Lucide.Check)" />
+                    }
+
+                    @(Transaction is null ? "Add transaction" : "Save changes")
 
                 </button>
 
-            </div>
+            </footer>
 
         </EditForm>
 
@@ -166,6 +256,8 @@
     public EventCallback OnCancel { get; set; }
 
     private SaveTransactionDto model = new();
+
+    private bool _isSubmitting;
 
     protected override void OnParametersSet()
     {
@@ -192,7 +284,31 @@
 
     private async Task HandleSubmit()
     {
-        await OnSave.InvokeAsync(model);
+        if (_isSubmitting)
+        {
+            return;
+        }
+
+        _isSubmitting = true;
+
+        try
+        {
+            await OnSave.InvokeAsync(model);
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape" && !_isSubmitting)
+        {
+            return OnCancel.InvokeAsync();
+        }
+
+        return Task.CompletedTask;
     }
 
 }

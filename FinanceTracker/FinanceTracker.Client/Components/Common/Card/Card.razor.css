@@ -7,7 +7,38 @@
     border: 1px solid var(--rule);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
+    transition: transform var(--transition, .2s ease), box-shadow var(--transition, .2s ease);
+    animation: card-enter .35s ease-out;
 }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md, 0 8px 24px rgba(0,0,0,.08));
+    }
+
+@keyframes card-enter {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card {
+        animation: none;
+        transition: none;
+    }
+
+        .card:hover {
+            transform: none;
+        }
+}
+
 
 /* =========================================
    HEADER
@@ -16,7 +47,7 @@
 .card-header {
     padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--rule);
-    background: #FAFBFC;
+    background: var(--surface-subtle, #FAFBFC);
 }
 
     /* Typography defaults */
@@ -43,6 +74,7 @@
         line-height: 1.4;
     }
 
+
 /* =========================================
    BODY
    ========================================= */
@@ -52,6 +84,7 @@
     padding: 1.25rem;
 }
 
+
 /* =========================================
    FOOTER
    ========================================= */
@@ -59,8 +92,9 @@
 .card-footer {
     padding: 1rem 1.25rem;
     border-top: 1px solid var(--rule);
-    background: #FAFBFC;
+    background: var(--surface-subtle, #FAFBFC);
 }
+
 
 /* =========================================
    RESPONSIVE

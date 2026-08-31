@@ -1,25 +1,27 @@
-﻿@namespace FinanceTracker.Client.Components.Transactions
+@namespace FinanceTracker.Client.Components.Transactions
 
 <div class="transaction-row">
 
     <div class="transaction-description">
 
         <div class="transaction-icon"
-             style="background-color:
-            @Transaction.CategoryColor">
+             style="
+            --category-color: @(Transaction.CategoryColor ?? "#64748B");
+            --category-color-soft: @((Transaction.CategoryColor ?? "#64748B") + "18");
+            ">
 
-            @Transaction.CategoryIcon
+            <Blazicon Svg="@Icons.Category(Transaction.CategoryIcon)" />
 
         </div>
 
-        <div>
+        <div class="transaction-info">
 
-            <strong>
+            <strong title="@Transaction.Description">
                 @Transaction.Description
             </strong>
 
             <small>
-                @Transaction.CategoryName
+                @(Transaction.IsExpense ? "Expense" : "Income")
             </small>
 
         </div>
@@ -28,41 +30,55 @@
 
     <div class="transaction-category">
 
-        @Transaction.CategoryName
+        <span class="category-badge"
+              style="
+            --category-color: @(Transaction.CategoryColor ?? "#64748B");
+            --category-color-soft: @((Transaction.CategoryColor ?? "#64748B") + "18");
+            ">
+
+            <span class="category-dot"></span>
+
+            @Transaction.CategoryName
+
+        </span>
 
     </div>
 
     <div class="transaction-date">
-
         @Transaction.Date.ToString("MMM d, yyyy")
-
     </div>
 
-    <div class="transaction-amount
-        @(Transaction.IsExpense
-                     ? "expense"
-                     : "income")">
+    <div class="transaction-amount @(Transaction.IsExpense ? "expense" : "income")">
 
-        @(Transaction.IsExpense ? "-" : "+")
-        ₱@Transaction.Amount.ToString("N0")
+        <span class="amount-sign">
+            @(Transaction.IsExpense ? "−" : "+")
+        </span>
+
+        <span class="amount-value">
+            PHP @Transaction.Amount.ToString("N0")
+        </span>
 
     </div>
 
     <div class="transaction-actions">
 
         <button class="icon-button"
-                title="Edit"
+                type="button"
+                title="Edit transaction"
+                aria-label="Edit transaction"
                 @onclick="Edit">
 
-            ✏️
+            <Blazicon Svg="Lucide.Pencil" />
 
         </button>
 
         <button class="icon-button danger"
-                title="Delete"
+                type="button"
+                title="Delete transaction"
+                aria-label="Delete transaction"
                 @onclick="Delete">
 
-            🗑️
+            <Blazicon Svg="Lucide.Trash2" />
 
         </button>
 
@@ -81,10 +97,12 @@
     [Parameter]
     public EventCallback<TransactionDto> OnDelete { get; set; }
 
+
     private Task Edit()
     {
         return OnEdit.InvokeAsync(Transaction);
     }
+
 
     private Task Delete()
     {

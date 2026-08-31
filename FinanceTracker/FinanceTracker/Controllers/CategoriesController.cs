@@ -12,9 +12,9 @@ namespace FinanceTracker.Controllers
     [Authorize]
     public class CategoriesController : Controller
     {
-        private readonly ICategoriesService _service;
+        private readonly ICategoryService _service;
 
-        public CategoriesController(ICategoriesService service)
+        public CategoriesController(ICategoryService service)
         {
             _service = service;
         }

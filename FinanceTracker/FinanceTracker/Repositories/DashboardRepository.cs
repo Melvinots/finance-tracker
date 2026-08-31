@@ -33,11 +33,16 @@ namespace FinanceTracker.Repositories
 
             var categorySpending = transactions
                 .Where(t => t.IsExpense)
-                .GroupBy(t => t.Category)
+                .GroupBy(t => new
+                {
+                    t.CategoryId,
+                    CategoryName = t.Category?.Name,
+                    CategoryColor = t.Category?.Color
+                })
                 .Select(group => new CategorySpendingDto
                 {
-                    Name = group.Key.Name,
-                    Color = group.Key.Color,
+                    Name = group.Key.CategoryName ?? "Uncategorized",
+                    Color = group.Key.CategoryColor ?? "#94A3B8",
                     Amount = group.Sum(t => t.Amount)
                 })
                 .ToList();
@@ -96,26 +101,58 @@ namespace FinanceTracker.Repositories
                 })
                 .ToList();
 
+            var recentTransactions = transactions
+                .OrderByDescending(t => t.Date)
+                .ThenByDescending(t => t.Id)
+                .Take(5)
+                .Select(t => new RecentTransactionDto
+                {
+                    Description = t.Description,
+                    Category = t.Category?.Name ?? "Uncategorized",
+                    Amount = t.Amount,
+                    IsIncome = !t.IsExpense,
+                    Date = t.Date
+                })
+                .ToList();
+
+            var yearlyTransactions = await _context.Transactions
+                .Where(t =>
+                    t.UserId == userId &&
+                    t.Date.Year == year)
+                .ToListAsync();
+
+            var monthlySpending = Enumerable.Range(1, 12)
+                .Select(month =>
+                {
+                    var monthTransactions = yearlyTransactions
+                        .Where(t => t.Date.Month == month);
+
+                    return new MonthlySpendingDto
+                    {
+                        MonthNumber = month,
+                        Year = year,
+                        Month = new DateTime(year, month, 1).ToString("MMM"),
+
+                        Income = monthTransactions
+                            .Where(t => !t.IsExpense)
+                            .Sum(t => t.Amount),
+
+                        Expenses = monthTransactions
+                            .Where(t => t.IsExpense)
+                            .Sum(t => t.Amount)
+                    };
+                })
+                .ToList();
+
             return new DashboardDto
             {
                 TotalIncome = totalIncome,
                 TotalExpenses = totalExpenses,
                 TransactionCount = transactions.Count,
                 CategorySpending = categorySpending,
-                RecentTransactions = transactions
-                    .OrderByDescending(t => t.Date)
-                    .Take(5)
-                    .Select(t => new RecentTransactionDto
-                    {
-                        Description = t.Description,
-                        Category = t.Category.Name,
-                        Amount = t.Amount,
-                        IsIncome = !t.IsExpense,
-                        Date = t.Date
-                    })
-                    .ToList(),
-
-                Budgets = budgetProgress
+                RecentTransactions = recentTransactions,
+                Budgets = budgetProgress,
+                MonthlySpending = monthlySpending
             };
         }
     }

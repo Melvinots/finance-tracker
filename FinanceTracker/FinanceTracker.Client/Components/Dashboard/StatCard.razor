@@ -9,24 +9,21 @@
         </span>
 
         <div class="stat-card-icon"
-             style="background: @IconBackground">
+             style="--icon-bg: @IconBackground">
 
-            @Icon
+            <Blazicon Svg="@Icon" />
 
         </div>
 
     </div>
 
-    <div class="stat-card-value @Variant.ToLowerInvariant()">
-
+    <div class="stat-card-value">
         @Value
-
     </div>
 
     <div class="stat-card-trend @Variant.ToLowerInvariant()">
-
+        <span class="stat-card-trend-arrow"></span>
         @Trend
-
     </div>
 
 </div>
@@ -40,13 +37,13 @@
     public string Value { get; set; } = string.Empty;
 
     [Parameter]
-    public string Icon { get; set; } = string.Empty;
+    public SvgIcon? Icon { get; set; }
 
     [Parameter]
     public string IconBackground { get; set; } = string.Empty;
 
     [Parameter]
-    public string Variant { get; set; } = "Default";
+    public string Variant { get; set; } = "default";
 
     [Parameter]
     public string Trend { get; set; } = string.Empty;
