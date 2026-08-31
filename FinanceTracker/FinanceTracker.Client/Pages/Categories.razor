@@ -39,98 +39,69 @@
 
     </header>
 
-    <section class="categories-content">
+    <LoadingWrapper IsLoading="@_isLoading"
+                    Message="Loading your categories...">
 
-        <div class="content-header">
+        <section class="categories-content">
 
-            <div>
-                <h2>All categories</h2>
+            <div class="content-header">
 
-                <p>
-                    @_categories.Count @( _categories.Count == 1 ? "category" : "categories" )
-                </p>
-            </div>
+                <div>
+                    <h2>All categories</h2>
 
-        </div>
-
-        @if (!_categories.Any())
-        {
-            <div class="empty-state">
-
-                <div class="empty-icon">
-                    <Blazicon Svg="Lucide.Tags" />
+                    <p>
+                        @_categories.Count @( _categories.Count == 1 ? "category" : "categories" )
+                    </p>
                 </div>
 
-                <h3>No categories yet</h3>
-
-                <p>
-                    Create your first category to start organising your transactions.
-                </p>
-
-                <button class="primary-button"
-                        type="button"
-                        @onclick="OpenAddModal">
-
-                    <Blazicon Svg="Lucide.Plus" />
-
-                    <span>Add your first category</span>
-
-                </button>
-
             </div>
-        }
-        else
-        {
-            <CategoryList Categories="@_categories"
-                          OnEdit="OpenEditModal"
-                          OnDelete="HandleDelete" />
-        }
 
-    </section>
+            @if (!_categories.Any())
+            {
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <Blazicon Svg="Lucide.Tags" />
+                    </div>
+
+                    <h3>No categories yet</h3>
+
+                    <p>
+                        Create your first category to start organising your transactions.
+                    </p>
+
+                    <button class="primary-button"
+                            type="button"
+                            @onclick="OpenAddModal">
+
+                        <Blazicon Svg="Lucide.Plus" />
+
+                        <span>Add your first category</span>
+
+                    </button>
+
+                </div>
+            }
+            else
+            {
+                <CategoryList Categories="@_categories"
+                              OnEdit="OpenEditModal"
+                              OnDelete="HandleDelete" />
+            }
+
+        </section>
+
+    </LoadingWrapper>
 
 </div>
 
 @if (_showModal)
 {
-    <div class="modal-backdrop">
-
-        <div class="modal-box">
-
-            <div class="modal-header">
-
-                <div>
-                    <h2>
-                        @(_editingCategory is null
-                            ? "Add category"
-                            : "Edit category")
-                    </h2>
-
-                    <p>
-                        @(_editingCategory is null
-                            ? "Create a category for your transactions."
-                            : "Update your category details.")
-                    </p>
-                </div>
-
-                <button class="modal-close"
-                        type="button"
-                        @onclick="CloseModal">
-
-                    <Blazicon Svg="Lucide.X" />
-
-                </button>
-
-            </div>
-
-            <CategoryForm Model="@_formModel"
-                          IsLoading="@_isSaving"
-                          ErrorMessage="@_error"
-                          OnSave="HandleSave"
-                          OnCancel="CloseModal" />
-
-        </div>
-
-    </div>
+    <CategoryForm Model="@_formModel"
+                  IsLoading="@_isSaving"
+                  ErrorMessage="@_error"
+                  OnSave="HandleSave"
+                  OnCancel="CloseModal" />
 }
 
 @code {

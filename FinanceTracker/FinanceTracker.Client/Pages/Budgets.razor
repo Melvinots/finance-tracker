@@ -144,6 +144,8 @@
 
     private List<BudgetDto> _budgets = new();
 
+    private List<CategoryDto> _allCategories = new();
+
     private List<CategoryDto> _categories = new();
 
     private BudgetDto? _selectedBudget;
@@ -160,8 +162,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadCategoriesAsync();
         await LoadBudgets();
+        await LoadCategoriesAsync();
     }
 
     private async Task LoadBudgets()
@@ -182,7 +184,17 @@
 
     private async Task LoadCategoriesAsync()
     {
-        _categories = await CategoryService.GetAllAsync();
+        _allCategories = await CategoryService.GetAllAsync();
+
+        UpdateAvailableCategories();
+    }
+
+    private void UpdateAvailableCategories()
+    {
+        _categories = _allCategories
+            .Where(category => !_budgets.Any(
+                budget => budget.CategoryId == category.Id))
+            .ToList();
     }
 
     private void OpenCreateModal()
@@ -219,6 +231,7 @@
         CloseModal();
 
         await LoadBudgets();
+        UpdateAvailableCategories();
     }
 
     private void DeleteBudget(BudgetDto budget)
@@ -238,6 +251,8 @@
             await BudgetService.DeleteAsync(_pendingDelete.Id);
 
             _budgets.Remove(_pendingDelete);
+
+            UpdateAvailableCategories();
         }
         catch (Exception)
         {

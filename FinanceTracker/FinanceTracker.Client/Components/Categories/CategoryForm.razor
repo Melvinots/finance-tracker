@@ -1,132 +1,165 @@
 @namespace FinanceTracker.Client.Components.Categories
 
-@if (!string.IsNullOrWhiteSpace(ErrorMessage))
-{
-    <div class="form-error">
-        <Blazicon Svg="Lucide.CircleAlert" />
-        <span>@ErrorMessage</span>
-    </div>
-}
+<div class="modal-backdrop">
 
-<div class="form-group">
+    <div class="modal-box">
 
-    <label>
-        Icon
-    </label>
+        <div class="modal-header">
 
-    <div class="icon-picker">
+            <div>
+                <h2>
+                    @(Model is null
+                        ? "Add category"
+                        : "Edit category")
+                </h2>
 
-        @foreach (var icon in _icons)
-        {
-            <button type="button"
-                    class="icon-button @(Model.Icon == icon.Name ? "selected" : "")"
-                    aria-label="Select @icon.Name icon"
-                    aria-pressed="@(Model.Icon == icon.Name)"
-                    @onclick="() => SelectIcon(icon.Name)">
+                <p>
+                    @(Model is null
+                        ? "Create a category for your transactions."
+                        : "Update your category details.")
+                </p>
+            </div>
 
-                <Blazicon Svg="@icon.Icon" />
+            <button class="modal-close"
+                    type="button"
+                    @onclick="HandleCancel">
+
+                <Blazicon Svg="Lucide.X" />
 
             </button>
-        }
 
-    </div>
-
-</div>
-
-
-<div class="form-group">
-
-    <label for="category-name">
-        Name
-    </label>
-
-    <InputText id="category-name"
-               class="form-input"
-               @bind-Value="Model.Name"
-               placeholder="e.g. Food, Transport, Utilities..." />
-
-    <ValidationMessage For="@(() => Model.Name)" />
-
-</div>
-
-
-<div class="form-group">
-
-    <label>
-        Color
-    </label>
-
-    <div class="color-picker">
-
-        @foreach (var color in _colors)
-        {
-            <button type="button"
-                    class="color-button @(Model.Color == color ? "selected" : "")"
-                    style="--color: @color"
-                    aria-label="Select color @color"
-                    aria-pressed="@(Model.Color == color)"
-                    @onclick="() => SelectColor(color)">
-            </button>
-        }
-
-    </div>
-
-</div>
-
-
-<div class="category-preview">
-
-    <span class="preview-label">
-        Preview
-    </span>
-
-    <div class="preview-category"
-         style="--category-color: @Model.Color;
-        --category-color-soft: @(Model.Color + "18");">
-
-        <div class="preview-icon">
-            <Blazicon Svg="@GetIcon(Model.Icon)" />
         </div>
 
-        <span>
-            @(string.IsNullOrWhiteSpace(Model.Name)
-                ? "Category name"
-                : Model.Name)
-        </span>
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="form-error">
+                <Blazicon Svg="Lucide.CircleAlert" />
+                <span>@ErrorMessage</span>
+            </div>
+        }
+
+        <div class="form-group">
+
+            <label>
+                Icon
+            </label>
+
+            <div class="icon-picker">
+
+                @foreach (var icon in _icons)
+                {
+                    <button type="button"
+                            class="icon-button @(Model.Icon == icon.Name ? "selected" : "")"
+                            aria-label="Select @icon.Name icon"
+                            aria-pressed="@(Model.Icon == icon.Name)"
+                            @onclick="() => SelectIcon(icon.Name)">
+
+                        <Blazicon Svg="@icon.Icon" />
+
+                    </button>
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="category-name">
+                Name
+            </label>
+
+            <InputText id="category-name"
+                       class="form-input"
+                       @bind-Value="Model.Name"
+                       placeholder="e.g. Food, Transport, Utilities..." />
+
+            <ValidationMessage For="@(() => Model.Name)" />
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Color
+            </label>
+
+            <div class="color-picker">
+
+                @foreach (var color in _colors)
+                {
+                    <button type="button"
+                            class="color-button @(Model.Color == color ? "selected" : "")"
+                            style="--color: @color"
+                            aria-label="Select color @color"
+                            aria-pressed="@(Model.Color == color)"
+                            @onclick="() => SelectColor(color)">
+                    </button>
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="category-preview">
+
+            <span class="preview-label">
+                Preview
+            </span>
+
+            <div class="preview-category"
+                 style="--category-color: @Model.Color;
+                --category-color-soft: @(Model.Color + "18");">
+
+                <div class="preview-icon">
+                    <Blazicon Svg="@GetIcon(Model.Icon)" />
+                </div>
+
+                <span>
+                    @(string.IsNullOrWhiteSpace(Model.Name)
+                        ? "Category name"
+                        : Model.Name)
+                </span>
+
+            </div>
+
+        </div>
+
+        <footer class="modal-actions">
+
+            <button type="button"
+                    class="cancel-button"
+                    @onclick="HandleCancel"
+                    disabled="@IsLoading">
+
+                Cancel
+
+            </button>
+
+            <button type="submit"
+                    class="save-button"
+                    @onclick="HandleSubmit"
+                    disabled="@IsLoading">
+
+                @if (IsLoading)
+                {
+                    <span class="loading-spinner"></span>
+                    <span>Saving...</span>
+                }
+                else
+                {
+                    <Blazicon Svg="Lucide.Check" />
+                    <span>Save category</span>
+                }
+
+            </button>
+
+        </footer>
 
     </div>
-
-</div>
-
-
-<div class="form-actions">
-
-    <button type="button"
-            class="cancel-button"
-            @onclick="HandleCancel"
-            disabled="@IsLoading">
-
-        Cancel
-
-    </button>
-
-    <button type="submit"
-            class="save-button"
-            @onclick="HandleSubmit"
-            disabled="@IsLoading">
-
-        @if (IsLoading)
-        {
-            <span class="loading-spinner"></span>
-            <span>Saving...</span>
-        }
-        else
-        {
-            <Blazicon Svg="Lucide.Check" />
-            <span>Save category</span>
-        }
-
-    </button>
 
 </div>
 

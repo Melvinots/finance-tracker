@@ -67,9 +67,9 @@
     height: 38px;
     flex-shrink: 0;
     border-radius: var(--radius-md);
-    background: color-mix(in srgb, var(--accent, var(--primary)) 16%, var(--surface-alt));
+    background: var(--category-color-soft);
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent, var(--rule)) 30%, transparent);
-    color: var(--accent, var(--ink));
+    color: var(--category-color);
     transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
@@ -80,9 +80,10 @@
     }
 
 .budget-card:hover .category-icon {
-    background: var(--accent, var(--primary));
+    background: var(--category-color);
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent, var(--rule)) 18%, transparent);
     transform: scale(1.08) rotate(-4deg);
+    color: white;
 }
 
     .budget-card:hover .category-icon svg {

@@ -1,10 +1,16 @@
 ﻿@namespace FinanceTracker.Client.Components.Budgets
 
 <div class="budget-modal-backdrop"
+     tabindex="-1"
      @onclick="HandleBackdropClick">
 
     <div class="budget-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="budget-modal-title"
          @onclick:stopPropagation>
+
+        <div class="drag-handle"></div>
 
         <header class="budget-modal-header">
 
@@ -15,7 +21,7 @@
                 </div>
 
                 <div>
-                    <h2>
+                    <h2 id="budget-modal-title">
                         @(Budget is null ? "Add budget" : "Edit budget")
                     </h2>
 
@@ -28,10 +34,12 @@
 
             </div>
 
-            <button class="budget-modal-close"
+            <button class="close-button"
                     type="button"
-                    @onclick="Cancel"
-                    aria-label="Close">
+                    title="Close"
+                    aria-label="Close"
+                    disabled="@IsLoading"
+                    @onclick="Cancel">
 
                 <Blazicon Svg="Lucide.X" />
 
@@ -44,47 +52,78 @@
 
             <DataAnnotationsValidator />
 
-            <div class="budget-modal-body">
+            <fieldset class="form-content" disabled="@IsLoading">
 
-                <div class="budget-form-group">
+                <div class="form-group">
 
                     <label for="budget-category">
                         Category
                     </label>
 
-                    <InputSelect id="budget-category"
-                                 class="budget-form-control"
-                                 @bind-Value="_model.CategoryId">
+                    @if (Budget is null)
+                    {
+                        <div class="compact-input">
 
-                        <option value="0">
-                            Select category
-                        </option>
+                            <span class="compact-input-icon">
+                                <Blazicon Svg="Lucide.Tag" />
+                            </span>
 
-                        @foreach (var category in Categories)
-                        {
-                            <option value="@category.Id">
-                                @category.Icon @category.Name
-                            </option>
-                        }
+                            <InputSelect id="budget-category"
+                                         class="category-field"
+                                         @bind-Value="_model.CategoryId">
 
-                    </InputSelect>
+                                <option value="0">
+                                    Select category
+                                </option>
+
+                                @foreach (var category in Categories)
+                                {
+                                    <option value="@category.Id">
+                                        @category.Name
+                                    </option>
+                                }
+
+                            </InputSelect>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="compact-input readonly">
+
+                            <span class="compact-input-icon">
+                                <Blazicon Svg="Lucide.Tag" />
+                            </span>
+
+                            <span class="readonly-value">
+                                @Budget.CategoryName
+                            </span>
+
+                            <span class="readonly-lock">
+                                <Blazicon Svg="Lucide.Lock" />
+                            </span>
+
+                        </div>
+                    }
 
                     <ValidationMessage For="@(() => _model.CategoryId)" />
 
                 </div>
 
-                <div class="budget-form-group">
+                <div class="form-group">
 
                     <label for="budget-limit">
                         Monthly limit
                     </label>
 
-                    <div class="budget-amount-input">
+                    <div class="amount-input">
 
-                        <span class="currency-prefix">₱</span>
+                        <span class="currency-prefix">
+                            PHP
+                        </span>
 
                         <InputNumber id="budget-limit"
-                                     class="budget-form-control budget-amount-field"
+                                     class="amount-field"
                                      @bind-Value="_model.LimitAmount"
                                      placeholder="0.00" />
 
@@ -114,8 +153,7 @@
 
                 @if (!string.IsNullOrWhiteSpace(ErrorMessage))
                 {
-                    <div class="budget-form-error"
-                         role="alert">
+                    <div class="form-error" role="alert">
 
                         <Blazicon Svg="Lucide.CircleAlert" />
 
@@ -126,35 +164,32 @@
                     </div>
                 }
 
-            </div>
+            </fieldset>
 
-            <footer class="budget-modal-footer">
+            <footer class="modal-actions">
 
                 <button type="button"
-                        class="budget-btn-cancel"
-                        @onclick="Cancel"
-                        disabled="@IsLoading">
+                        class="secondary-button"
+                        disabled="@IsLoading"
+                        @onclick="Cancel">
 
                     Cancel
 
                 </button>
 
                 <button type="submit"
-                        class="budget-btn-save"
+                        class="primary-button"
                         disabled="@IsLoading">
 
                     @if (IsLoading)
                     {
-                        <span class="loading-spinner"></span>
+                        <span class="button-spinner"></span>
                         <span>Saving...</span>
                     }
                     else
                     {
-                        <Blazicon Svg="Lucide.Check" />
-
-                        <span>
-                            @(Budget is null ? "Add budget" : "Save changes")
-                        </span>
+                        <Blazicon Svg="@(Budget is null ? Lucide.Plus : Lucide.Check)" />
+                        <span>@(Budget is null ? "Add budget" : "Save changes")</span>
                     }
 
                 </button>
@@ -204,7 +239,7 @@
         _model = new SaveBudgetDto
         {
             CategoryId = Budget?.CategoryId ?? 0,
-            LimitAmount = Budget?.LimitAmount ?? 0,
+            LimitAmount = Budget?.LimitAmount,
             Month = Month,
             Year = Year
         };
