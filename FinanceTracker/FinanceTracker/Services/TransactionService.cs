@@ -32,7 +32,7 @@ namespace FinanceTracker.Services
             if (categoryId is null || categoryId == 0)
             {
                 var category = await _repo.GetOrCreateUncategorizedAsync(userId);
-                categoryId = category.Id;
+                dto.CategoryId = category.Id;
             }
 
             var transaction = new Transaction
@@ -42,7 +42,7 @@ namespace FinanceTracker.Services
                 Date = dto.Date,
                 IsExpense = dto.IsExpense,
                 Notes = dto.Notes,
-                CategoryId = categoryId,
+                CategoryId = dto.CategoryId,
                 UserId = userId
             };
 

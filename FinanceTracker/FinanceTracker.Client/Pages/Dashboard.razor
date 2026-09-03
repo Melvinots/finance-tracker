@@ -24,12 +24,15 @@
                     @bind="selectedMonth"
                     @bind:after="LoadDashboardAsync">
 
-                @for (int i = 0; i < 6; i++)
+                @for (int month = DateTime.Now.Month; month >= 1; month--)
                 {
-                    var month = DateTime.Now.AddMonths(-i);
+                    var date = new DateTime(
+                        DateTime.Now.Year,
+                        month,
+                        1);
 
-                    <option value="@month.ToString("yyyy-MM")">
-                        @month.ToString("MMMM yyyy")
+                    <option value="@date.ToString("yyyy-MM")">
+                        @date.ToString("MMMM yyyy")
                     </option>
                 }
 

@@ -29,6 +29,7 @@ builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
 builder.Services.AddScoped<IBudgetService, BudgetService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
 
 
 // JWT Authentication

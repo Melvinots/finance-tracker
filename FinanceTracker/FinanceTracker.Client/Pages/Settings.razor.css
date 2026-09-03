@@ -1,0 +1,400 @@
+
+/* =========================================
+   PAGE
+   ========================================= */
+.settings-page {
+    min-height: 100%;
+    padding: 2rem;
+    background: var(--bg, var(--surface-alt));
+}
+
+
+/* =========================================
+   PAGE HEADER
+   ========================================= */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.75rem;
+    animation: page-enter 0.3s ease-out;
+}
+
+.page-heading {
+    min-width: 0;
+}
+
+.page-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.page-title-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--primary-dim, var(--border));
+    border-radius: 12px;
+    background: var(--primary-tint, var(--surface-alt));
+    color: var(--primary);
+}
+
+    .page-title-icon svg {
+        width: 21px;
+        height: 21px;
+        stroke-width: 2;
+    }
+
+.page-header h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+}
+
+.page-header p {
+    margin: 0.35rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   SETTINGS GRID
+   ========================================= */
+
+.settings-content {
+    width: 100%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+
+/* =========================================
+   SETTINGS SECTION
+   ========================================= */
+
+.settings-section {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+    color: var(--text-muted);
+}
+
+    .section-icon svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .section-icon.danger {
+        border-color: color-mix( in srgb, var(--danger) 25%, var(--border) );
+        background: var(--danger-dim);
+        color: var(--danger);
+    }
+
+.section-heading h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    line-height: 1.3;
+}
+
+.section-heading p {
+    margin: 0.2rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   SETTINGS CARD
+   ========================================= */
+
+.settings-card {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 68px;
+    padding: 0.875rem 1rem;
+}
+
+.setting-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.setting-label {
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.setting-description {
+    color: var(--text-muted);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+}
+
+.setting-value {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.setting-divider {
+    height: 1px;
+    margin: 0 1rem;
+    background: var(--border);
+}
+
+
+/* =========================================
+   SELECT
+   ========================================= */
+
+.settings-select {
+    min-width: 150px;
+    height: 36px;
+    padding: 0 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+    .settings-select:hover {
+        border-color: var(--border-hover, var(--border));
+    }
+
+    .settings-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-ring);
+    }
+
+
+/* =========================================
+   ACTION BUTTONS
+   ========================================= */
+
+.settings-card .secondary-button,
+.settings-card .danger-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 36px;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 100ms ease;
+}
+
+.settings-card .secondary-button {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+}
+
+    .settings-card .secondary-button:hover {
+        background: var(--surface-alt);
+        border-color: var(--border-hover, var(--border));
+    }
+
+    .settings-card .secondary-button svg,
+    .settings-card .danger-button svg {
+        width: 15px;
+        height: 15px;
+    }
+
+
+/* =========================================
+   DANGER
+   ========================================= */
+
+.danger-card {
+    border-color: color-mix( in srgb, var(--danger) 25%, var(--border) );
+}
+
+.danger-button {
+    border: 1px solid color-mix( in srgb, var(--danger) 30%, var(--border) );
+    background: transparent;
+    color: var(--danger);
+}
+
+    .danger-button:hover {
+        background: var(--danger-dim);
+        border-color: var(--danger);
+    }
+
+.settings-card .secondary-button:active,
+.settings-card .danger-button:active {
+    transform: translateY(1px);
+}
+
+
+/* =========================================
+   LOADING
+   ========================================= */
+
+.settings-page ::deep .loading-wrapper {
+    width: 100%;
+}
+
+
+/* =========================================
+   ANIMATION
+   ========================================= */
+
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 800px) {
+
+    .settings-page {
+        padding: 1.5rem;
+    }
+
+    .settings-content {
+        max-width: none;
+        gap: 1.25rem;
+    }
+}
+
+
+@media (max-width: 640px) {
+
+    .settings-page {
+        padding: 1rem;
+    }
+
+    .page-header {
+        margin-bottom: 1.25rem;
+    }
+
+    .page-title-row {
+        align-items: flex-start;
+    }
+
+    .page-title-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .page-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .page-header p {
+        font-size: 0.75rem;
+    }
+
+    /* One column on small screens */
+    .settings-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .setting-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .setting-value {
+        align-self: flex-start;
+    }
+
+    .settings-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .settings-card .secondary-button,
+    .settings-card .danger-button {
+        width: 100%;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .page-header {
+        animation: none;
+    }
+
+    .settings-select,
+    .settings-card .secondary-button,
+    .settings-card .danger-button {
+        transition: none;
+    }
+}
+
+

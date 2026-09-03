@@ -99,6 +99,11 @@ namespace FinanceTracker.Repositories
                         Limit = b.LimitAmount
                     };
                 })
+                .OrderByDescending(b => 
+                    b.Limit > 0 ? 
+                    b.Spent / b.Limit : 
+                    decimal.MaxValue)
+                .Take(5)
                 .ToList();
 
             var recentTransactions = transactions

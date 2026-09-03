@@ -1,22 +1,305 @@
 ﻿@page "/settings"
 @attribute [Authorize]
 
-<LoadingWrapper IsLoading="@isLoading" 
-                Message="Loading your dashboard...">
+<div class="settings-page">
 
-    <h1>Settings</h1>
-    <p>Coming soon.</p>
+    <header class="page-header">
 
-</LoadingWrapper>
+        <div class="page-heading">
+
+            <div class="page-title-row">
+
+                <div class="page-title-icon">
+                    <Blazicon Svg="Lucide.Settings" />
+                </div>
+
+                <div>
+                    <h1>Settings</h1>
+
+                    <p>
+                        Manage your account and FinanceTracker preferences.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <LoadingWrapper IsLoading="@_isLoading"
+                    Message="Loading your settings...">
+
+        <div class="settings-content">
+
+            <!-- Profile -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon">
+                        <Blazicon Svg="Lucide.UserRound" />
+                    </div>
+
+                    <div>
+                        <h2>Profile</h2>
+
+                        <p>
+                            Manage your account information.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Name
+                            </span>
+
+                            <span class="setting-description">
+                                Your display name.
+                            </span>
+
+                        </div>
+
+                        <span class="setting-value">
+                            Your name
+                        </span>
+
+                    </div>
+
+                    <div class="setting-divider"></div>
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Email
+                            </span>
+
+                            <span class="setting-description">
+                                Your account email address.
+                            </span>
+
+                        </div>
+
+                        <span class="setting-value">
+                            Your email
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Preferences -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon">
+                        <Blazicon Svg="Lucide.SlidersHorizontal" />
+                    </div>
+
+                    <div>
+                        <h2>Preferences</h2>
+
+                        <p>
+                            Customize how your finances are displayed.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Currency
+                            </span>
+
+                            <span class="setting-description">
+                                Currency used throughout FinanceTracker.
+                            </span>
+
+                        </div>
+
+                        <select class="settings-select">
+                            <option selected value="PHP">
+                                PHP — Philippine Peso
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="setting-divider"></div>
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Appearance
+                            </span>
+
+                            <span class="setting-description">
+                                Choose your preferred appearance.
+                            </span>
+
+                        </div>
+
+                        <select class="settings-select">
+                            <option selected value="light">
+                                Light
+                            </option>
+
+                            <option value="dark">
+                                Dark
+                            </option>
+
+                            <option value="system">
+                                System
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Data -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon">
+                        <Blazicon Svg="Lucide.Database" />
+                    </div>
+
+                    <div>
+                        <h2>Data</h2>
+
+                        <p>
+                            Manage and protect your financial data.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Export data
+                            </span>
+
+                            <span class="setting-description">
+                                Download a copy of your financial records.
+                            </span>
+
+                        </div>
+
+                        <button type="button"
+                                class="secondary-button">
+
+                            <Blazicon Svg="Lucide.Download" />
+
+                            <span>Export</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Danger Zone -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon danger">
+                        <Blazicon Svg="Lucide.TriangleAlert" />
+                    </div>
+
+                    <div>
+                        <h2>Danger zone</h2>
+
+                        <p>
+                            Actions that permanently affect your account.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="settings-card danger-card">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Delete account
+                            </span>
+
+                            <span class="setting-description">
+                                Permanently delete your account and financial data.
+                            </span>
+
+                        </div>
+
+                        <button type="button"
+                                class="danger-button">
+
+                            <Blazicon Svg="Lucide.Trash2" />
+
+                            <span>Delete account</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </LoadingWrapper>
+    
+
+</div>
 
 @code {
 
-    private bool isLoading = true;
+
+private bool _isLoading = true;
+
     protected override async Task OnInitializedAsync()
     {
-        // Simulate loading delay
-        await Task.Delay(1000);
-        isLoading = false;
+        await Task.Delay(500);
+
+        _isLoading = false;
     }
+
 
 }

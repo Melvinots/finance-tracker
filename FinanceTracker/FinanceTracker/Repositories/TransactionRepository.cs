@@ -53,17 +53,18 @@ namespace FinanceTracker.Repositories
         public async Task<Category> GetOrCreateUncategorizedAsync(int userId)
         {
             var category = await _context.Categories
-                .FirstOrDefaultAsync(c => c.UserId == userId && c.Name == "Uncategorized");
+                .FirstOrDefaultAsync(c => c.UserId == userId && c.Name == "Other");
 
             if (category is null)
             {
                 category = new Category
                 {
-                    Name = "Uncategorized",
+                    Name = "Other",
                     Icon = "Other",
                     Color = "#64748B",
                     UserId = userId
                 };
+
                 await _context.Categories.AddAsync(category);
                 await _context.SaveChangesAsync();
             }
