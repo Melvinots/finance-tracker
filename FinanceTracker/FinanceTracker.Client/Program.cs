@@ -16,6 +16,7 @@ builder.Services.AddScoped<DashboardService>();
 builder.Services.AddScoped<TransactionService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<BudgetService>();
+builder.Services.AddScoped<UserSettingsService>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 

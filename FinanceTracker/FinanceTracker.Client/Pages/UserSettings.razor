@@ -1,0 +1,463 @@
+﻿@page "/settings"
+@attribute [Authorize]
+
+@inject UserSettingsService UserSettingsService
+
+<div class="settings-page">
+
+    <header class="page-header">
+
+        <div class="page-heading">
+
+            <div class="page-title-row">
+
+                <div class="page-title-icon">
+                    <Blazicon Svg="Lucide.Settings" />
+                </div>
+
+                <div>
+                    <h1>Settings</h1>
+
+                    <p>
+                        Manage your account and FinanceTracker preferences.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <LoadingWrapper IsLoading="@_isLoading"
+                    Message="Loading your settings...">
+
+        <div class="settings-content">
+
+            <!-- Profile -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div class="section-heading-group">
+
+                        <div class="section-icon">
+                            <Blazicon Svg="Lucide.UserRound" />
+                        </div>
+
+                        <div>
+                            <h2>Profile</h2>
+
+                            <p>
+                                Manage your account information.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Name
+                            </span>
+
+                            <span class="setting-description">
+                                Your display name.
+                            </span>
+
+                        </div>
+
+                        <span class="setting-value">
+                            @_userSettings.FullName
+                        </span>
+
+                    </div>
+
+                    <div class="setting-divider"></div>
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Email
+                            </span>
+
+                            <span class="setting-description">
+                                Your account email address.
+                            </span>
+
+                        </div>
+
+                        <span class="setting-value">
+                            @_userSettings.Email
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Preferences -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div class="section-heading-group">
+
+                        <div class="section-icon">
+                            <Blazicon Svg="Lucide.SlidersHorizontal" />
+                        </div>
+
+                        <div>
+                            <h2>Preferences</h2>
+
+                            <p>
+                                Customize how your finances are displayed.
+                            </p>
+                        </div>
+
+                    </div>
+                    
+                    @if (_isSaving || _showSavedMessage)
+                    {
+                        <span class="save-status @(_isSaving ? "saving" : "saved")">
+                            @if (_isSaving)
+                            {
+                                <Blazicon Svg="Lucide.Loader" />
+                                <span>Saving…</span>
+                            }
+                            else
+                            {
+                                <Blazicon Svg="Lucide.Check" />
+                                <span>Saved</span>
+                            }
+                        </span>
+                    }
+
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Currency
+                            </span>
+
+                            <span class="setting-description">
+                                Currency used throughout FinanceTracker.
+                            </span>
+
+                        </div>
+
+                        <select class="settings-select"
+                                disabled="@_isSaving"
+                                @bind="_userSettings.Currency"
+                                @bind:after="OnPreferenceChangedAsync">
+
+                            <option value="PHP">PHP — Philippine Peso</option>
+                            <option value="USD">USD — US Dollar</option>
+                            <option value="EUR">EUR — Euro</option>
+                            <option value="JPY">JPY — Japanese Yen</option>
+                            <option value="GBP">GBP — British Pound</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="setting-divider"></div>
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Appearance
+                            </span>
+
+                            <span class="setting-description">
+                                Choose your preferred appearance.
+                            </span>
+
+                        </div>
+
+                        <select class="settings-select"
+                                disabled="@_isSaving"
+                                @bind="_userSettings.Appearance"
+                                @bind:after="OnPreferenceChangedAsync">
+
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Data -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div class="section-heading-group">
+
+                        <div class="section-icon">
+                            <Blazicon Svg="Lucide.Database" />
+                        </div>
+
+                        <div>
+                            <h2>Data</h2>
+
+                            <p>
+                                Manage and protect your financial data.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    @if (_isExporting || _showExportedMessage)
+                    {
+                        <span class="save-status @(_isExporting ? "saving" : "saved")">
+                            @if (_isExporting)
+                            {
+                                <Blazicon Svg="Lucide.Loader" />
+                                <span>Exporting…</span>
+                            }
+                            else
+                            {
+                                <Blazicon Svg="Lucide.Check" />
+                                <span>Exported</span>
+                            }
+                        </span>
+                    }
+
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Export data
+                            </span>
+
+                            <span class="setting-description">
+                                Download a copy of your financial records.
+                            </span>
+
+                        </div>
+
+                        <button type="button"
+                                class="secondary-button"
+                                disabled="@_isExporting"
+                                @onclick="OnExportClick">
+
+                            <Blazicon Svg="Lucide.Download" />
+
+                            <span>Export</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Danger Zone -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div class="section-heading-group">
+
+                        <div class="section-icon danger">
+                            <Blazicon Svg="Lucide.TriangleAlert" />
+                        </div>
+
+                        <div>
+                            <h2>Danger zone</h2>
+
+                            <p>
+                                Actions that permanently affect your account.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    @if (_isDeactivating || _showDeactivatedMessage)
+                    {
+                        <span class="save-status @(_isDeactivating ? "saving" : "saved")">
+                            @if (_isDeactivating)
+                            {
+                                <Blazicon Svg="Lucide.Loader" />
+                                <span>Deactivating…</span>
+                            }
+                            else
+                            {
+                                <Blazicon Svg="Lucide.Check" />
+                                <span>Deactivated</span>
+                            }
+                        </span>
+                    }
+
+                </div>
+
+                <div class="settings-card danger-card">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-label">
+                                Deactivate account
+                            </span>
+
+                            <span class="setting-description">
+                                Temporarily disable your account. You can reactivate anytime by signing back in.
+                            </span>
+
+                        </div>
+
+                        <button type="button"
+                                class="danger-button"
+                                disabled="@_isDeactivating"
+                                @onclick="OnDeactivateClick">
+
+                            <Blazicon Svg="Lucide.UserX" />
+
+                            <span>Deactivate account</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </LoadingWrapper>
+
+
+</div>
+
+@code {
+
+    private bool _isLoading = true;
+    private bool _isSaving;
+    private bool _showSavedMessage;
+    private bool _isExporting;
+    private bool _showExportedMessage;
+    private bool _isDeactivating;
+    private bool _showDeactivatedMessage;
+    private UserSettingsDto _userSettings = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userSettings = await UserSettingsService.GetUserSettingsAsync();
+
+        _isLoading = false;
+    }
+
+    private async Task OnPreferenceChangedAsync()
+    {
+        _isSaving = true;
+        _showSavedMessage = false;
+
+        try
+        {
+            await UserSettingsService.UpdateUserSettingsAsync(_userSettings.Id, _userSettings);
+        }
+        finally
+        {
+            _isSaving = false;
+            _showSavedMessage = true;
+            StateHasChanged();
+
+            _ = HideSavedMessageAfterDelayAsync();
+        }
+    }
+
+    private async Task HideSavedMessageAfterDelayAsync()
+    {
+        await Task.Delay(2000);
+        _showSavedMessage = false;
+        StateHasChanged();
+    }
+
+    private async Task OnExportClick()
+    {
+        _isExporting = true;
+        _showExportedMessage = false;
+        StateHasChanged();
+
+        try
+        {
+            await Task.Delay(1000);
+        }
+        finally
+        {
+            _isExporting = false;
+            _showExportedMessage = true;
+            StateHasChanged();
+
+            _ = HideExportedMessageAfterDelayAsync();
+        }
+    }
+
+    private async Task HideExportedMessageAfterDelayAsync()
+    {
+        await Task.Delay(2000);
+        _showExportedMessage = false;
+        StateHasChanged();
+    }
+
+    private async Task OnDeactivateClick()
+    {
+        _isDeactivating = true;
+        _showDeactivatedMessage = false;
+        StateHasChanged();
+
+        try
+        {
+            await Task.Delay(1000);
+        }
+        finally
+        {
+            _isDeactivating = false;
+            _showDeactivatedMessage = true;
+            StateHasChanged();
+
+            _ = HideDeactivatedMessageAfterDelayAsync();
+        }
+    }
+
+    private async Task HideDeactivatedMessageAfterDelayAsync()
+    {
+        await Task.Delay(2000);
+        _showDeactivatedMessage = false;
+        StateHasChanged();
+    }
+}

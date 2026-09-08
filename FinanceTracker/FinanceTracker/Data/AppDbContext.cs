@@ -9,8 +9,9 @@ namespace FinanceTracker.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Budget> Budgets { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<UserSettings> UserSettings { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -52,6 +53,11 @@ namespace FinanceTracker.Data
             modelBuilder.Entity<RefreshToken>()
                 .HasIndex(r => r.Token)
                 .IsUnique();
+
+            modelBuilder.Entity<UserSettings>()
+                .HasOne(settings => settings.User)
+                .WithOne(user => user.Settings)
+                .HasForeignKey<UserSettings>(settings => settings.UserId);
         }
     }
 }

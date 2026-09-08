@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FinanceTracker.Shared.DTOs.Settings
+namespace FinanceTracker.Shared.DTOs.UserSettings
 {
-    public class SettingsDto
+    public class SaveUserSettingsDto
     {
         public string Currency { get; set; } = "PHP";
         public string Appearance { get; set; } = "light";
