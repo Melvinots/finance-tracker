@@ -1,6 +1,6 @@
 ﻿using FinanceTracker.Shared.DTOs.Dashboard;
 
-namespace FinanceTracker.Services
+namespace FinanceTracker.Services.Dashboard
 {
     public interface IDashboardService
     {

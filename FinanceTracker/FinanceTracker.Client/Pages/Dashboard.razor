@@ -1,10 +1,6 @@
 ﻿@page "/dashboard"
 @attribute [Authorize]
 
-@inject HttpClient Http
-@inject IJSRuntime JS
-@inject DashboardService DashboardService
-
 <div class="dashboard-page">
 
     <header class="topbar">
@@ -21,7 +17,7 @@
             <span class="month-filter-label">Period</span>
 
             <select class="month-select"
-                    @bind="selectedMonth"
+                    @bind="_selectedMonth"
                     @bind:after="LoadDashboardAsync">
 
                 @for (int month = DateTime.Now.Month; month >= 1; month--)
@@ -44,10 +40,10 @@
 
     <main class="dashboard-content">
 
-        <LoadingWrapper IsLoading="isLoading"
+        <LoadingWrapper IsLoading="_isLoading"
                         Message="Loading your dashboard...">
 
-            @if (dashboard is null)
+            @if (_dashboard is null)
             {
                 <div class="dashboard-error">
 
@@ -76,28 +72,28 @@
                 <section class="stats-grid">
 
                     <StatCard Title="Total Income"
-                              Value="@CurrencyFormatter.Format(dashboard.TotalIncome, _currencyCode)"
+                              Value="@CurrencyFormatter.Format(_dashboard.TotalIncome, _currencyCode)"
                               Icon="@Lucide.CircleArrowDown"
                               IconBackground="#D1FAE5"
                               Variant="Income"
                               Trend="↑ this month" />
 
                     <StatCard Title="Total Expenses"
-                              Value="@CurrencyFormatter.Format(dashboard.TotalExpenses, _currencyCode)"
+                              Value="@CurrencyFormatter.Format(_dashboard.TotalExpenses, _currencyCode)"
                               Icon="@Lucide.CircleArrowUp"
                               IconBackground="#FFE4E6"
                               Variant="Expense"
                               Trend="↑ this month" />
 
                     <StatCard Title="Net Savings"
-                              Value="@CurrencyFormatter.Format(dashboard.NetSavings, _currencyCode)"
+                              Value="@CurrencyFormatter.Format(_dashboard.NetSavings, _currencyCode)"
                               Icon="@Lucide.Wallet"
                               IconBackground="#EDE9FE"
                               Variant="Default"
                               Trend="↑ this month" />
 
                     <StatCard Title="Transactions"
-                              Value="@dashboard.TransactionCount.ToString()"
+                              Value="@_dashboard.TransactionCount.ToString()"
                               Icon="@Lucide.ReceiptText"
                               IconBackground="#FEF3C7"
                               Variant="Default"
@@ -107,19 +103,19 @@
 
                 <section class="dashboard-grid dashboard-grid-primary">
 
-                    <SpendingOverview Data="@dashboard.MonthlySpending"
+                    <SpendingOverview Data="@_dashboard.MonthlySpending"
                                       CurrencyCode="@_currencyCode"
-                                      SelectedMonth="@selectedMonth" />
+                                      SelectedMonth="@_selectedMonth" />
 
-                    <CategorySpending Categories="@dashboard.CategorySpending" />
+                    <CategorySpending Categories="@_dashboard.CategorySpending" />
 
                 </section>
 
                 <section class="dashboard-grid dashboard-grid-secondary">
 
-                    <RecentTransactions Transactions="@dashboard.RecentTransactions" CurrencyCode="@_currencyCode" />
+                    <RecentTransactions Transactions="@_dashboard.RecentTransactions" CurrencyCode="@_currencyCode" />
 
-                    <BudgetOverview Budgets="@dashboard.Budgets" CurrencyCode="@_currencyCode" />
+                    <BudgetOverview Budgets="@_dashboard.Budgets" CurrencyCode="@_currencyCode" />
 
                 </section>
             }
@@ -128,49 +124,3 @@
     </main>
 
 </div>
-
-@code
-{
-    private bool isLoading = true;
-
-    private string selectedMonth = DateTime.Now.ToString("yyyy-MM");
-
-    private DashboardDto? dashboard;
-
-    private string _currencyCode = string.Empty;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadDashboardAsync();
-    }
-
-    private async Task LoadDashboardAsync()
-    {
-        isLoading = true;
-
-        try
-        {
-            var selectedDate =
-                DateTime.ParseExact(
-                    selectedMonth,
-                    "yyyy-MM",
-                    null);
-            
-            dashboard =
-                await DashboardService.GetDashboardAsync(
-                    selectedDate.Month,
-                    selectedDate.Year);
-
-            _currencyCode = dashboard?.UserSettings.Currency ?? string.Empty;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(
-                $"Failed to load dashboard: {ex.Message}");
-        }
-        finally
-        {
-            isLoading = false;
-        }
-    }
-}

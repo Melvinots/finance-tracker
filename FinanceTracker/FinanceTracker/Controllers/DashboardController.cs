@@ -1,8 +1,5 @@
-﻿using FinanceTracker.Services;
+﻿using FinanceTracker.Services.Dashboard;
 using FinanceTracker.Shared.DTOs.Dashboard;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace FinanceTracker.Controllers
 {

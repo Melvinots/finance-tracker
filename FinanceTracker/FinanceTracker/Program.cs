@@ -1,6 +1,8 @@
 using FinanceTracker.Data;
 using FinanceTracker.Repositories;
+using FinanceTracker.Repositories.Dashboard;
 using FinanceTracker.Services;
+using FinanceTracker.Services.Dashboard;
 using FinanceTracker.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

@@ -1,11 +1,12 @@
-﻿using FinanceTracker.Repositories;
+﻿using FinanceTracker.Repositories.Dashboard;
 using FinanceTracker.Shared.DTOs.Dashboard;
 
-namespace FinanceTracker.Services
+namespace FinanceTracker.Services.Dashboard
 {
     public class DashboardService : IDashboardService
     {
         private readonly IDashboardRepository _repo;
+
         public DashboardService(IDashboardRepository repo)
         {
             _repo = repo;
@@ -13,8 +14,7 @@ namespace FinanceTracker.Services
 
         public async Task<DashboardDto> GetDashboardAsync(int userId, int month, int year)
         {
-            var dashboard = await _repo.GetDashboardAsync(userId, month, year);
-            return dashboard;
+            return await _repo.GetDashboardAsync(userId, month, year);
         }
     }
 }
