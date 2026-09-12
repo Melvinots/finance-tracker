@@ -76,21 +76,21 @@
                 <section class="stats-grid">
 
                     <StatCard Title="Total Income"
-                              Value="@FormatCurrency(dashboard.TotalIncome)"
+                              Value="@CurrencyFormatter.Format(dashboard.TotalIncome, _currencyCode)"
                               Icon="@Lucide.CircleArrowDown"
                               IconBackground="#D1FAE5"
                               Variant="Income"
                               Trend="↑ this month" />
 
                     <StatCard Title="Total Expenses"
-                              Value="@FormatCurrency(dashboard.TotalExpenses)"
+                              Value="@CurrencyFormatter.Format(dashboard.TotalExpenses, _currencyCode)"
                               Icon="@Lucide.CircleArrowUp"
                               IconBackground="#FFE4E6"
                               Variant="Expense"
                               Trend="↑ this month" />
 
                     <StatCard Title="Net Savings"
-                              Value="@FormatCurrency(dashboard.NetSavings)"
+                              Value="@CurrencyFormatter.Format(dashboard.NetSavings, _currencyCode)"
                               Icon="@Lucide.Wallet"
                               IconBackground="#EDE9FE"
                               Variant="Default"
@@ -108,6 +108,7 @@
                 <section class="dashboard-grid dashboard-grid-primary">
 
                     <SpendingOverview Data="@dashboard.MonthlySpending"
+                                      CurrencyCode="@_currencyCode"
                                       SelectedMonth="@selectedMonth" />
 
                     <CategorySpending Categories="@dashboard.CategorySpending" />
@@ -116,9 +117,9 @@
 
                 <section class="dashboard-grid dashboard-grid-secondary">
 
-                    <RecentTransactions Transactions="@dashboard.RecentTransactions" />
+                    <RecentTransactions Transactions="@dashboard.RecentTransactions" CurrencyCode="@_currencyCode" />
 
-                    <BudgetOverview Budgets="@dashboard.Budgets" />
+                    <BudgetOverview Budgets="@dashboard.Budgets" CurrencyCode="@_currencyCode" />
 
                 </section>
             }
@@ -135,6 +136,8 @@
     private string selectedMonth = DateTime.Now.ToString("yyyy-MM");
 
     private DashboardDto? dashboard;
+
+    private string _currencyCode = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -157,6 +160,8 @@
                 await DashboardService.GetDashboardAsync(
                     selectedDate.Month,
                     selectedDate.Year);
+
+            _currencyCode = dashboard?.UserSettings.Currency ?? string.Empty;
         }
         catch (Exception ex)
         {
@@ -167,10 +172,5 @@
         {
             isLoading = false;
         }
-    }
-
-    private static string FormatCurrency(decimal amount)
-    {
-        return $"PHP {amount:N0}";
     }
 }

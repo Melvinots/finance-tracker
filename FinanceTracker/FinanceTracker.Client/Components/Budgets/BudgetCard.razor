@@ -51,11 +51,11 @@
 
         <div>
             <span class="spent">
-                PHP @Budget.AmountSpent.ToString("N0")
+                @CurrencyFormatter.Format(Budget.AmountSpent, CurrencyCode)
             </span>
 
             <span class="limit">
-                / PHP @Budget.LimitAmount.ToString("N0")
+                / @CurrencyFormatter.Format(Budget.LimitAmount, CurrencyCode)
             </span>
         </div>
 
@@ -91,6 +91,9 @@
     public BudgetDto Budget { get; set; } = null!;
 
     [Parameter]
+    public string CurrencyCode { get; set; } = string.Empty;
+
+    [Parameter]
     public EventCallback<BudgetDto> OnEdit { get; set; }
 
     [Parameter]
@@ -103,9 +106,9 @@
 
     private string RemainingText =>
         Budget.RemainingAmount >= 0
-            ? $"₱{Budget.RemainingAmount:N0} remaining"
-            : $"₱{Math.Abs(Budget.RemainingAmount):N0} over budget";
-
+            ? $"{CurrencyFormatter.Format(Budget.RemainingAmount, CurrencyCode)} remaining"
+            : $"{CurrencyFormatter.Format(Math.Abs(Budget.RemainingAmount), CurrencyCode)} over budget";
+    
     private string RemainingClass =>
         Budget.RemainingAmount < 0
             ? "remaining danger"

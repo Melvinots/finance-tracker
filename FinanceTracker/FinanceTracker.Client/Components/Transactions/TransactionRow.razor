@@ -55,7 +55,7 @@
         </span>
 
         <span class="amount-value">
-            PHP @Transaction.Amount.ToString("N0")
+            @CurrencyFormatter.Format(Transaction.Amount, CurrencyCode)
         </span>
 
     </div>
@@ -90,6 +90,9 @@
 
     [Parameter]
     public TransactionDto Transaction { get; set; } = new();
+
+    [Parameter]
+    public string CurrencyCode { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<TransactionDto> OnEdit { get; set; }

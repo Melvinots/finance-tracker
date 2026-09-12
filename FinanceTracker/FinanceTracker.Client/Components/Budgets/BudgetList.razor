@@ -5,6 +5,7 @@
     @foreach (var budget in Budgets)
     {
         <BudgetCard Budget="@budget"
+                    CurrencyCode="@CurrencyCode"
                     OnEdit="@OnEdit"
                     OnDelete="@OnDelete" />
     }
@@ -14,8 +15,10 @@
 @code {
 
     [Parameter]
-    public IEnumerable<BudgetDto> Budgets { get; set; }
-        = Enumerable.Empty<BudgetDto>();
+    public IEnumerable<BudgetDto> Budgets { get; set; } = Enumerable.Empty<BudgetDto>();
+
+    [Parameter]
+    public string CurrencyCode { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<BudgetDto> OnEdit { get; set; }

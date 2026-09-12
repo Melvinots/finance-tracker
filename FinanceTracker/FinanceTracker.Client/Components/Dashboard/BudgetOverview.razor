@@ -56,9 +56,9 @@
 
                             <span class="budget-amounts">
 
-                                Php @budget.Spent.ToString("N0")
+                                @CurrencyFormatter.Format(budget.Spent, CurrencyCode)
                                 /
-                                Php @budget.Limit.ToString("N0")
+                                @CurrencyFormatter.Format(budget.Limit, CurrencyCode)
 
                             </span>
 
@@ -87,5 +87,8 @@
 
     [Parameter]
     public List<BudgetProgressDto> Budgets { get; set; } = new();
+
+    [Parameter]
+    public string CurrencyCode { get; set; } = string.Empty;
 
 }

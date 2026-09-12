@@ -3,6 +3,7 @@
 
 @inject TransactionService TransactionService
 @inject CategoryService CategoryService
+@inject UserSettingsService UserSettingsService
 
 <div class="transactions-page">
 
@@ -81,6 +82,7 @@
             else
             {
                 <TransactionTable Transactions="@_filteredTransactions"
+                                  CurrencyCode="@_currencyCode"
                                   OnEdit="@OpenEditModal"
                                   OnDelete="@DeleteTransaction" />
             }
@@ -121,6 +123,8 @@
 
     private string _selectedType = "All";
 
+    private string _currencyCode = string.Empty;
+
     private List<TransactionDto> _transactions = new();
 
     private List<TransactionDto> _filteredTransactions = new();
@@ -145,6 +149,10 @@
         try
         {
             _transactions = await TransactionService.GetAllAsync();
+
+            var _userSettings = await UserSettingsService.GetUserSettingsAsync();
+            _currencyCode = _userSettings.Currency;
+
             ApplyFilters();
         }
         catch (Exception)

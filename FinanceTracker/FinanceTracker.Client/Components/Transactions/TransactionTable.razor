@@ -41,10 +41,11 @@
             {
                 <TransactionRow
                     Transaction="@transaction"
+                    CurrencyCode="@CurrencyCode"
                     OnEdit="@OnEdit"
                     OnDelete="@OnDelete" />
             }
-
+             
         </div>
     }
 
@@ -54,6 +55,9 @@
 
     [Parameter]
     public IEnumerable<TransactionDto> Transactions { get; set; } = Enumerable.Empty<TransactionDto>();
+
+    [Parameter]
+    public string CurrencyCode { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<TransactionDto> OnEdit { get; set; }

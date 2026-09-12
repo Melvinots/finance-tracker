@@ -3,6 +3,7 @@
 
 @inject BudgetService BudgetService
 @inject CategoryService CategoryService
+@inject UserSettingsService UserSettingsService
 
 <div class="budgets-page">
 
@@ -103,6 +104,7 @@
             else
             {
                 <BudgetList Budgets="@_budgets"
+                            CurrencyCode="@_currencyCode"
                             OnEdit="@OpenEditModal"
                             OnDelete="@DeleteBudget" />
             }
@@ -141,6 +143,8 @@
 
     private string _selectedMonth =
         DateTime.Now.ToString("yyyy-MM");
+
+    private string _currencyCode = string.Empty;
 
     private List<BudgetDto> _budgets = new();
 
@@ -185,6 +189,9 @@
     private async Task LoadCategoriesAsync()
     {
         _allCategories = await CategoryService.GetAllAsync();
+
+        var _userSettings= await UserSettingsService.GetUserSettingsAsync();
+        _currencyCode = _userSettings.Currency;
 
         UpdateAvailableCategories();
     }

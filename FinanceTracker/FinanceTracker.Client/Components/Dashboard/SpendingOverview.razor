@@ -61,7 +61,7 @@
                 <RadzenValueAxis>
                     <RadzenGridLines Visible="true"
                                      Stroke="#E2E8F0" />
-                    <RadzenAxisTitle Text="Amount (₱)" />
+                    <RadzenAxisTitle Text="@($"Amount ({CurrencyCode})")" />
                 </RadzenValueAxis>
 
                 <RadzenChartTooltipOptions Shared="true" />
@@ -83,6 +83,9 @@
 
     [Parameter]
     public string SelectedMonth { get; set; } = DateTime.Now.ToString("yyyy-MM");
+
+    [Parameter]
+    public string CurrencyCode { get; set; } = string.Empty;
 
     private SpendingPeriod selectedPeriod = SpendingPeriod.Last6Months;
 

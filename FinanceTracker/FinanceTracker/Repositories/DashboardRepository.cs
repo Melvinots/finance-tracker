@@ -1,5 +1,6 @@
 ﻿using FinanceTracker.Data;
 using FinanceTracker.Shared.DTOs.Dashboard;
+using FinanceTracker.Shared.DTOs.UserSettings;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinanceTracker.Repositories
@@ -149,6 +150,18 @@ namespace FinanceTracker.Repositories
                 })
                 .ToList();
 
+            var userSettings = _context.UserSettings
+                .Where(us => us.UserId == userId)
+                .Select(us => new UserSettingsDto
+                {
+                    Id = us.Id,
+                    FullName = us.User.FullName,
+                    Email = us.User.Email,
+                    Currency = us.Currency,
+                    Appearance = us.Appearance
+                })
+                .First();
+
             return new DashboardDto
             {
                 TotalIncome = totalIncome,
@@ -157,7 +170,8 @@ namespace FinanceTracker.Repositories
                 CategorySpending = categorySpending,
                 RecentTransactions = recentTransactions,
                 Budgets = budgetProgress,
-                MonthlySpending = monthlySpending
+                MonthlySpending = monthlySpending,
+                UserSettings = userSettings
             };
         }
     }
