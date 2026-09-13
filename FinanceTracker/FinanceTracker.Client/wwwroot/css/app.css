@@ -98,3 +98,36 @@ a {
     margin-top: 4px;
     display: block;
 }
+
+
+ /*Reposition Radzen notifications to bottom-right*/ 
+.rz-notification-item-wrapper {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    top: unset !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes slide-in-right {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.rz-notification-item-wrapper {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    top: unset !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slide-in-right 0.3s ease-out;
+}
