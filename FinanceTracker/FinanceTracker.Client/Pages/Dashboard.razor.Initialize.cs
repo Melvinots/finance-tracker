@@ -1,6 +1,4 @@
-﻿using Radzen;
-
-namespace FinanceTracker.Client.Pages
+﻿namespace FinanceTracker.Client.Pages
 {
     public partial class Dashboard
     {
@@ -22,15 +20,7 @@ namespace FinanceTracker.Client.Pages
             }
             catch (Exception ex)
             {
-                NotificationService.Notify(new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "Failed to load dashboard",
-                    Detail = "Something went wrong while loading your data.",
-                    Duration = 4000
-                });
-
-                Console.WriteLine($"Failed to load dashboard: {ex.Message}");
+                AppNotifier.Error(summary: "Failed to load dashboard", detail: "Something went wrong while loading your data.", ex);
             }
             finally
             {

@@ -18,6 +18,9 @@ builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<BudgetService>();
 builder.Services.AddScoped<UserSettingsService>();
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<AppNotificationService>();
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<AppDialogService>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 

@@ -20,6 +20,6 @@ namespace FinanceTracker.Shared.DTOs.Transactions
         [MaxLength(300)]
         public string? Notes { get; set; }
 
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; } = 0;
     }
 }

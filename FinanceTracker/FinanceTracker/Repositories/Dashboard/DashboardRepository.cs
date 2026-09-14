@@ -76,7 +76,7 @@ namespace FinanceTracker.Repositories.Dashboard
                 })
                 .Select(group => new CategorySpendingDto
                 {
-                    Name = group.Key.CategoryName ?? "Uncategorized",
+                    Name = group.Key.CategoryName ?? "Other",
                     Color = group.Key.CategoryColor ?? "#94A3B8",
                     Amount = group.Sum(t => t.Amount)
                 })
@@ -150,7 +150,7 @@ namespace FinanceTracker.Repositories.Dashboard
                 .Select(t => new RecentTransactionDto
                 {
                     Description = t.Description,
-                    Category = t.Category?.Name ?? "Uncategorized",
+                    Category = t.Category?.Name ?? "Other",
                     Amount = t.Amount,
                     IsIncome = !t.IsExpense,
                     Date = t.Date

@@ -1,10 +1,6 @@
 ﻿@page "/transactions"
 @attribute [Authorize]
 
-@inject TransactionService TransactionService
-@inject CategoryService CategoryService
-@inject UserSettingsService UserSettingsService
-
 <div class="transactions-page">
 
     <header class="page-header">
@@ -41,16 +37,6 @@
 
     </header>
 
-    @if (_errorMessage is not null)
-    {
-        <div class="error-banner" role="alert">
-            <span>@_errorMessage</span>
-            <button type="button" class="error-dismiss" @onclick="() => _errorMessage = null">
-                Dismiss
-            </button>
-        </div>
-    }
-
     <LoadingWrapper IsLoading="@_isLoading"
                     Message="Loading your transactions...">
 
@@ -73,18 +59,19 @@
                                 SelectedType="@_selectedType"
                                 SelectedTypeChanged="@OnTypeChanged" />
 
-            @if (_filteredTransactions.Count == 0)
-            {
-                <div class="empty-transactions">
-                    <p>No transactions match your filters.</p>
-                </div>
-            }
-            else
+            @if (_filteredTransactions.Count > 0)
             {
                 <TransactionTable Transactions="@_filteredTransactions"
                                   CurrencyCode="@_currencyCode"
                                   OnEdit="@OpenEditModal"
                                   OnDelete="@DeleteTransaction" />
+            }
+            else
+            {
+                <div class="empty-transactions">
+                    <p>No transactions match your filters.</p>
+                </div>
+                
             }
 
         </section>
@@ -99,198 +86,4 @@
                      Categories="@_categories"
                      OnSave="@SaveTransaction"
                      OnCancel="@CloseModal" />
-}
-
-@if (_pendingDelete is not null)
-{
-    <ConfirmDialog IsOpen="true"
-                   Title="Delete transaction?"
-                   Message="@($"This will permanently remove \"{_pendingDelete.Description}\". This can't be undone.")"
-                   ConfirmLabel="Delete"
-                   OnConfirm="@ConfirmDelete"
-                   OnCancel="@(() => _pendingDelete = null)" />
-}
-
-@code {
-
-    private bool _isLoading = true;
-
-    private bool _showModal = false;
-
-    private string? _errorMessage;
-
-    private string _searchTerm = string.Empty;
-
-    private string _selectedType = "All";
-
-    private string _currencyCode = string.Empty;
-
-    private List<TransactionDto> _transactions = new();
-
-    private List<TransactionDto> _filteredTransactions = new();
-
-    private List<CategoryDto> _categories = new();
-
-    private TransactionDto? _selectedTransaction;
-
-    private TransactionDto? _pendingDelete;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadTransactions();
-        await LoadCategoriesAsync();
-    }
-
-    private async Task LoadTransactions()
-    {
-        _isLoading = true;
-        _errorMessage = null;
-
-        try
-        {
-            _transactions = await TransactionService.GetAllAsync();
-
-            var _userSettings = await UserSettingsService.GetUserSettingsAsync();
-            _currencyCode = _userSettings.Currency;
-
-            ApplyFilters();
-        }
-        catch (Exception)
-        {
-            _errorMessage = "We couldn't load your transactions. Please try again.";
-        }
-        finally
-        {
-            _isLoading = false;
-        }
-    }
-
-    private async Task LoadCategoriesAsync()
-    {
-        try
-        {
-            _categories = await CategoryService.GetAllAsync();
-        }
-        catch (Exception)
-        {
-            _errorMessage ??= "We couldn't load your categories.";
-        }
-    }
-
-    private void ApplyFilters()
-    {
-        _filteredTransactions = _transactions
-            .Where(MatchesSearch)
-            .Where(MatchesType)
-            .ToList();
-    }
-
-    private bool MatchesSearch(TransactionDto transaction)
-    {
-        if (string.IsNullOrWhiteSpace(_searchTerm))
-        {
-            return true;
-        }
-
-        return transaction.Description.Contains(
-                   _searchTerm,
-                   StringComparison.OrdinalIgnoreCase)
-            || transaction.CategoryName.Contains(
-                   _searchTerm,
-                   StringComparison.OrdinalIgnoreCase);
-    }
-
-    private bool MatchesType(TransactionDto transaction)
-    {
-        return _selectedType switch
-        {
-            "Income" => !transaction.IsExpense,
-            "Expense" => transaction.IsExpense,
-            _ => true
-        };
-    }
-
-    private void OnSearchChanged(string value)
-    {
-        _searchTerm = value;
-        ApplyFilters();
-    }
-
-    private void OnTypeChanged(string value)
-    {
-        _selectedType = value;
-        ApplyFilters();
-    }
-
-    private void OpenCreateModal()
-    {
-        _selectedTransaction = null;
-        _showModal = true;
-    }
-
-    private void OpenEditModal(TransactionDto transaction)
-    {
-        _selectedTransaction = transaction;
-        _showModal = true;
-    }
-
-    private void CloseModal()
-    {
-        _showModal = false;
-        _selectedTransaction = null;
-    }
-
-    private async Task SaveTransaction(SaveTransactionDto transaction)
-    {
-        try
-        {
-            if (_selectedTransaction is null)
-            {
-                await TransactionService.CreateAsync(transaction);
-            }
-            else
-            {
-                await TransactionService.UpdateAsync(
-                    _selectedTransaction.Id,
-                    transaction);
-            }
-
-            CloseModal();
-
-            await LoadTransactions();
-        }
-        catch (Exception)
-        {
-            _errorMessage = "We couldn't save this transaction. Please try again.";
-        }
-    }
-
-    private void DeleteTransaction(TransactionDto transaction)
-    {
-        _pendingDelete = transaction;
-    }
-
-    private async Task ConfirmDelete()
-    {
-        if (_pendingDelete is null)
-        {
-            return;
-        }
-
-        try
-        {
-            await TransactionService.DeleteAsync(_pendingDelete.Id);
-
-            _transactions.Remove(_pendingDelete);
-            ApplyFilters();
-        }
-        catch (Exception)
-        {
-            _errorMessage = "We couldn't delete this transaction. Please try again.";
-        }
-        finally
-        {
-            _pendingDelete = null;
-        }
-    }
 }

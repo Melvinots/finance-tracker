@@ -29,7 +29,7 @@ namespace FinanceTracker.Services
         {
             var categoryId = dto.CategoryId;
 
-            if (categoryId is null || categoryId == 0)
+            if (categoryId == 0)
             {
                 var category = await _repo.GetOrCreateUncategorizedAsync(userId);
                 dto.CategoryId = category.Id;
@@ -89,9 +89,9 @@ namespace FinanceTracker.Services
             IsExpense = t.IsExpense,
             Notes = t.Notes,
             CategoryId = t.CategoryId,
-            CategoryName = t?.Category?.Name,
-            CategoryColor = t?.Category?.Color,
-            CategoryIcon = t?.Category?.Icon
+            CategoryName = t.Category.Name,
+            CategoryColor = t.Category.Color,
+            CategoryIcon = t.Category.Icon
         };
     }
 }
