@@ -25,7 +25,6 @@
     }
 
     .budget-card:hover {
-        transform: translateY(-3px);
         box-shadow: var(--shadow-md, 0 6px 18px rgba(15, 23, 42, .06));
         border-color: color-mix(in srgb, var(--accent, var(--rule)) 40%, var(--rule));
     }

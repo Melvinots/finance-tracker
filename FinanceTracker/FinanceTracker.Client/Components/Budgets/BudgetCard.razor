@@ -2,7 +2,8 @@
 
 <div class="budget-card"
     style="--category-color: @AccentColor;
-    --category-color-soft: @(AccentColor + "18");">
+    --category-color-soft: @(AccentColor + "18");"
+     @key="@($"{Budget.Id}")">
 
     <div class="budget-card-header">
 
@@ -28,21 +29,24 @@
 
         </div>
 
-        <div class="budget-actions">
+        @if (IsEditable)
+        {
+            <div class="budget-actions">
 
-            <button class="action-button"
-                    title="Edit"
-                    @onclick="() => OnEdit.InvokeAsync(Budget)">
-                <Blazicon Svg="Lucide.Pencil" />
-            </button>
+                <button class="action-button"
+                        title="Edit"
+                        @onclick="() => OnEdit.InvokeAsync(Budget)">
+                    <Blazicon Svg="Lucide.Pencil" />
+                </button>
 
-            <button class="action-button delete"
-                    title="Delete"
-                    @onclick="() => OnDelete.InvokeAsync(Budget)">
-                <Blazicon Svg="Lucide.X" />
-            </button>
+                <button class="action-button delete"
+                        title="Delete"
+                        @onclick="() => OnDelete.InvokeAsync(Budget)">
+                    <Blazicon Svg="Lucide.X" />
+                </button>
 
-        </div>
+            </div>
+        }
 
     </div>
 
@@ -98,6 +102,9 @@
 
     [Parameter]
     public EventCallback<BudgetDto> OnDelete { get; set; }
+
+    private bool IsEditable =>
+        new DateTime(Budget.Year, Budget.Month, 1) >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
     private string AccentColor =>
         string.IsNullOrWhiteSpace(Budget.CategoryColor)

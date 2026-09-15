@@ -1,10 +1,6 @@
 ﻿@page "/budgets"
 @attribute [Authorize]
 
-@inject BudgetService BudgetService
-@inject CategoryService CategoryService
-@inject UserSettingsService UserSettingsService
-
 <div class="budgets-page">
 
     <header class="page-header">
@@ -33,7 +29,7 @@
 
             <select class="month-select"
                     @bind="_selectedMonth"
-                    @bind:after="LoadBudgets">
+                    @bind:after="LoadBudgetsAsync">
 
                 @for (int month = DateTime.Now.Month; month >= 1; month--)
                 {
@@ -81,7 +77,14 @@
 
             </div>
 
-            @if (!_budgets.Any())
+            @if (_budgets.Any())
+            {
+                <BudgetList Budgets="@_budgets"
+                            CurrencyCode="@_currencyCode"
+                            OnEdit="@OpenEditModal"
+                            OnDelete="@DeleteBudget" />
+            }
+            else
             {
                 <div class="empty-budgets">
 
@@ -101,13 +104,6 @@
 
                 </div>
             }
-            else
-            {
-                <BudgetList Budgets="@_budgets"
-                            CurrencyCode="@_currencyCode"
-                            OnEdit="@OpenEditModal"
-                            OnDelete="@DeleteBudget" />
-            }
 
         </section>
 
@@ -119,155 +115,8 @@
 {
     <BudgetForm Budget="@_selectedBudget"
                 Categories="@_categories"
-                Year="2026"
-                Month="8"
+                Year="SelectedDate.Year"
+                Month="SelectedDate.Month"
                 OnSave="@SaveBudget"
                 OnCancel="@CloseModal" />
-}
-
-@if (_pendingDelete is not null)
-{
-    <ConfirmDialog IsOpen="true"
-                   Title="Delete budget?"
-                   Message="@($"This will permanently remove budget for \"{_pendingDelete.CategoryName}\". This can't be undone.")"
-                   ConfirmLabel="Delete"
-                   OnConfirm="@ConfirmDelete"
-                   OnCancel="@(() => _pendingDelete = null)" />
-}
-
-@code {
-
-    private bool _isLoading = true;
-
-    private bool _showModal;
-
-    private string _selectedMonth =
-        DateTime.Now.ToString("yyyy-MM");
-
-    private string _currencyCode = string.Empty;
-
-    private List<BudgetDto> _budgets = new();
-
-    private List<CategoryDto> _allCategories = new();
-
-    private List<CategoryDto> _categories = new();
-
-    private BudgetDto? _selectedBudget;
-
-    private BudgetDto? _pendingDelete;
-
-    private string? _errorMessage;
-
-    private DateTime SelectedDate =>
-        DateTime.ParseExact(
-            _selectedMonth,
-            "yyyy-MM",
-            null);
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadBudgets();
-        await LoadCategoriesAsync();
-    }
-
-    private async Task LoadBudgets()
-    {
-        _isLoading = true;
-
-        try
-        {
-            _budgets = await BudgetService.GetAllAsync(
-                SelectedDate.Month,
-                SelectedDate.Year);
-        }
-        finally
-        {
-            _isLoading = false;
-        }
-    }
-
-    private async Task LoadCategoriesAsync()
-    {
-        _allCategories = await CategoryService.GetAllAsync();
-
-        var _userSettings= await UserSettingsService.GetUserSettingsAsync();
-        _currencyCode = _userSettings.Currency;
-
-        UpdateAvailableCategories();
-    }
-
-    private void UpdateAvailableCategories()
-    {
-        _categories = _allCategories
-            .Where(category => !_budgets.Any(
-                budget => budget.CategoryId == category.Id))
-            .ToList();
-    }
-
-    private void OpenCreateModal()
-    {
-        _selectedBudget = null;
-        _showModal = true;
-    }
-
-    private void OpenEditModal(BudgetDto budget)
-    {
-        _selectedBudget = budget;
-        _showModal = true;
-    }
-
-    private void CloseModal()
-    {
-        _showModal = false;
-        _selectedBudget = null;
-    }
-
-    private async Task SaveBudget(SaveBudgetDto budget)
-    {
-        if (_selectedBudget is null)
-        {
-            await BudgetService.CreateAsync(budget);
-        }
-        else
-        {
-            await BudgetService.UpdateAsync(
-                _selectedBudget.Id,
-                budget);
-        }
-
-        CloseModal();
-
-        await LoadBudgets();
-        UpdateAvailableCategories();
-    }
-
-    private void DeleteBudget(BudgetDto budget)
-    {
-        _pendingDelete = budget;
-    }
-
-    private async Task ConfirmDelete()
-    {
-        if (_pendingDelete is null)
-        {
-            return;
-        }
-
-        try
-        {
-            await BudgetService.DeleteAsync(_pendingDelete.Id);
-
-            _budgets.Remove(_pendingDelete);
-
-            UpdateAvailableCategories();
-        }
-        catch (Exception)
-        {
-            _errorMessage = "We couldn't delete this transaction. Please try again.";
-        }
-        finally
-        {
-            _pendingDelete = null;
-        }
-    }
 }

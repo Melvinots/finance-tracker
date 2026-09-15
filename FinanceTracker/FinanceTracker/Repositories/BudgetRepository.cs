@@ -38,6 +38,7 @@ namespace FinanceTracker.Repositories
                                 t.Date.Year == year)
                             .Sum(t => t.Amount)
                     })
+                    .OrderBy(b => b.Category.Name)
                     .ToListAsync();
         }
 

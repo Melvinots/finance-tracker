@@ -1,14 +1,18 @@
 ﻿@namespace FinanceTracker.Client.Components.Budgets
 
-<div class="budget-list">
+<div class="budget-list-box">
 
-    @foreach (var budget in Budgets)
-    {
-        <BudgetCard Budget="@budget"
-                    CurrencyCode="@CurrencyCode"
-                    OnEdit="@OnEdit"
-                    OnDelete="@OnDelete" />
-    }
+    <div class="budget-list">
+
+        @foreach (var budget in Budgets)
+        {
+            <BudgetCard Budget="@budget"
+                        CurrencyCode="@CurrencyCode"
+                        OnEdit="@OnEdit"
+                        OnDelete="@OnDelete" />
+        }
+
+    </div>
 
 </div>
 

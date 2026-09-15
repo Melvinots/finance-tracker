@@ -2,12 +2,19 @@
    BUDGET LIST
    ========================================= */
 
+.budget-list-box {
+    padding: 1.25rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+}
+
 .budget-list {
     display: grid;
     grid-template-columns: repeat( auto-fit, minmax(min(100%, 280px), 1fr) );
     gap: 1rem;
 }
-
 
 /* =========================================
    RESPONSIVE
