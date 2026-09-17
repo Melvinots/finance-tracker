@@ -30,7 +30,6 @@ namespace FinanceTracker.Client.Pages
 
         private BudgetDto? _selectedBudget;
 
-        private BudgetDto? _pendingDelete;
         private DateTime SelectedDate => DateTime.ParseExact(_selectedMonth, "yyyy-MM", null);
     }
 }

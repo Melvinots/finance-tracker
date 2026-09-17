@@ -8,13 +8,13 @@
 
             <div>
                 <h2>
-                    @(Model is null
+                    @(Category is null
                         ? "Add category"
                         : "Edit category")
                 </h2>
 
                 <p>
-                    @(Model is null
+                    @(Category is null
                         ? "Create a category for your transactions."
                         : "Update your category details.")
                 </p>
@@ -49,9 +49,9 @@
                 @foreach (var icon in _icons)
                 {
                     <button type="button"
-                            class="icon-button @(Model.Icon == icon.Name ? "selected" : "")"
+                            class="icon-button @(_model.Icon == icon.Name ? "selected" : "")"
                             aria-label="Select @icon.Name icon"
-                            aria-pressed="@(Model.Icon == icon.Name)"
+                            aria-pressed="@(_model.Icon == icon.Name)"
                             @onclick="() => SelectIcon(icon.Name)">
 
                         <Blazicon Svg="@icon.Icon" />
@@ -72,10 +72,10 @@
 
             <InputText id="category-name"
                        class="form-input"
-                       @bind-Value="Model.Name"
+                       @bind-Value="_model.Name"
                        placeholder="e.g. Food, Transport, Utilities..." />
 
-            <ValidationMessage For="@(() => Model.Name)" />
+            <ValidationMessage For="@(() => _model.Name)" />
 
         </div>
 
@@ -91,10 +91,10 @@
                 @foreach (var color in _colors)
                 {
                     <button type="button"
-                            class="color-button @(Model.Color == color ? "selected" : "")"
+                            class="color-button @(_model.Color == color ? "selected" : "")"
                             style="--color: @color"
                             aria-label="Select color @color"
-                            aria-pressed="@(Model.Color == color)"
+                            aria-pressed="@(_model.Color == color)"
                             @onclick="() => SelectColor(color)">
                     </button>
                 }
@@ -111,17 +111,17 @@
             </span>
 
             <div class="preview-category"
-                 style="--category-color: @Model.Color;
-                --category-color-soft: @(Model.Color + "18");">
+                 style="--category-color: @_model.Color;
+                --category-color-soft: @(_model.Color + "18");">
 
                 <div class="preview-icon">
-                    <Blazicon Svg="@GetIcon(Model.Icon)" />
+                    <Blazicon Svg="@GetIcon(_model.Icon)" />
                 </div>
 
                 <span>
-                    @(string.IsNullOrWhiteSpace(Model.Name)
+                    @(string.IsNullOrWhiteSpace(_model.Name)
                         ? "Category name"
-                        : Model.Name)
+                        : _model.Name)
                 </span>
 
             </div>
@@ -166,7 +166,7 @@
 @code {
 
     [Parameter]
-    public SaveCategoryDto Model { get; set; } = new();
+    public CategoryDto? Category { get; set; } = new();
 
     [Parameter]
     public bool IsLoading { get; set; }
@@ -180,23 +180,35 @@
     [Parameter]
     public EventCallback OnCancel { get; set; }
 
+    public SaveCategoryDto _model = new();
+
+    protected override void OnParametersSet()
+    {
+        _model = new SaveCategoryDto
+        {
+            Name = Category?.Name ?? "",
+            Color = Category?.Color ?? "",
+            Icon = Category?.Icon ?? ""
+        };
+    }
+
     private readonly List<CategoryIcon> _icons =
-    new() { new("Shopping", Lucide.ShoppingCart),
-            new("Transport", Lucide.Bus),
-            new("Utilities", Lucide.Zap),
-            new("Entertainment", Lucide.Film),
-            new("Health", Lucide.HeartPulse),
-            new("Home", Lucide.House),
-            new("Clothing", Lucide.Shirt),
-            new("Education", Lucide.BookOpen),
-            new("Food", Lucide.Utensils),
-            new("Travel", Lucide.Plane),
-            new("Work", Lucide.Briefcase),
-            new("Gaming", Lucide.Gamepad2),
-            new("Medicine", Lucide.Pill),
-            new("Pets", Lucide.PawPrint),
-            new("Gifts", Lucide.Gift),
-            new("Other", Lucide.Inbox) };
+        new() { new("Shopping", Lucide.ShoppingCart),
+                new("Transport", Lucide.Bus),
+                new("Utilities", Lucide.Zap),
+                new("Entertainment", Lucide.Film),
+                new("Health", Lucide.HeartPulse),
+                new("Home", Lucide.House),
+                new("Clothing", Lucide.Shirt),
+                new("Education", Lucide.BookOpen),
+                new("Food", Lucide.Utensils),
+                new("Travel", Lucide.Plane),
+                new("Work", Lucide.Briefcase),
+                new("Gaming", Lucide.Gamepad2),
+                new("Medicine", Lucide.Pill),
+                new("Pets", Lucide.PawPrint),
+                new("Gifts", Lucide.Gift),
+                new("Other", Lucide.Inbox) };
 
     private readonly Dictionary<string, SvgIcon> _iconMap = new()
     {
@@ -245,24 +257,24 @@
 
     private void SelectIcon(string icon)
     {
-        Model.Icon = icon;
+        _model.Icon = icon;
     }
 
 
     private void SelectColor(string color)
     {
-        Model.Color = color;
+        _model.Color = color;
     }
 
 
     private async Task HandleSubmit()
     {
-        await OnSave.InvokeAsync(Model);
+        await OnSave.InvokeAsync(_model);
     }
 
     private async Task HandleCancel()
     {
-        await OnCancel.InvokeAsync(Model);
+        await OnCancel.InvokeAsync(_model);
     }
 
     private record CategoryIcon(

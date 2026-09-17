@@ -1,13 +1,17 @@
 @namespace FinanceTracker.Client.Components.Categories
 
-<div class="category-list">
+<div class="category-list-box">
 
-    @foreach (var category in Categories)
-    {
-        <CategoryCard Category="@category"
-                      OnEdit="OnEdit"
-                      OnDelete="OnDelete" />
-    }
+    <div class="category-list">
+
+        @foreach (var category in Categories)
+        {
+            <CategoryCard Category="@category"
+                          OnEdit="OnEdit"
+                          OnDelete="OnDelete" />
+        }
+
+    </div>
 
 </div>
 

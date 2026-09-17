@@ -1,3 +1,11 @@
+.category-list-box {
+    padding: 1.25rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+}
+
 /* =========================================
    CATEGORY LIST
    ========================================= */

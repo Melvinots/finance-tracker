@@ -1,8 +1,6 @@
 ﻿@page "/categories"
 @attribute [Authorize]
 
-@inject CategoryService CategoryService
-
 <div class="categories-page">
 
     <header class="page-header">
@@ -29,7 +27,7 @@
 
         <button class="primary-button"
                 type="button"
-                @onclick="OpenAddModal">
+                @onclick="OpenCreateModal">
 
             <Blazicon Svg="Lucide.Plus" />
 
@@ -56,7 +54,13 @@
 
             </div>
 
-            @if (!_categories.Any())
+            @if (_categories.Any())
+            {
+                <CategoryList Categories="@_categories"
+                              OnEdit="OpenEditModal"
+                              OnDelete="HandleDelete" />
+            }
+            else
             {
                 <div class="empty-state">
 
@@ -72,7 +76,7 @@
 
                     <button class="primary-button"
                             type="button"
-                            @onclick="OpenAddModal">
+                            @onclick="OpenCreateModal">
 
                         <Blazicon Svg="Lucide.Plus" />
 
@@ -81,12 +85,6 @@
                     </button>
 
                 </div>
-            }
-            else
-            {
-                <CategoryList Categories="@_categories"
-                              OnEdit="OpenEditModal"
-                              OnDelete="HandleDelete" />
             }
 
         </section>
@@ -97,117 +95,8 @@
 
 @if (_showModal)
 {
-    <CategoryForm Model="@_formModel"
+    <CategoryForm Category="@_selectedCategory"
                   IsLoading="@_isSaving"
-                  ErrorMessage="@_error"
                   OnSave="HandleSave"
                   OnCancel="CloseModal" />
-}
-
-@code {
-
-    private bool _isLoading = true;
-    private bool _showModal;
-    private bool _isSaving;
-
-    private string? _error;
-
-    private List<CategoryDto> _categories = new();
-
-    private CategoryDto? _editingCategory;
-
-    private SaveCategoryDto _formModel = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadCategoriesAsync();
-    }
-
-    private async Task LoadCategoriesAsync()
-    {
-        _isLoading = true;
-
-        try
-        {
-            _categories = await CategoryService.GetAllAsync();
-        }
-        finally
-        {
-            _isLoading = false;
-        }
-    }
-
-    private void OpenAddModal()
-    {
-        _editingCategory = null;
-        _formModel = new SaveCategoryDto();
-        _error = null;
-        _showModal = true;
-    }
-
-    private void OpenEditModal(CategoryDto category)
-    {
-        _editingCategory = category;
-
-        _formModel = new SaveCategoryDto
-        {
-            Name = category.Name,
-            Color = category.Color,
-            Icon = category.Icon
-        };
-
-        _error = null;
-        _showModal = true;
-    }
-
-    private void CloseModal()
-    {
-        _showModal = false;
-        _editingCategory = null;
-        _error = null;
-    }
-
-    private async Task HandleSave(SaveCategoryDto dto)
-    {
-        _isSaving = true;
-        _error = null;
-
-        try
-        {
-            var success = _editingCategory is null
-                ? await CategoryService.CreateAsync(dto)
-                : await CategoryService.UpdateAsync(
-                    _editingCategory.Id,
-                    dto);
-
-            if (success is not null)
-            {
-                CloseModal();
-                await LoadCategoriesAsync();
-            }
-            else
-            {
-                _error = "Failed to save category. Please try again.";
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to save category: {ex.Message}");
-            _error = "Something went wrong. Please try again.";
-        }
-        finally
-        {
-            _isSaving = false;
-        }
-    }
-
-    private async Task HandleDelete(CategoryDto category)
-    {
-        var response = await CategoryService.DeleteAsync(category.Id);
-
-        if (response.IsSuccessStatusCode)
-        {
-            _categories.Remove(category);
-        }
-    }
 }
