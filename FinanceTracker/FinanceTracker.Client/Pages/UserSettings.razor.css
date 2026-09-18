@@ -7,6 +7,15 @@
     background: var(--bg, var(--surface-alt));
 }
 
+.settings-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.25rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+}
 
 /* =========================================
    PAGE HEADER
@@ -122,10 +131,10 @@
     /*min-width: 0;*/
 }
 
-    .section-heading .save-status {
-        margin-inline-start: auto;
-        flex-shrink: 0;
-    }
+.section-heading .save-status {
+    margin-inline-start: auto;
+    flex-shrink: 0;
+}
 
 .section-icon {
     width: 34px;
@@ -297,11 +306,6 @@
         .save-status.saving svg {
             animation: spin 900ms linear infinite;
         }
-
-    .save-status.saved {
-        color: var(--success, #16a34a);
-        background: var(--success-dim, color-mix(in srgb, #16a34a 12%, transparent));
-    }
 
 
 /* =========================================
