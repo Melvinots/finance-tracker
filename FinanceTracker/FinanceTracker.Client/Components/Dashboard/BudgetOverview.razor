@@ -21,17 +21,7 @@
 
     <ChildContent>
 
-        @if (Budgets.Count == 0)
-        {
-            <div class="empty-state">
-                <p>No budgets found for this month.</p>
-
-                <a href="/budgets" class="empty-state-cta">
-                    Create a budget <span class="view-all-arrow">→</span>
-                </a>
-            </div>
-        }
-        else
+        @if (Budgets.Count > 0)
         {
             <div class="budget-list">
 
@@ -76,6 +66,16 @@
                     </div>
                 }
 
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p>No budgets found for this month.</p>
+
+                <a href="/budgets" class="empty-state-cta">
+                    Create a budget <span class="view-all-arrow">→</span>
+                </a>
             </div>
         }
 

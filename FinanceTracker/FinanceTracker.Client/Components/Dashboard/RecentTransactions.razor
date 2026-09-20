@@ -19,13 +19,7 @@
 
     <ChildContent>
 
-        @if (Transactions.Count == 0)
-        {
-            <div class="transaction-empty">
-                <span>No transactions yet.</span>
-            </div>
-        }
-        else
+        @if (Transactions.Count > 0)
         {
             <div class="transaction-list">
                 @foreach (var transaction in Transactions)
@@ -45,6 +39,12 @@
 
                     </div>
                 }
+            </div>
+        }
+        else
+        {
+            <div class="transaction-empty">
+                <span>No transactions yet.</span>
             </div>
         }
 

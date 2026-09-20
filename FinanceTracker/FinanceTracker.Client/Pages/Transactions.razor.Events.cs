@@ -25,19 +25,19 @@
         {
             return _selectedType switch
             {
-                "Income" => !transaction.IsExpense,
-                "Expense" => transaction.IsExpense,
+                TransactionTypeFilter.Income => !transaction.IsExpense,
+                TransactionTypeFilter.Expense => transaction.IsExpense,
                 _ => true
             };
         }
 
-        private void OnSearchChanged(string value)
+        private void HandleSearchTermChanged(string value)
         {
             _searchTerm = value;
             ApplyFilters();
         }
 
-        private void OnTypeChanged(string value)
+        private void HandleSelectedTypeChanged(TransactionTypeFilter value)
         {
             _selectedType = value;
             ApplyFilters();
@@ -49,7 +49,7 @@
             _showModal = true;
         }
 
-        private void OpenEditModal(TransactionDto transaction)
+        private void HandleEdit(TransactionDto transaction)
         {
             _selectedTransaction = transaction;
             _showModal = true;
@@ -61,7 +61,7 @@
             _selectedTransaction = null;
         }
 
-        private async Task SaveTransaction(SaveTransactionDto transaction)
+        private async Task HandleSave(SaveTransactionDto transaction)
         {
             try
             {
@@ -88,7 +88,7 @@
             }
         }
 
-        private async Task DeleteTransaction(TransactionDto transaction)
+        private async Task HandleDelete(TransactionDto transaction)
         {
             bool? confirmed = await AppDialogs.ConfirmDelete(transaction.Description, _itemType);
 

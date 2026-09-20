@@ -10,7 +10,7 @@ namespace FinanceTracker.Client.Pages
             _showModal = true;
         }
 
-        private void OpenEditModal(CategoryDto category)
+        private void HandleEdit(CategoryDto category)
         {
             _selectedCategory = category;
             _showModal = true;

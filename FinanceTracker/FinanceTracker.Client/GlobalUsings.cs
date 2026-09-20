@@ -4,6 +4,7 @@ global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Authorization;
 
 global using FinanceTracker.Client.Services;
+global using FinanceTracker.Client.Enums;
 global using FinanceTracker.Shared.DTOs.Auth;
 global using FinanceTracker.Shared.DTOs.Dashboard;
 global using FinanceTracker.Shared.DTOs.Transactions;

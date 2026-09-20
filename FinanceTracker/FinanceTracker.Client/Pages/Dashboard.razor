@@ -43,7 +43,61 @@
         <LoadingWrapper IsLoading="_isLoading"
                         Message="Loading your dashboard...">
 
-            @if (_dashboard is null)
+            @if (_dashboard is not null)
+            {
+                <section class="stats-grid">
+
+                    <StatCard Title="Total Income"
+                              Value="@CurrencyFormatter.Format(_dashboard.TotalIncome, _currencyCode)"
+                              Icon="@Lucide.CircleArrowDown"
+                              IconBackground="#D1FAE5"
+                              Variant="Positive"
+                              Trend="this month" />
+
+                    <StatCard Title="Total Expenses"
+                              Value="@CurrencyFormatter.Format(_dashboard.TotalExpenses, _currencyCode)"
+                              Icon="@Lucide.CircleArrowUp"
+                              IconBackground="#FFE4E6"
+                              Variant="Negative"
+                              Trend="this month" />
+
+                    <StatCard Title="Net Savings"
+                              Value="@CurrencyFormatter.Format(_dashboard.NetSavings, _currencyCode)"
+                              Icon="@Lucide.Wallet"
+                              IconBackground="#EDE9FE"
+                              Variant="@(_dashboard.NetSavings >= 0 ? "Positive" : "Negative")"
+                              Trend="this month" />
+
+                    <StatCard Title="Transactions"
+                              Value="@_dashboard.TransactionCount.ToString()"
+                              Icon="@Lucide.ReceiptText"
+                              IconBackground="#FEF3C7"
+                              Variant="Default"
+                              Trend="This month" />
+
+                </section>
+
+                <section class="dashboard-grid dashboard-grid-primary">
+
+                    <SpendingOverview Data="@_dashboard.MonthlySpending"
+                                      CurrencyCode="@_currencyCode"
+                                      SelectedMonth="@_selectedMonth" />
+
+                    <CategorySpending Categories="@_dashboard.CategorySpending" />
+
+                </section>
+
+                <section class="dashboard-grid dashboard-grid-secondary">
+
+                    <RecentTransactions Transactions="@_dashboard.RecentTransactions"
+                                        CurrencyCode="@_currencyCode" />
+
+                    <BudgetOverview Budgets="@_dashboard.Budgets" 
+                                    CurrencyCode="@_currencyCode" />
+
+                </section>
+            }
+            else
             {
                 <div class="dashboard-error">
 
@@ -67,60 +121,9 @@
 
                 </div>
             }
-            else
-            {
-                <section class="stats-grid">
-
-                    <StatCard Title="Total Income"
-                              Value="@CurrencyFormatter.Format(_dashboard.TotalIncome, _currencyCode)"
-                              Icon="@Lucide.CircleArrowDown"
-                              IconBackground="#D1FAE5"
-                              Variant="Income"
-                              Trend="↑ this month" />
-
-                    <StatCard Title="Total Expenses"
-                              Value="@CurrencyFormatter.Format(_dashboard.TotalExpenses, _currencyCode)"
-                              Icon="@Lucide.CircleArrowUp"
-                              IconBackground="#FFE4E6"
-                              Variant="Expense"
-                              Trend="↑ this month" />
-
-                    <StatCard Title="Net Savings"
-                              Value="@CurrencyFormatter.Format(_dashboard.NetSavings, _currencyCode)"
-                              Icon="@Lucide.Wallet"
-                              IconBackground="#EDE9FE"
-                              Variant="Default"
-                              Trend="↑ this month" />
-
-                    <StatCard Title="Transactions"
-                              Value="@_dashboard.TransactionCount.ToString()"
-                              Icon="@Lucide.ReceiptText"
-                              IconBackground="#FEF3C7"
-                              Variant="Default"
-                              Trend="This month" />
-
-                </section>
-
-                <section class="dashboard-grid dashboard-grid-primary">
-
-                    <SpendingOverview Data="@_dashboard.MonthlySpending"
-                                      CurrencyCode="@_currencyCode"
-                                      SelectedMonth="@_selectedMonth" />
-
-                    <CategorySpending Categories="@_dashboard.CategorySpending" />
-
-                </section>
-
-                <section class="dashboard-grid dashboard-grid-secondary">
-
-                    <RecentTransactions Transactions="@_dashboard.RecentTransactions" CurrencyCode="@_currencyCode" />
-
-                    <BudgetOverview Budgets="@_dashboard.Budgets" CurrencyCode="@_currencyCode" />
-
-                </section>
-            }
 
         </LoadingWrapper>
+
     </main>
 
 </div>

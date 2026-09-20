@@ -153,9 +153,9 @@
     border: 1px solid #e2e8f0;
     border-radius: 7px;
     background: #ffffff;
-    color: #94a3b8;
+    color: var(--muted);
     cursor: pointer;
-    transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    transition: color var(--transition), background-color var(--transition), border-color var(--transition);
 }
 
     .icon-button svg {
@@ -165,15 +165,15 @@
     }
 
     .icon-button:hover {
-        border-color: #c7d2fe;
-        background: #eef2ff;
-        color: #4f46e5;
+        border-color: var(--icon-color, #c7d2fe);
+        background: color-mix(in srgb, var(--icon-color, #eef2ff) 12%, transparent);
+        color: var(--icon-color, #4f46e5);
     }
 
     .icon-button.selected {
-        border-color: #4f46e5;
-        background: #eef2ff;
-        color: #4f46e5;
+        border-color: var(--icon-color);
+        background: color-mix(in srgb, var(--icon-color) 12%, transparent);
+        color: var(--icon-color);
         box-shadow: 0 0 0 2px #e0e7ff;
     }
 

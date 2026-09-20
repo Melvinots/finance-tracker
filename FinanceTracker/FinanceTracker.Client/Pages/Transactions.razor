@@ -55,16 +55,16 @@
             </div>
 
             <TransactionToolbar SearchTerm="@_searchTerm"
-                                SearchTermChanged="@OnSearchChanged"
+                                OnSearchTermChanged="@HandleSearchTermChanged"
                                 SelectedType="@_selectedType"
-                                SelectedTypeChanged="@OnTypeChanged" />
+                                OnSelectedTypeChanged="@HandleSelectedTypeChanged" />
 
             @if (_filteredTransactions.Count > 0)
             {
                 <TransactionTable Transactions="@_filteredTransactions"
                                   CurrencyCode="@_currencyCode"
-                                  OnEdit="@OpenEditModal"
-                                  OnDelete="@DeleteTransaction" />
+                                  OnEdit="@HandleEdit"
+                                  OnDelete="@HandleDelete" />
             }
             else
             {
@@ -84,6 +84,6 @@
 {
     <TransactionForm Transaction="@_selectedTransaction"
                      Categories="@_categories"
-                     OnSave="@SaveTransaction"
+                     OnSave="@HandleSave"
                      OnCancel="@CloseModal" />
 }

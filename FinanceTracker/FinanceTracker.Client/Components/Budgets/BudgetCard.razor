@@ -29,25 +29,26 @@
 
         </div>
 
-        @if (IsEditable)
-        {
-            <div class="budget-actions">
+        <div class="budget-actions">
 
-                <button class="action-button"
-                        title="Edit"
-                        @onclick="() => OnEdit.InvokeAsync(Budget)">
-                    <Blazicon Svg="Lucide.Pencil" />
-                </button>
+            <button class="action-button"
+                    title="Edit"
+                    @onclick="@HandleEdit">
 
-                <button class="action-button delete"
-                        title="Delete"
-                        @onclick="() => OnDelete.InvokeAsync(Budget)">
-                    <Blazicon Svg="Lucide.X" />
-                </button>
+                <Blazicon Svg="Lucide.Pencil" />
 
-            </div>
-        }
+            </button>
 
+            <button class="action-button delete"
+                    title="Delete"
+                    @onclick="@HandleDelete">
+
+                <Blazicon Svg="Lucide.X" />
+
+            </button>
+
+        </div>
+        
     </div>
 
 
@@ -103,9 +104,6 @@
     [Parameter]
     public EventCallback<BudgetDto> OnDelete { get; set; }
 
-    private bool IsEditable =>
-        new DateTime(Budget.Year, Budget.Month, 1) >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-
     private string AccentColor =>
         string.IsNullOrWhiteSpace(Budget.CategoryColor)
             ? "var(--primary)"
@@ -115,10 +113,19 @@
         Budget.RemainingAmount >= 0
             ? $"{CurrencyFormatter.Format(Budget.RemainingAmount, CurrencyCode)} remaining"
             : $"{CurrencyFormatter.Format(Math.Abs(Budget.RemainingAmount), CurrencyCode)} over budget";
-    
+
     private string RemainingClass =>
         Budget.RemainingAmount < 0
             ? "remaining danger"
             : "remaining";
 
+    private Task HandleEdit()
+    {
+        return OnEdit.InvokeAsync(Budget);
+    }
+
+    private Task HandleDelete()
+    {
+        return OnDelete.InvokeAsync(Budget);
+    }
 }

@@ -15,7 +15,7 @@
                    placeholder="Search transactions..."
                    aria-label="Search transactions"
                    value="@SearchTerm"
-                   @oninput="HandleSearch" />
+                   @oninput="HandleSearchTermChanged" />
 
             @if (!string.IsNullOrWhiteSpace(SearchTerm))
             {
@@ -34,18 +34,18 @@
 
             <select class="filter-select"
                     aria-label="Filter transactions by type"
-                    value="@SelectedType"
-                    @onchange="HandleTypeChanged">
+                    @bind:get="SelectedType"
+                    @bind:set="HandleSelectedTypeChanged">
 
-                <option value="All">
+                <option value="@TransactionTypeFilter.All">
                     All transactions
                 </option>
 
-                <option value="Income">
+                <option value="@TransactionTypeFilter.Income">
                     Income
                 </option>
 
-                <option value="Expense">
+                <option value="@TransactionTypeFilter.Expense">
                     Expenses
                 </option>
 
@@ -63,26 +63,23 @@
     public string SearchTerm { get; set; } = string.Empty;
 
     [Parameter]
-    public EventCallback<string> SearchTermChanged { get; set; }
+    public TransactionTypeFilter SelectedType { get; set; } = TransactionTypeFilter.All;
 
     [Parameter]
-    public string SelectedType { get; set; } = "All";
+    public EventCallback<string> OnSearchTermChanged { get; set; }
 
     [Parameter]
-    public EventCallback<string> SelectedTypeChanged { get; set; }
+    public EventCallback<TransactionTypeFilter> OnSelectedTypeChanged { get; set; }
 
-    private async Task HandleSearch(ChangeEventArgs args)
+    private async Task HandleSearchTermChanged(ChangeEventArgs args)
     {
-        await SearchTermChanged.InvokeAsync(
+        await OnSearchTermChanged.InvokeAsync(
             args.Value?.ToString()
             ?? string.Empty);
     }
 
-    private async Task HandleTypeChanged(ChangeEventArgs args)
+    private async Task HandleSelectedTypeChanged(TransactionTypeFilter newType)
     {
-        await SelectedTypeChanged.InvokeAsync(
-            args.Value?.ToString()
-            ?? "All");
+        await OnSelectedTypeChanged.InvokeAsync(newType);
     }
-
 }

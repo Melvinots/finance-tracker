@@ -177,6 +177,9 @@
         transform: translateY(2px);
     }
 
-.stat-card-trend.default .stat-card-trend-arrow {
-    display: none;
+.stat-card-trend.default {
+    border-bottom: 1px solid var(--text-muted);
 }
+    .stat-card-trend.default .stat-card-trend-arrow {
+        display: none;
+    }

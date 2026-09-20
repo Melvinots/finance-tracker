@@ -16,7 +16,7 @@ namespace FinanceTracker.Client.Pages
 
         private string _searchTerm = string.Empty;
 
-        private string _selectedType = "All";
+        private TransactionTypeFilter _selectedType = TransactionTypeFilter.All;
 
         private string _itemType = "transaction";
 

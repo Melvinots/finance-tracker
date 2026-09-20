@@ -50,6 +50,7 @@
                 {
                     <button type="button"
                             class="icon-button @(_model.Icon == icon.Name ? "selected" : "")"
+                            style="--icon-color: @_model.Color"
                             aria-label="Select @icon.Name icon"
                             aria-pressed="@(_model.Icon == icon.Name)"
                             @onclick="() => SelectIcon(icon.Name)">
@@ -111,8 +112,7 @@
             </span>
 
             <div class="preview-category"
-                 style="--category-color: @_model.Color;
-                --category-color-soft: @(_model.Color + "18");">
+                 style="--category-color: @_model.Color; --category-color-soft: @(_model.Color + "18");">
 
                 <div class="preview-icon">
                     <Blazicon Svg="@GetIcon(_model.Icon)" />
@@ -192,23 +192,25 @@
         };
     }
 
-    private readonly List<CategoryIcon> _icons =
-        new() { new("Shopping", Lucide.ShoppingCart),
-                new("Transport", Lucide.Bus),
-                new("Utilities", Lucide.Zap),
-                new("Entertainment", Lucide.Film),
-                new("Health", Lucide.HeartPulse),
-                new("Home", Lucide.House),
-                new("Clothing", Lucide.Shirt),
-                new("Education", Lucide.BookOpen),
-                new("Food", Lucide.Utensils),
-                new("Travel", Lucide.Plane),
-                new("Work", Lucide.Briefcase),
-                new("Gaming", Lucide.Gamepad2),
-                new("Medicine", Lucide.Pill),
-                new("Pets", Lucide.PawPrint),
-                new("Gifts", Lucide.Gift),
-                new("Other", Lucide.Inbox) };
+    private readonly List<CategoryIcon> _icons = new() 
+    { 
+        new("Shopping", Lucide.ShoppingCart),
+        new("Transport", Lucide.Bus),
+        new("Utilities", Lucide.Zap),
+        new("Entertainment", Lucide.Film),
+        new("Health", Lucide.HeartPulse),
+        new("Home", Lucide.House),
+        new("Clothing", Lucide.Shirt),
+        new("Education", Lucide.BookOpen),
+        new("Food", Lucide.Utensils),
+        new("Travel", Lucide.Plane),
+        new("Work", Lucide.Briefcase),
+        new("Gaming", Lucide.Gamepad2),
+        new("Medicine", Lucide.Pill),
+        new("Pets", Lucide.PawPrint),
+        new("Gifts", Lucide.Gift),
+        new("Other", Lucide.Inbox)
+    };
 
     private readonly Dictionary<string, SvgIcon> _iconMap = new()
     {
@@ -237,35 +239,34 @@
             : Lucide.Inbox;
     }
 
-
     private readonly List<string> _colors = new()
     {
-        "#3B5BDB",
-        "#10B981",
-        "#F59E0B",
-        "#F43F5E",
-        "#8B5CF6",
-        "#06B6D4",
-        "#EC4899",
-        "#64748B",
-        "#059669",
-        "#DC2626",
-        "#D97706",
-        "#7C3AED"
+        "#EF4444", // Red
+        "#F97316", // Orange
+        "#F59E0B", // Amber
+        "#EAB308", // Yellow
+        "#84CC16", // Lime
+        "#22C55E", // Green
+        "#10B981", // Emerald
+        "#14B8A6", // Teal
+        "#06B6D4", // Cyan
+        "#0EA5E9", // Sky
+        "#3B82F6", // Blue
+        "#8B5CF6", // Violet
+        "#A855F7", // Purple
+        "#EC4899", // Pink
+        "#64748B"  // Slate (for "Other"/misc)
     };
-
 
     private void SelectIcon(string icon)
     {
         _model.Icon = icon;
     }
 
-
     private void SelectColor(string color)
     {
         _model.Color = color;
     }
-
 
     private async Task HandleSubmit()
     {

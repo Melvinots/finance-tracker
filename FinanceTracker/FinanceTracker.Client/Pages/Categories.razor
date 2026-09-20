@@ -57,7 +57,7 @@
             @if (_categories.Any())
             {
                 <CategoryList Categories="@_categories"
-                              OnEdit="OpenEditModal"
+                              OnEdit="HandleEdit"
                               OnDelete="HandleDelete" />
             }
             else
@@ -97,6 +97,6 @@
 {
     <CategoryForm Category="@_selectedCategory"
                   IsLoading="@_isSaving"
-                  OnSave="HandleSave"
-                  OnCancel="CloseModal" />
+                  OnSave="@HandleSave"
+                  OnCancel="@CloseModal" />
 }

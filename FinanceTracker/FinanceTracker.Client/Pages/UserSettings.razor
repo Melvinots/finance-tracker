@@ -130,16 +130,10 @@
                         @if (_isSaving)
                         {
                             <span class="save-status saving)">
-                                @if (_isSaving)
-                                {
-                                    <Blazicon Svg="Lucide.Loader" />
-                                    <span>Saving…</span>
-                                }
-                                else
-                                {
-                                    <Blazicon Svg="Lucide.Check" />
-                                    <span>Saved</span>
-                                }
+                                
+                                <Blazicon Svg="Lucide.Loader" />
+                                <span>Saving…</span>
+                                
                             </span>
                         }
 
@@ -166,11 +160,10 @@
                                     @bind="_userSettings.Currency"
                                     @bind:after="OnPreferenceChangedAsync">
 
-                                <option value="PHP">PHP — Philippine Peso</option>
-                                <option value="USD">USD — US Dollar</option>
-                                <option value="EUR">EUR — Euro</option>
-                                <option value="JPY">JPY — Japanese Yen</option>
-                                <option value="GBP">GBP — British Pound</option>
+                                @foreach (var (code, displayName) in CurrencyOptions.All)
+                                {
+                                    <option value="@(code)"> @displayName </option>
+                                }
 
                             </select>
 
@@ -197,9 +190,10 @@
                                     @bind="_userSettings.Appearance"
                                     @bind:after="OnPreferenceChangedAsync">
 
-                                <option value="light">Light</option>
-                                <option value="dark">Dark</option>
-                                <option value="system">System</option>
+                                @foreach (var (code, displayName) in AppearanceOptions.All)
+                                {
+                                    <option value="@(code)">@displayName</option>
+                                }
 
                             </select>
 
@@ -234,16 +228,10 @@
                         @if (_isExporting)
                         {
                             <span class="save-status saving">
-                                @if (_isExporting)
-                                {
-                                    <Blazicon Svg="Lucide.Loader" />
-                                    <span>Exporting…</span>
-                                }
-                                else
-                                {
-                                    <Blazicon Svg="Lucide.Check" />
-                                    <span>Exported</span>
-                                }
+                                
+                                <Blazicon Svg="Lucide.Loader" />
+                                <span>Exporting…</span>
+                                
                             </span>
                         }
 
@@ -307,16 +295,10 @@
                         @if (_isDeactivating)
                         {
                             <span class="save-status saving">
-                                @if (_isDeactivating)
-                                {
-                                    <Blazicon Svg="Lucide.Loader" />
-                                    <span>Deactivating…</span>
-                                }
-                                else
-                                {
-                                    <Blazicon Svg="Lucide.Check" />
-                                    <span>Deactivated</span>
-                                }
+                                
+                                <Blazicon Svg="Lucide.Loader" />
+                                <span>Deactivating…</span>
+                                
                             </span>
                         }
 

@@ -71,7 +71,7 @@
 
                     <p>
                         @_budgets.Count
-                        @(_budgets.Count == 1 ? "budget" : "budgets")
+                        budget@(_budgets.Count == 1 ? "" : "s")
                     </p>
                 </div>
 
@@ -81,8 +81,8 @@
             {
                 <BudgetList Budgets="@_budgets"
                             CurrencyCode="@_currencyCode"
-                            OnEdit="@OpenEditModal"
-                            OnDelete="@DeleteBudget" />
+                            OnEdit="@HandleEdit"
+                            OnDelete="@HandleDelete" />
             }
             else
             {
@@ -115,8 +115,8 @@
 {
     <BudgetForm Budget="@_selectedBudget"
                 Categories="@_categories"
-                Year="SelectedDate.Year"
-                Month="SelectedDate.Month"
-                OnSave="@SaveBudget"
+                Year="@SelectedDate.Year"
+                Month="@SelectedDate.Month"
+                OnSave="@HandleSave"
                 OnCancel="@CloseModal" />
 }

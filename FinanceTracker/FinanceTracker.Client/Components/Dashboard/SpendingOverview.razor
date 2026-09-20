@@ -82,15 +82,14 @@
     public List<MonthlySpendingDto> Data { get; set; } = new();
 
     [Parameter]
-    public string SelectedMonth { get; set; } = DateTime.Now.ToString("yyyy-MM");
+    public string SelectedMonth { get; set; } = string.Empty;
 
     [Parameter]
     public string CurrencyCode { get; set; } = string.Empty;
 
     private SpendingPeriod selectedPeriod = SpendingPeriod.Last6Months;
 
-    private IEnumerable<MonthlySpendingDto> chartData =
-        Enumerable.Empty<MonthlySpendingDto>();
+    private IEnumerable<MonthlySpendingDto> chartData = Enumerable.Empty<MonthlySpendingDto>();
 
     protected override void OnParametersSet()
     {
@@ -105,12 +104,7 @@
             return;
         }
 
-        if (!DateTime.TryParseExact(
-                SelectedMonth,
-                "yyyy-MM",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out var selectedDate))
+        if (!DateTime.TryParseExact(SelectedMonth, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var selectedDate))
         {
             chartData = Enumerable.Empty<MonthlySpendingDto>();
             return;
@@ -125,51 +119,18 @@
             _ => 6
         };
 
-        var startMonth = new DateTime(
-            selectedDate.Year,
-            selectedDate.Month,
-            1).AddMonths(-(monthCount - 1));
+        var startMonth = new DateTime(selectedDate.Year, selectedDate.Month, 1)
+                            .AddMonths(-(monthCount - 1));
 
         chartData = Data
             .Where(x =>
             {
-                var itemMonth = new DateTime(
-                    x.Year,
-                    x.MonthNumber,
-                    1);
-
-                return itemMonth >= startMonth &&
-                       itemMonth <= selectedDate;
+                var itemMonth = new DateTime(x.Year, x.MonthNumber, 1);
+                return itemMonth >= startMonth && itemMonth <= selectedDate;
             })
             .OrderBy(x => x.Year)
             .ThenBy(x => x.MonthNumber)
             .ToList();
     }
 
-    private IEnumerable<MonthlySpendingDto> GetLastMonthData(
-        DateTime selectedMonth)
-    {
-        var lastMonth = selectedMonth.AddMonths(-1);
-
-        return Data.Where(x =>
-            x.Year == lastMonth.Year &&
-            x.MonthNumber == lastMonth.Month);
-    }
-
-    private IEnumerable<MonthlySpendingDto> GetLastSixMonthsData(
-        DateTime selectedMonth)
-    {
-        var startMonth = selectedMonth.AddMonths(-5);
-
-        return Data.Where(x =>
-        {
-            var itemMonth = new DateTime(
-                x.Year,
-                x.MonthNumber,
-                1);
-
-            return itemMonth >= startMonth &&
-                   itemMonth <= selectedMonth;
-        });
-    }
 }

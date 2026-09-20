@@ -7,7 +7,7 @@
     <div class="category-content">
 
         <div class="category-icon">
-            <Blazicon Svg="@GetIcon(Category.Icon)" />
+            <Blazicon Svg="@Icons.Category(Category.Icon)" />
         </div>
 
         <div class="category-info">
@@ -30,7 +30,7 @@
                 class="action-button"
                 title="Edit category"
                 aria-label="Edit @Category.Name"
-                @onclick="() => OnEdit.InvokeAsync(Category)">
+                @onclick="@HandleEdit">
 
             <Blazicon Svg="Lucide.Pencil" />
 
@@ -40,7 +40,7 @@
                 class="action-button delete"
                 title="Delete category"
                 aria-label="Delete @Category.Name"
-                @onclick="() => OnDelete.InvokeAsync(Category)">
+                @onclick="@HandleDelete">
 
             <Blazicon Svg="Lucide.Trash2" />
 
@@ -61,29 +61,14 @@
     [Parameter]
     public EventCallback<CategoryDto> OnDelete { get; set; }
 
-
-    private SvgIcon GetIcon(string? iconName)
+    private Task HandleEdit()
     {
-        return iconName switch
-        {
-            "Shopping" => Lucide.ShoppingCart,
-            "Transport" => Lucide.Bus,
-            "Utilities" => Lucide.Zap,
-            "Entertainment" => Lucide.Film,
-            "Health" => Lucide.HeartPulse,
-            "Home" => Lucide.House,
-            "Clothing" => Lucide.Shirt,
-            "Education" => Lucide.BookOpen,
-            "Food" => Lucide.Utensils,
-            "Travel" => Lucide.Plane,
-            "Work" => Lucide.Briefcase,
-            "Gaming" => Lucide.Gamepad2,
-            "Medicine" => Lucide.Pill,
-            "Pets" => Lucide.PawPrint,
-            "Gifts" => Lucide.Gift,
-            "Other" => Lucide.Inbox,
-            _ => Lucide.Inbox
-        };
+        return OnEdit.InvokeAsync(Category);
+    }
+
+    private Task HandleDelete()
+    {
+        return OnDelete.InvokeAsync(Category);
     }
 
 }

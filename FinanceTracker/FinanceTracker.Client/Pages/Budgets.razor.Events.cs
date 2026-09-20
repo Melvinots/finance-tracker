@@ -10,7 +10,7 @@ namespace FinanceTracker.Client.Pages
             _showModal = true;
         }
 
-        private void OpenEditModal(BudgetDto budget)
+        private void HandleEdit(BudgetDto budget)
         {
             _selectedBudget = budget;
             _showModal = true;
@@ -22,7 +22,7 @@ namespace FinanceTracker.Client.Pages
             _selectedBudget = null;
         }
 
-        private async Task SaveBudget(SaveBudgetDto budget)
+        private async Task HandleSave(SaveBudgetDto budget)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace FinanceTracker.Client.Pages
             }
         }
 
-        private async Task DeleteBudget(BudgetDto budget)
+        private async Task HandleDelete(BudgetDto budget)
         {
             bool? confirmed = await AppDialogs.ConfirmDelete(budget.CategoryName, _itemType);
 
