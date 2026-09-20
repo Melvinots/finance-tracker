@@ -2,12 +2,30 @@
 @inherits LayoutComponentBase
 
 <div class="app-shell">
-    <NavMenu />
+
+    <button class="mobile-nav-toggle" type="button" @onclick="ToggleSidebar" aria-label="Toggle navigation">
+        <Blazicon Svg="Lucide.Menu" />
+    </button>
+
+    @if (_isSidebarOpen)
+    {
+        <div class="sidebar-overlay" @onclick="CloseSidebar"></div>
+    }
+
+    <NavMenu CssClass="@(_isSidebarOpen ? "sidebar-open" : "")"
+             OnNavigate="CloseSidebar" />
+
     <div class="app-main">
         @Body
     </div>
+
 </div>
 
 <RadzenComponents />
-<RadzenNotification />
-<RadzenDialog />
+
+@code {
+    private bool _isSidebarOpen = false;
+
+    private void ToggleSidebar() => _isSidebarOpen = !_isSidebarOpen;
+    private void CloseSidebar() => _isSidebarOpen = false;
+}

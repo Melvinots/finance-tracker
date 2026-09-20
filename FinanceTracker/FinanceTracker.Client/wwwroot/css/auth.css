@@ -1,10 +1,4 @@
-﻿/* ═══════════════════════════════════════════════════════════
-   auth.css  —  Shared styles for Login.razor & Register.razor
-   Referenced via <link> in index.html (or via _Imports.razor).
-   Do NOT duplicate this in Login.razor.css / Register.razor.css
-   ═══════════════════════════════════════════════════════════ */
-
-/* ── Card container ───────────────────────────────────────── */
+﻿/* ── Card container ───────────────────────────────────────── */
 .auth-card {
     width: 100%;
     max-width: 380px;
@@ -66,7 +60,6 @@
         margin-bottom: 6px;
     }
 
-/* form-control base lives in app.css; only auth overrides here */
 .auth-card .form-control:focus {
     border-color: var(--color-brand);
     box-shadow: 0 0 0 3px var(--color-brand-ring);

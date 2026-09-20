@@ -54,7 +54,16 @@ namespace FinanceTracker.Client.Pages
 
         private async Task HandleDelete(CategoryDto category)
         {
-            bool? confirmed = await AppDialogs.ConfirmDelete(category.Name, _itemType);
+            try
+            {
+                _categoryTransactionCount = await CategoryService.GetCountByCategoryAsync(category.Id);
+            }
+            catch
+            {
+
+            }
+
+            bool? confirmed = await AppDialogs.ConfirmDeleteCategory(category.Name, _categoryTransactionCount);
 
             if (confirmed == true)
             {

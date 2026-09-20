@@ -4,7 +4,7 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthStateProvider
 
-<aside class="sidebar">
+<aside class="sidebar @CssClass">
 
     <!-- Brand -->
     <NavLink class="sidebar-brand" href="/" Match="NavLinkMatch.All">
@@ -13,7 +13,7 @@
     </NavLink>
 
     <!-- Primary nav -->
-    <div class="sidebar-nav">
+    <div class="sidebar-nav" @onclick="@(() => OnNavigate.InvokeAsync())">
         <span class="nav-section-label">Main</span>
 
         <NavLink class="nav-item" href="/dashboard">
@@ -69,6 +69,12 @@
 </aside>
 
 @code {
+
+    [Parameter]
+    public string CssClass { get; set; } = "";
+
+    [Parameter]
+    public EventCallback OnNavigate { get; set; }
 
     private string _fullName = "";
     private string _email = "";

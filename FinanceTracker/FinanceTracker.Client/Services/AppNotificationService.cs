@@ -20,7 +20,8 @@ namespace FinanceTracker.Client.Services
                 Severity = NotificationSeverity.Success,
                 Summary = summary,
                 Detail = detail,
-                Duration = duration
+                Duration = duration,
+                Payload = DateTime.Now.Ticks
             });
         }
 
@@ -32,7 +33,8 @@ namespace FinanceTracker.Client.Services
                 Severity = NotificationSeverity.Error,
                 Summary = summary,
                 Detail = detail,
-                Duration = duration
+                Duration = duration,
+                Payload = DateTime.Now.Ticks
             });
 
             if (ex is not null)
@@ -48,7 +50,8 @@ namespace FinanceTracker.Client.Services
                 Severity = NotificationSeverity.Warning,
                 Summary = summary,
                 Detail = detail,
-                Duration = duration
+                Duration = duration,
+                Payload = DateTime.Now.Ticks
             });
         }
 
@@ -59,7 +62,8 @@ namespace FinanceTracker.Client.Services
                 Severity = NotificationSeverity.Info,
                 Summary = summary,
                 Detail = detail,
-                Duration = duration
+                Duration = duration,
+                Payload = DateTime.Now.Ticks
             });
         }
     }

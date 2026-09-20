@@ -4,6 +4,7 @@
     {
         public static string Format(decimal amount, string currencyCode)
         {
+            var decimals = GetDecimalPlaces(currencyCode);
             var currencySymbol = currencyCode switch
             {
                 "PHP" => "₱",
@@ -14,7 +15,15 @@
                 _ => currencyCode
             };
 
-            return $"{currencySymbol} {amount:N0}";
+            var rounded = Math.Round(amount, decimals, MidpointRounding.AwayFromZero);
+
+            return $"{currencySymbol}{rounded.ToString($"N{decimals}")}";
         }
+
+        public static int GetDecimalPlaces(string currencyCode) => currencyCode switch
+        {
+            "JPY" => 0,
+            _ => 2
+        };
     }
 }

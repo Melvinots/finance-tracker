@@ -14,8 +14,42 @@
     flex-direction: column;
 }
 
+.mobile-nav-toggle {
+    display: none;
+}
+
+.sidebar-overlay {
+    display: none;
+}
+
 @media (max-width: 768px) {
+
     .app-main {
         margin-left: 0;
+        padding-top: 4rem;
+    }
+
+    .mobile-nav-toggle {
+        display: flex;
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--color-rule);
+        border-radius: var(--radius-md);
+        background: var(--color-white);
+        z-index: 101;
+        cursor: pointer;
+    }
+
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 99;
+        background: rgba(0, 0, 0, 0.4);
     }
 }

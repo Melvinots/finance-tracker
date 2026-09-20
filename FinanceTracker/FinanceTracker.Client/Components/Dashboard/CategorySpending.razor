@@ -28,7 +28,8 @@
 
                     <RadzenDonutSeries Data="@Categories"
                                        CategoryProperty="Name"
-                                       ValueProperty="Amount" />
+                                       ValueProperty="Amount"
+                                       Fills="@Categories.Select(c =>  ColorHelper.Lighten(c.Color, 0.25)).ToArray()" />
 
                     <RadzenLegend Position="LegendPosition.Right" />
 

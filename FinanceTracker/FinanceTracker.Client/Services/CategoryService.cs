@@ -1,4 +1,5 @@
 ﻿using FinanceTracker.Shared.DTOs.Categories;
+using static System.Net.WebRequestMethods;
 
 namespace FinanceTracker.Client.Services
 {
@@ -36,6 +37,11 @@ namespace FinanceTracker.Client.Services
         public async Task<HttpResponseMessage> DeleteAsync(int id)
         {
             return await _http.DeleteAsync($"api/Categories/Delete/{id}");
+        }
+
+        public async Task<int> GetCountByCategoryAsync(int categoryId)
+        {
+            return await _http.GetFromJsonAsync<int>($"api/Categories/GetTransactionCount/{categoryId}");
         }
     }
 }

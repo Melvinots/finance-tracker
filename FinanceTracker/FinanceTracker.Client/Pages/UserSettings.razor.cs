@@ -6,6 +6,7 @@ namespace FinanceTracker.Client.Pages
     {
         [Inject] UserSettingsService UserSettingsService { get; set; } = default!;
         [Inject] AppNotificationService AppNotifier { get; set; } = default!;
+        [Inject] AppDialogService AppDialogs { get; set; } = default!;
 
         private bool _isLoading = true;
 

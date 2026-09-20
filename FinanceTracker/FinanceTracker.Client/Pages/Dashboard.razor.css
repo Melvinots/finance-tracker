@@ -82,7 +82,7 @@
 }
 
 .month-select {
-    height: 40px;
+    min-height: 40px;
     min-width: 165px;
     padding: 0 38px 0 14px;
     border: 1px solid var(--rule);

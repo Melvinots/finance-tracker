@@ -1,4 +1,23 @@
-﻿.chart-container {
+﻿.chart-scroll-wrapper {
+    position: relative;
+    width: 100%;
+    overflow-x: visible;
+}
+
+    .chart-scroll-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 24px;
+        background: linear-gradient(to right, transparent, var(--surface, white));
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+.chart-container {
     height: 320px;
 }
 
@@ -95,4 +114,21 @@
 
 :deep(.rz-chart-tooltip) {
     border-radius: var(--radius-md);
+}
+
+@media (max-width: 768px) {
+
+    .chart-scroll-wrapper {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .chart-scroll-wrapper::after {
+            opacity: 1;
+        }
+
+    .chart-container {
+        min-width: 600px;
+    }
 }

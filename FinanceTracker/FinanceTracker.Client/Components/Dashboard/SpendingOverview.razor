@@ -42,36 +42,39 @@
 
     <ChildContent>
 
-        <div class="chart-container">
+        <div class="chart-scroll-wrapper">
+            <div class="chart-container">
 
-            <RadzenChart>
+                <RadzenChart>
 
-                <RadzenColumnSeries Data="@chartData"
-                                    CategoryProperty="Month"
-                                    ValueProperty="Income"
-                                    Title="Income" />
+                    <RadzenColumnSeries Data="@chartData"
+                                        CategoryProperty="Month"
+                                        ValueProperty="Income"
+                                        Title="Income" />
 
-                <RadzenColumnSeries Data="@chartData"
-                                    CategoryProperty="Month"
-                                    ValueProperty="Expenses"
-                                    Title="Expenses" />
+                    <RadzenColumnSeries Data="@chartData"
+                                        CategoryProperty="Month"
+                                        ValueProperty="Expenses"
+                                        Title="Expenses" />
 
-                <RadzenCategoryAxis Padding="20" />
+                    <RadzenCategoryAxis Padding="20" />
 
-                <RadzenValueAxis>
-                    <RadzenGridLines Visible="true"
-                                     Stroke="#E2E8F0" />
-                    <RadzenAxisTitle Text="@($"Amount ({CurrencyCode})")" />
-                </RadzenValueAxis>
+                    <RadzenValueAxis>
+                        <RadzenGridLines Visible="true"
+                                         Stroke="#E2E8F0" />
+                        <RadzenAxisTitle Text="@($"Amount ({CurrencyCode})")" />
+                    </RadzenValueAxis>
 
-                <RadzenChartTooltipOptions Shared="true" />
+                    <RadzenChartTooltipOptions Shared="true" />
 
-                <RadzenLegend Visible="true"
-                              Position="LegendPosition.Bottom" />
+                    <RadzenLegend Visible="true"
+                                  Position="LegendPosition.Bottom" />
 
-            </RadzenChart>
+                </RadzenChart>
 
+            </div>
         </div>
+
     </ChildContent>
 
 </Card>

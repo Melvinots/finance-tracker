@@ -1,4 +1,6 @@
 ﻿
+using System.Transactions;
+
 namespace FinanceTracker.Client.Pages
 {
     public partial class UserSettings
@@ -45,20 +47,26 @@ namespace FinanceTracker.Client.Pages
 
         private async Task OnDeactivateClick()
         {
-            _isDeactivating = true;
+            bool? confirmed = await AppDialogs.ConfirmDeactivate();
 
-            try
+            if (confirmed == true)
             {
-                await Task.Delay(1000);
-                AppNotifier.Success(summary: "Account deactivated successfully");
-            }
-            catch (Exception ex)
-            {
-                AppNotifier.Error(summary: "Failed to deactivate account", ex: ex);
-            }
-            finally
-            {
-                _isDeactivating = false;
+                _isDeactivating = true;
+                StateHasChanged();
+
+                try
+                {
+                    await Task.Delay(1000);
+                    AppNotifier.Success(summary: "Account deactivated successfully");
+                }
+                catch (Exception ex)
+                {
+                    AppNotifier.Error(summary: "Failed to deactivate account", ex: ex);
+                }
+                finally
+                {
+                    _isDeactivating = false;
+                }
             }
         }
     }
