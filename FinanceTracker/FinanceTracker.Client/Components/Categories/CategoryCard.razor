@@ -36,15 +36,18 @@
 
         </button>
 
-        <button type="button"
-                class="action-button delete"
-                title="Delete category"
-                aria-label="Delete @Category.Name"
-                @onclick="@HandleDelete">
+        @if (!Category.IsSystemDefault)
+        {
+            <button type="button"
+                    class="action-button delete"
+                    title="Delete category"
+                    aria-label="Delete @Category.Name"
+                    @onclick="@HandleDelete">
 
-            <Blazicon Svg="Lucide.Trash2" />
+                <Blazicon Svg="Lucide.Trash2" />
 
-        </button>
+            </button>   
+        }
 
     </div>
 

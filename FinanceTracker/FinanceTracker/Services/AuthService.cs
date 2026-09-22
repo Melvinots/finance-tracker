@@ -41,6 +41,8 @@ namespace FinanceTracker.Services
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
+            await SeedDefaultCategoriesAsync(user.Id);
+
             return await GenerateAuthResponseAsync(user);
         }
 
@@ -151,6 +153,25 @@ namespace FinanceTracker.Services
             await _context.SaveChangesAsync();
 
             return token;
+        }
+
+        public async Task SeedDefaultCategoriesAsync(int userId)
+        {
+            var exists = await _context.Categories
+                .AnyAsync(c => c.UserId == userId && c.Name == "Other");
+
+            if (!exists)
+            {
+                _context.Categories.Add(new Category
+                {
+                    UserId = userId,
+                    Name = "Other",
+                    Icon = "Other",
+                    Color = "#64748B",
+                    IsSystemDefault = true
+                });
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

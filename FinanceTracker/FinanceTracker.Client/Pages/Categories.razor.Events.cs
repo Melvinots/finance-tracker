@@ -23,13 +23,21 @@ namespace FinanceTracker.Client.Pages
         }
 
         private async Task HandleSave(SaveCategoryDto category)
-        {
+        {   
             _isSaving = true;
 
             try
             {
                 if (_selectedCategory is null)
                 {
+                    bool isDuplicate = _categories.Any(c => c.Name.Equals(category.Name, StringComparison.OrdinalIgnoreCase));
+
+                    if (isDuplicate)
+                    {
+                        AppNotifier.Warning(summary: $"\"{category.Name}\" already exists.", duration: 50000);
+                        return;
+                    }
+
                     await CategoryService.CreateAsync(category);
                     AppNotifier.Success("Category created successfully.");
                 }
@@ -57,27 +65,20 @@ namespace FinanceTracker.Client.Pages
             try
             {
                 _categoryTransactionCount = await CategoryService.GetCountByCategoryAsync(category.Id);
-            }
-            catch
-            {
 
-            }
+                bool? confirmed = await AppDialogs.ConfirmDeleteCategory(category.Name, _categoryTransactionCount);
 
-            bool? confirmed = await AppDialogs.ConfirmDeleteCategory(category.Name, _categoryTransactionCount);
-
-            if (confirmed == true)
-            {
-                try
+                if (confirmed == true)
                 {
                     await CategoryService.DeleteAsync(category.Id);
                     _categories.Remove(category);
 
                     AppNotifier.Success("Category deleted successfully.");
                 }
-                catch (Exception ex)
-                {
-                    AppNotifier.Error(summary: "Failed to delete category.", ex: ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                AppNotifier.Error(summary: "Failed to delete category.", ex: ex);
             }
         }
     }

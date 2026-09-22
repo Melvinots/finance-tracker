@@ -20,8 +20,13 @@ namespace FinanceTracker.Client.Services
 
         public async Task<CategoryDto?> GetByIdAsync(int id)
         {
-            return await _http.GetFromJsonAsync<CategoryDto>($"api/Transactions/GetById/{id}")
+            return await _http.GetFromJsonAsync<CategoryDto>($"api/Categories/GetById/{id}")
                 ?? new CategoryDto();
+        }
+
+        public async Task<int> GetCountByCategoryAsync(int categoryId)
+        {
+            return await _http.GetFromJsonAsync<int>($"api/Categories/GetTransactionCount/{categoryId}");
         }
 
         public async Task<HttpResponseMessage> CreateAsync(SaveCategoryDto dto)
@@ -37,11 +42,6 @@ namespace FinanceTracker.Client.Services
         public async Task<HttpResponseMessage> DeleteAsync(int id)
         {
             return await _http.DeleteAsync($"api/Categories/Delete/{id}");
-        }
-
-        public async Task<int> GetCountByCategoryAsync(int categoryId)
-        {
-            return await _http.GetFromJsonAsync<int>($"api/Categories/GetTransactionCount/{categoryId}");
         }
     }
 }

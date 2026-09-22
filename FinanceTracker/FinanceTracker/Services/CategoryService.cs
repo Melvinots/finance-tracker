@@ -25,6 +25,11 @@ namespace FinanceTracker.Services
             return category is null ? null : MapToDto(category);
         }
 
+        public async Task<int> GetTransactionCountAsync(int id, int userId)
+        {
+            return await _repo.GetTransactionCountAsync(id, userId);
+        }
+
         public async Task<CategoryDto> CreateAsync(SaveCategoryDto dto, int userId)
         {
             var category = new Category
@@ -58,10 +63,7 @@ namespace FinanceTracker.Services
 
         public async Task DeleteAsync(int id, int userId)
         {
-            var category = await _repo.GetByIdAsync(id, userId)
-                ?? throw new KeyNotFoundException("Category not found.");
-
-            await _repo.DeleteAsync(category);
+            await _repo.DeleteAsync(id, userId);
         }
 
         // ── private helpers ──────────────────────────────────────────
@@ -72,6 +74,7 @@ namespace FinanceTracker.Services
             Name = t.Name,
             Icon = t.Icon ?? string.Empty,
             Color = t.Color ?? string.Empty,
+            IsSystemDefault = t.IsSystemDefault
         };
     }
 }

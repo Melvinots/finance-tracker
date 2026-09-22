@@ -5,14 +5,10 @@
     <div class="modal-box">
 
         <div class="modal-header">
-
             <div>
                 <h2>
-                    @(Category is null
-                        ? "Add category"
-                        : "Edit category")
+                    @(Category is null ? "Add category" : "Edit category")
                 </h2>
-
                 <p>
                     @(Category is null
                         ? "Create a category for your transactions."
@@ -20,14 +16,9 @@
                 </p>
             </div>
 
-            <button class="modal-close"
-                    type="button"
-                    @onclick="HandleCancel">
-
+            <button class="modal-close" type="button" @onclick="HandleCancel">
                 <Blazicon Svg="Lucide.X" />
-
             </button>
-
         </div>
 
         @if (!string.IsNullOrWhiteSpace(ErrorMessage))
@@ -38,126 +29,89 @@
             </div>
         }
 
-        <div class="form-group">
+        <EditForm Model="@_model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator />
 
-            <label>
-                Icon
-            </label>
-
-            <div class="icon-picker">
-
-                @foreach (var icon in _icons)
-                {
-                    <button type="button"
-                            class="icon-button @(_model.Icon == icon.Name ? "selected" : "")"
-                            style="--icon-color: @_model.Color"
-                            aria-label="Select @icon.Name icon"
-                            aria-pressed="@(_model.Icon == icon.Name)"
-                            @onclick="() => SelectIcon(icon.Name)">
-
-                        <Blazicon Svg="@icon.Icon" />
-
-                    </button>
-                }
-
-            </div>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="category-name">
-                Name
-            </label>
-
-            <InputText id="category-name"
-                       class="form-input"
-                       @bind-Value="_model.Name"
-                       placeholder="e.g. Food, Transport, Utilities..." />
-
-            <ValidationMessage For="@(() => _model.Name)" />
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Color
-            </label>
-
-            <div class="color-picker">
-
-                @foreach (var color in _colors)
-                {
-                    <button type="button"
-                            class="color-button @(_model.Color == color ? "selected" : "")"
-                            style="--color: @color"
-                            aria-label="Select color @color"
-                            aria-pressed="@(_model.Color == color)"
-                            @onclick="() => SelectColor(color)">
-                    </button>
-                }
-
-            </div>
-
-        </div>
-
-
-        <div class="category-preview">
-
-            <span class="preview-label">
-                Preview
-            </span>
-
-            <div class="preview-category"
-                 style="--category-color: @_model.Color; --category-color-soft: @(_model.Color + "18");">
-
-                <div class="preview-icon">
-                    <Blazicon Svg="@GetIcon(_model.Icon)" />
+            <div class="form-group">
+                <label>Icon</label>
+                <div class="icon-picker">
+                    @foreach (var icon in _icons)
+                    {
+                        <button type="button"
+                                class="icon-button @(_model.Icon == icon.Name ? "selected" : "")"
+                                style="--icon-color: @_model.Color"
+                                aria-label="Select @icon.Name icon"
+                                aria-pressed="@(_model.Icon == icon.Name)"
+                                @onclick="() => SelectIcon(icon.Name)">
+                            <Blazicon Svg="@icon.Icon" />
+                        </button>
+                    }
                 </div>
-
-                <span>
-                    @(string.IsNullOrWhiteSpace(_model.Name)
-                        ? "Category name"
-                        : _model.Name)
-                </span>
-
             </div>
 
-        </div>
+            <div class="form-group">
+                <label for="category-name">Name</label>
+                <InputText id="category-name"
+                           class="form-input"
+                           @bind-Value="_model.Name"
+                           placeholder="e.g. Food, Transport, Utilities..." />
+                <ValidationMessage For="@(() => _model.Name)" />
+            </div>
 
-        <footer class="modal-actions">
+            <div class="form-group">
+                <label>Color</label>
+                <div class="color-picker">
+                    @foreach (var color in _colors)
+                    {
+                        <button type="button"
+                                class="color-button @(_model.Color == color ? "selected" : "")"
+                                style="--color: @color"
+                                aria-label="Select color @color"
+                                aria-pressed="@(_model.Color == color)"
+                                @onclick="() => SelectColor(color)">
+                        </button>
+                    }
+                </div>
+            </div>
 
-            <button type="button"
-                    class="cancel-button"
-                    @onclick="HandleCancel"
-                    disabled="@IsLoading">
+            <div class="category-preview">
+                <span class="preview-label">Preview</span>
+                <div class="preview-category"
+                     style="--category-color: @_model.Color; --category-color-soft: @(_model.Color + "18");">
+                    <div class="preview-icon">
+                        <Blazicon Svg="@GetIcon(_model.Icon)" />
+                    </div>
+                    <span>
+                        @(string.IsNullOrWhiteSpace(_model.Name) ? "Category name" : _model.Name)
+                    </span>
+                </div>
+            </div>
 
-                Cancel
+            <footer class="modal-actions">
+                <button type="button"
+                        class="cancel-button"
+                        @onclick="HandleCancel"
+                        disabled="@IsLoading">
+                    Cancel
+                </button>
 
-            </button>
+                <button type="submit"
+                        class="save-button"
+                        disabled="@IsLoading">
+                    @if (IsLoading)
+                    {
+                        <span class="loading-spinner"></span>
+                        <span>Saving...</span>
+                    }
+                    else
+                    {
+                        <Blazicon Svg="Lucide.Check" />
+                        <span>Save category</span>
+                    }
+                </button>
+            </footer>
 
-            <button type="submit"
-                    class="save-button"
-                    @onclick="HandleSubmit"
-                    disabled="@IsLoading">
-
-                @if (IsLoading)
-                {
-                    <span class="loading-spinner"></span>
-                    <span>Saving...</span>
-                }
-                else
-                {
-                    <Blazicon Svg="Lucide.Check" />
-                    <span>Save category</span>
-                }
-
-            </button>
-
-        </footer>
+        </EditForm>
 
     </div>
 
@@ -186,7 +140,7 @@
     {
         _model = new SaveCategoryDto
         {
-            Name = Category?.Name ?? "",
+            Name = Category?.Name,
             Color = Category?.Color ?? "",
             Icon = Category?.Icon ?? ""
         };

@@ -6,6 +6,7 @@
         public string Name { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
         public string Color { get; set; } = string.Empty;
+        public bool IsSystemDefault { get; set; } = false;
 
         public int UserId { get; set; }
 
