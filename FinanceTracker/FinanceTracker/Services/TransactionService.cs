@@ -27,11 +27,11 @@ namespace FinanceTracker.Services
 
         public async Task<TransactionDto> CreateAsync(SaveTransactionDto dto, int userId)
         {
-            var categoryId = dto.CategoryId;
+            var category = await _repo.GetCategoryByIdAsync(dto.CategoryId, userId);
 
-            if (categoryId == 0)
+            if (category == null)
             {
-                var category = await _repo.GetOrCreateUncategorizedAsync(userId);
+                category = await _repo.GetOrCreateUncategorizedAsync(userId);
                 dto.CategoryId = category.Id;
             }
 
@@ -43,13 +43,12 @@ namespace FinanceTracker.Services
                 IsExpense = dto.IsExpense,
                 Notes = dto.Notes,
                 CategoryId = dto.CategoryId,
-                UserId = userId
+                UserId = userId,
+                Category = category
             };
 
-            var created = await _repo.CreateAsync(transaction);
-
-            var result = await _repo.GetByIdAsync(created.Id, userId);
-            return MapToDto(result!);
+            var result = await _repo.CreateAsync(transaction);
+            return MapToDto(result);
         }
 
         public async Task<TransactionDto> UpdateAsync(int id, SaveTransactionDto dto, int userId)
@@ -62,12 +61,18 @@ namespace FinanceTracker.Services
             transaction.Date = dto.Date;
             transaction.IsExpense = dto.IsExpense;
             transaction.Notes = dto.Notes;
-            transaction.CategoryId = dto.CategoryId;
 
-            await _repo.UpdateAsync(transaction);
+            if (transaction.CategoryId != dto.CategoryId)
+            {
+                var newCategory = await _repo.GetCategoryByIdAsync(dto.CategoryId, userId)
+                    ?? throw new InvalidOperationException("Category not found.");
 
-            var result = await _repo.GetByIdAsync(id, userId);
-            return MapToDto(result!);
+                transaction.CategoryId = dto.CategoryId;
+                transaction.Category = newCategory;
+            }
+
+            var result = await _repo.UpdateAsync(transaction);
+            return MapToDto(result);
         }
 
         public async Task DeleteAsync(int id, int userId)

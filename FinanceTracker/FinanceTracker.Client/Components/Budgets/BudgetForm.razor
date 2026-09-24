@@ -72,10 +72,6 @@
                                          class="category-field"
                                          @bind-Value="_model.CategoryId">
 
-                                <option value="0">
-                                    Select category
-                                </option>
-
                                 @foreach (var category in Categories)
                                 {
                                     <option value="@category.Id">
@@ -208,8 +204,7 @@
     public BudgetDto? Budget { get; set; }
 
     [Parameter]
-    public IEnumerable<CategoryDto> Categories { get; set; }
-        = Enumerable.Empty<CategoryDto>();
+    public IEnumerable<CategoryDto> Categories { get; set; } = Enumerable.Empty<CategoryDto>();
 
     [Parameter]
     public int Month { get; set; }
@@ -231,14 +226,13 @@
 
     private SaveBudgetDto _model = new();
 
-    private DateTime BudgetMonth =>
-        new(Year, Month, 1);
+    private DateTime BudgetMonth => new(Year, Month, 1);
 
     protected override void OnParametersSet()
     {
         _model = new SaveBudgetDto
         {
-            CategoryId = Budget?.CategoryId ?? 0,
+            CategoryId = Budget?.CategoryId ?? Categories.FirstOrDefault()?.Id ?? 0,
             LimitAmount = Budget?.LimitAmount,
             Month = Month,
             Year = Year

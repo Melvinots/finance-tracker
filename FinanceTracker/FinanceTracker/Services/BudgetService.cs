@@ -22,38 +22,29 @@ namespace FinanceTracker.Services
         public async Task<BudgetDto?> GetByIdAsync(int id, int userId)
         {
             var budget = await _repo.GetByIdAsync(id, userId);
-
-            return budget is null
-                ? null
-                : MapToDto(budget);
+            return budget is null ? null : MapToDto(budget);
         }
 
-        public async Task<BudgetDto> CreateAsync(
-            SaveBudgetDto dto,
-            int userId)
+        public async Task<BudgetDto> CreateAsync(SaveBudgetDto dto, int userId)
         {
+            var category = await _repo.GetCategoryByIdAsync(dto.CategoryId, userId)
+                ?? throw new InvalidOperationException("Category not found.");
+
             var budget = new Budget
             {
                 LimitAmount = dto.LimitAmount ?? 0,
                 Month = dto.Month,
                 Year = dto.Year,
                 CategoryId = dto.CategoryId,
-                UserId = userId
+                UserId = userId,
+                Category = category
             };
 
-            var created = await _repo.CreateAsync(budget);
-
-            var result = await _repo.GetByIdAsync(
-                created.Id,
-                userId);
-
-            return MapToDto(result!);
+            var result = await _repo.CreateAsync(budget);
+            return MapToDto(result);
         }
 
-        public async Task<BudgetDto> UpdateAsync(
-            int id,
-            SaveBudgetDto dto,
-            int userId)
+        public async Task<BudgetDto> UpdateAsync(int id, SaveBudgetDto dto, int userId)
         {
             var budget = await _repo.GetByIdAsync(id, userId)
                 ?? throw new KeyNotFoundException("Budget not found.");
@@ -61,12 +52,8 @@ namespace FinanceTracker.Services
             budget.LimitAmount = dto.LimitAmount ?? 0;
             budget.Month = dto.Month;
             budget.Year = dto.Year;
-            budget.CategoryId = dto.CategoryId;
 
-            await _repo.UpdateAsync(budget);
-
-            var result = await _repo.GetByIdAsync(id, userId);
-
+            var result = await _repo.UpdateAsync(budget);
             return MapToDto(result!);
         }
 

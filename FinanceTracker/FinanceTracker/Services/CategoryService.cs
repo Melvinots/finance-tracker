@@ -40,10 +40,8 @@ namespace FinanceTracker.Services
                 UserId = userId
             };
 
-            var created = await _repo.CreateAsync(category);
-
-            var result = await _repo.GetByIdAsync(created.Id, userId);
-            return MapToDto(result!);
+            var result = await _repo.CreateAsync(category);
+            return MapToDto(result);
         }
 
         public async Task<CategoryDto> UpdateAsync(int id, SaveCategoryDto dto, int userId)
@@ -55,15 +53,22 @@ namespace FinanceTracker.Services
             category.Color = dto.Color;
             category.Icon = dto.Icon;
 
-            await _repo.UpdateAsync(category);
-
-            var result = await _repo.GetByIdAsync(id, userId);
+            var result = await _repo.UpdateAsync(category);
             return MapToDto(result!);
         }
 
         public async Task DeleteAsync(int id, int userId)
         {
-            await _repo.DeleteAsync(id, userId);
+            var category = await _repo.GetByIdAsync(id, userId)
+                ?? throw new KeyNotFoundException("Category not found.");
+
+            if (category.IsSystemDefault)
+                throw new InvalidOperationException("This category cannot be deleted.");
+
+            var fallbackCategory = await _repo.GetSystemDefaultAsync(userId)
+                ?? throw new InvalidOperationException("Fallback category not found");
+            
+            await _repo.DeleteWithReassignmentAsync(category, fallbackCategory.Id, userId);
         }
 
         // ── private helpers ──────────────────────────────────────────

@@ -34,6 +34,7 @@ namespace FinanceTracker.Repositories
         {
             await _context.Transactions.AddAsync(transaction);
             await _context.SaveChangesAsync();
+
             return transaction;
         }
 
@@ -41,6 +42,7 @@ namespace FinanceTracker.Repositories
         {
             _context.Transactions.Update(transaction);
             await _context.SaveChangesAsync();
+
             return transaction;
         }
 
@@ -50,10 +52,16 @@ namespace FinanceTracker.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Category?> GetCategoryByIdAsync(int id, int userId)
+        {
+            return await _context.Categories
+                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+        }
+
         public async Task<Category> GetOrCreateUncategorizedAsync(int userId)
         {
             var category = await _context.Categories
-                .FirstOrDefaultAsync(c => c.UserId == userId && c.Name == "Other");
+                .FirstOrDefaultAsync(c => c.UserId == userId && c.IsSystemDefault);
 
             if (category is null)
             {
@@ -62,7 +70,8 @@ namespace FinanceTracker.Repositories
                     Name = "Other",
                     Icon = "Other",
                     Color = "#64748B",
-                    UserId = userId
+                    UserId = userId,
+                    IsSystemDefault = true
                 };
 
                 await _context.Categories.AddAsync(category);

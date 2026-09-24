@@ -85,6 +85,10 @@ namespace FinanceTracker.Controllers
             {
                 return NotFound();
             }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // ── private helpers ──────────────────────────────────────────

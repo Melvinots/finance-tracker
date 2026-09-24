@@ -24,6 +24,7 @@ namespace FinanceTracker.Controllers
         {
             var userId = GetUserId();
             var result = await _service.GetAllByUserAsync(userId, month, year);
+
             return Ok(result);
         }
 
@@ -32,36 +33,33 @@ namespace FinanceTracker.Controllers
         {
             var userId = GetUserId();
             var result = await _service.GetByIdAsync(id, userId);
-            return result is null
-                ? NotFound()
-                : Ok(result);
+
+            return result is null ? NotFound() : Ok(result);
         }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create(SaveBudgetDto dto)
         {
-            var userId = GetUserId();
-            var result = await _service.CreateAsync(dto, userId);
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = result.Id },
-                result
-            );
+            try
+            {
+                var userId = GetUserId();
+                var result = await _service.CreateAsync(dto, userId);
+
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(
-            int id,
-            SaveBudgetDto dto)
+        public async Task<IActionResult> Update(int id, SaveBudgetDto dto)
         {
             try
             {
                 var userId = GetUserId();
-                var result = await _service.UpdateAsync(
-                    id,
-                    dto,
-                    userId
-                );
+                var result = await _service.UpdateAsync(id, dto, userId);
 
                 return Ok(result);
             }
@@ -78,6 +76,7 @@ namespace FinanceTracker.Controllers
             {
                 var userId = GetUserId();
                 await _service.DeleteAsync(id, userId);
+
                 return NoContent();
             }
             catch (KeyNotFoundException)

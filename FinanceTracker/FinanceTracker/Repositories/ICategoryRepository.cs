@@ -8,8 +8,9 @@ namespace FinanceTracker.Repositories
         Task<List<Category>> GetAllByUserAsync(int userId);
         Task<Category?> GetByIdAsync(int id, int userId);
         Task<int> GetTransactionCountAsync(int id, int userId);
+        Task<Category?> GetSystemDefaultAsync(int userId);
         Task<Category> CreateAsync(Category category);
         Task<Category> UpdateAsync(Category category);
-        Task DeleteAsync(int id, int userId);
+        Task DeleteWithReassignmentAsync(Category category, int fallbackCategoryId, int userId);
     }
 }

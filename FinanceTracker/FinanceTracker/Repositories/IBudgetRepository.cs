@@ -9,5 +9,6 @@ namespace FinanceTracker.Repositories
         Task<Budget> CreateAsync(Budget budget);
         Task<Budget> UpdateAsync(Budget budget);
         Task DeleteAsync(Budget budget);
+        Task<Category?> GetCategoryByIdAsync(int id, int userId);
     }
 }

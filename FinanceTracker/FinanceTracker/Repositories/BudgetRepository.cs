@@ -72,5 +72,11 @@ namespace FinanceTracker.Repositories
             _context.Budgets.Remove(budget);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Category?> GetCategoryByIdAsync(int id, int userId)
+        {
+            return await _context.Categories
+                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+        }
     }
 }

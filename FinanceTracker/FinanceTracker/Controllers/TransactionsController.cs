@@ -20,6 +20,7 @@ namespace FinanceTracker.Controllers
         {
             var userId = GetUserId();
             var result = await _service.GetAllByUserAsync(userId);
+
             return Ok(result);
         }
 
@@ -37,6 +38,7 @@ namespace FinanceTracker.Controllers
         {
             var userId = GetUserId();
             var result = await _service.CreateAsync(dto, userId);
+
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
@@ -47,11 +49,16 @@ namespace FinanceTracker.Controllers
             {
                 var userId = GetUserId();
                 var result = await _service.UpdateAsync(id, dto, userId);
+
                 return Ok(result);
             }
             catch (KeyNotFoundException)
             {
                 return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -62,6 +69,7 @@ namespace FinanceTracker.Controllers
             {
                 var userId = GetUserId();
                 await _service.DeleteAsync(id, userId);
+
                 return NoContent();
             }
             catch (KeyNotFoundException)

@@ -31,6 +31,7 @@ namespace FinanceTracker.Repositories
         {
             _context.UserSettings.Update(settings);
             await _context.SaveChangesAsync();
+
             return settings;
         }
 
