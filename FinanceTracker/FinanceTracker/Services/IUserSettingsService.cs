@@ -6,7 +6,7 @@ namespace FinanceTracker.Services
     {
         Task<UserSettingsDto> GetAsync(int userId);
         Task<UserSettingsDto> UpdateAsync(int id, SaveUserSettingsDto dto, int userId);
-        Task<string> ExportDataAsync();
-        Task DeactivateAccountAsync();
+        Task<string> ExportDataAsync(int userId);
+        Task DeactivateAccountAsync(int userId);
     }
 }

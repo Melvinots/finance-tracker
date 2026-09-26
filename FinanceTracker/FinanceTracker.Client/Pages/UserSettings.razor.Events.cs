@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.JSInterop;
 using System.Transactions;
 
 namespace FinanceTracker.Client.Pages
@@ -32,7 +33,8 @@ namespace FinanceTracker.Client.Pages
 
             try
             {
-                await Task.Delay(1000);
+                await UserSettingsService.DownloadExportAsync();
+
                 AppNotifier.Success(summary: "Data exported successfully");
             }
             catch (Exception ex)

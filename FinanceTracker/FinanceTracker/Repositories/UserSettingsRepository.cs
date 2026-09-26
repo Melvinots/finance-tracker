@@ -1,6 +1,4 @@
-﻿using FinanceTracker.Data;
-using FinanceTracker.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using FinanceTracker.Helpers;
 
 namespace FinanceTracker.Repositories
 {
@@ -35,12 +33,18 @@ namespace FinanceTracker.Repositories
             return settings;
         }
 
-        public async Task<string> ExportDataAsync()
+        public async Task<string> ExportDataAsync(int userId)
         {
-            throw new NotImplementedException();
+            var transactions = await _context.Transactions
+                .Include(t => t.Category)
+                .Where(t => t.UserId == userId)
+                .OrderByDescending(t => t.Date)
+                .ToListAsync();
+
+            return CsvExporter.BuildTransactionsCsv(transactions);
         }
 
-        public async Task DeactivateAccountAsync()
+        public async Task DeactivateAccountAsync(int userId)
         {
             throw new NotImplementedException();
         }

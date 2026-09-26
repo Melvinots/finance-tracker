@@ -102,7 +102,7 @@
                     <div class="amount-input @(model.IsExpense ? "is-expense" : "is-income")">
 
                         <span class="currency-prefix">
-                            PHP
+                            @CurrencyCode
                         </span>
 
                         <InputNumber class="amount-field"
@@ -243,6 +243,9 @@
 
     [Parameter]
     public List<CategoryDto> Categories { get; set; } = new();
+
+    [Parameter]
+    public string CurrencyCode { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<SaveTransactionDto> OnSave { get; set; }

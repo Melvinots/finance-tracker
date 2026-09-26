@@ -23,6 +23,7 @@ namespace FinanceTracker.Controllers
         {
             var userId = GetUserId();
             var settings = await _service.GetAsync(userId);
+
             return Ok(settings);
         }
 
@@ -31,8 +32,32 @@ namespace FinanceTracker.Controllers
         {
             var userId = GetUserId();
             var settings = await _service.UpdateAsync(id, dto, userId);
+
             return Ok(settings);
         }
+
+        [HttpGet("Export")]
+        public async Task<IActionResult> ExportData()
+        {
+            var userId = GetUserId();
+            var csv = await _service.ExportDataAsync(userId);
+
+            var fileName = $"financetracker_export_{DateTime.UtcNow:yyyyMMdd}.csv";
+            var bytes = System.Text.Encoding.UTF8.GetBytes(csv);
+
+            return File(bytes, "text/csv", fileName);
+        }
+
+        [HttpPost("Deactivate")]
+        public async Task<IActionResult> DeactivateAccount()
+        {
+            var userId = GetUserId();
+            await _service.DeactivateAccountAsync(userId);
+
+            return Ok(new { Message = "Account deactivated successfully." });
+        }
+
+
 
         // ── private helpers ──────────────────────────────────────────
 

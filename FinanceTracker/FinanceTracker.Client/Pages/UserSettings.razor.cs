@@ -1,4 +1,5 @@
 using FinanceTracker.Shared.DTOs.UserSettings;
+using Microsoft.JSInterop;
 
 namespace FinanceTracker.Client.Pages
 {

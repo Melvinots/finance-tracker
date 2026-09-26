@@ -32,12 +32,12 @@ namespace FinanceTracker.Services
             return MapToDto(result);
         }
 
-        public async Task<string> ExportDataAsync()
+        public async Task<string> ExportDataAsync(int userId)
         {
-            throw new NotImplementedException();
+            return await _repo.ExportDataAsync(userId);
         }
 
-        public async Task DeactivateAccountAsync()
+        public async Task DeactivateAccountAsync(int userId)
         {
             throw new NotImplementedException();
         }
