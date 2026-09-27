@@ -35,7 +35,8 @@ namespace FinanceTracker.Services
             {
                 FullName = dto.FullName,
                 Email = dto.Email.ToLower(),
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                IsActive = true
             };
 
             await _context.Users.AddAsync(user);
@@ -102,12 +103,19 @@ namespace FinanceTracker.Services
             var accessToken = GenerateAccessToken(user);
             var refreshToken = await GenerateRefreshTokenAsync(user.Id);
 
+            if (!user.IsActive)
+            {
+                user.IsActive = true;
+                await _context.SaveChangesAsync();
+            }
+
             return new AuthResponseDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 FullName = user.FullName,
-                Email = user.Email
+                Email = user.Email,
+                IsReactivated = !user.IsActive
             };
         }
 

@@ -46,7 +46,10 @@ namespace FinanceTracker.Repositories
 
         public async Task DeactivateAccountAsync(int userId)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users.FirstAsync(u => u.Id == userId);
+            user.IsActive = false;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

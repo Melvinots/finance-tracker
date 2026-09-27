@@ -36,5 +36,11 @@ namespace FinanceTracker.Client.Services
 
             await _jsRuntime.InvokeVoidAsync("downloadFile", fileName, Convert.ToBase64String(bytes));
         }
+
+        public async Task DeactivateAccountAsync()
+        {
+            var response = await _http.PostAsync("api/UserSettings/Deactivate", null);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

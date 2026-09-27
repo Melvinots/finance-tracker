@@ -8,6 +8,8 @@ namespace FinanceTracker.Client.Pages
         [Inject] UserSettingsService UserSettingsService { get; set; } = default!;
         [Inject] AppNotificationService AppNotifier { get; set; } = default!;
         [Inject] AppDialogService AppDialogs { get; set; } = default!;
+        [Inject] AuthService AuthService { get; set; } = default!;
+        [Inject] NavigationManager Navigation { get; set; } = default!;
 
         private bool _isLoading = true;
 

@@ -58,8 +58,11 @@ namespace FinanceTracker.Client.Pages
 
                 try
                 {
-                    await Task.Delay(1000);
+                    await UserSettingsService.DeactivateAccountAsync();
                     AppNotifier.Success(summary: "Account deactivated successfully");
+
+                    await AuthService.LogoutAsync();
+                    Navigation.NavigateTo("/", forceLoad: true);
                 }
                 catch (Exception ex)
                 {

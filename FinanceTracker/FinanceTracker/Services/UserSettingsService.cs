@@ -39,7 +39,7 @@ namespace FinanceTracker.Services
 
         public async Task DeactivateAccountAsync(int userId)
         {
-            throw new NotImplementedException();
+            await _repo.DeactivateAccountAsync(userId);
         }
 
         // ── private helpers ──────────────────────────────────────────
