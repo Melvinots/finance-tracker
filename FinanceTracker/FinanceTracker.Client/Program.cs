@@ -21,6 +21,7 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<AppNotificationService>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<AppDialogService>();
+builder.Services.AddScoped<AuthNotificationState>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 

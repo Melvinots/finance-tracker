@@ -52,8 +52,11 @@ namespace FinanceTracker.Services
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == dto.Email.ToLower());
 
-            if (user is null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                throw new UnauthorizedAccessException("Invalid email or password.");
+            if (user is null)
+                throw new UnauthorizedAccessException("Invalid email.");
+
+            if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+                throw new UnauthorizedAccessException("Invalid password.");
 
             return await GenerateAuthResponseAsync(user);
         }
@@ -102,8 +105,9 @@ namespace FinanceTracker.Services
         {
             var accessToken = GenerateAccessToken(user);
             var refreshToken = await GenerateRefreshTokenAsync(user.Id);
+            var isReactivated = !user.IsActive;
 
-            if (!user.IsActive)
+            if (isReactivated)
             {
                 user.IsActive = true;
                 await _context.SaveChangesAsync();
@@ -115,7 +119,7 @@ namespace FinanceTracker.Services
                 RefreshToken = refreshToken,
                 FullName = user.FullName,
                 Email = user.Email,
-                IsReactivated = !user.IsActive
+                IsReactivated = isReactivated
             };
         }
 

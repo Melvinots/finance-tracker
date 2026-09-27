@@ -1,135 +1,117 @@
 ﻿@namespace FinanceTracker.Client.Components.Authentication
+@using Radzen
 
-<EditForm Model=@_model"
-          OnValidSubmit="@HandleSubmit">
+<div class="auth-form-wrapper">
+    <RadzenTemplateForm TItem="RegisterDto" Data="@_model" Submit="@HandleSubmit" InvalidSubmit="@OnInvalidSubmit">
+        <RadzenStack Gap="1.25rem">
 
-    <DataAnnotationsValidator />
+            @if (!string.IsNullOrWhiteSpace(_error))
+            {
+                <div class="auth-error" role="alert">
+                    <span class="error-icon">!</span>
+                    <span>@_error</span>
+                </div>
+            }
 
-    @if (!string.IsNullOrWhiteSpace(ErrorMessage))
-    {
-        <div class="auth-error"
-             role="alert">
+            <RadzenFormField Text="Full name" Variant="@_variant">
+                <ChildContent>
+                    <RadzenTextBox Name="FullName"
+                                   @bind-Value="@_model.FullName"
+                                   Placeholder="Juan dela Cruz"
+                                   AutoCompleteType="AutoCompleteType.Name" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="FullName" Text="Full name is required." />
+                </Helper>
+            </RadzenFormField>
 
-            <span class="error-icon">!</span>
+            <RadzenFormField Text="Email address" Variant="@_variant">
+                <ChildContent>
+                    <RadzenTextBox Name="Email"
+                                   @bind-Value="@_model.Email"
+                                   Placeholder="you@email.com"
+                                   AutoCompleteType="AutoCompleteType.Email" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="Email" Text="Email is required." />
+                    <RadzenEmailValidator Component="Email" Text="Enter a valid email address." />
+                </Helper>
+            </RadzenFormField>
 
-            <span>
-                @ErrorMessage
-            </span>
+            <RadzenFormField Text="Password" Variant="@_variant">
+                <ChildContent>
+                    <RadzenPassword Name="Password"
+                                    @bind-Value="@_model.Password"
+                                    Placeholder="At least 8 characters"
+                                    AutoComplete="false" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="Password" Text="Password is required." />
+                    <RadzenLengthValidator Component="Password" Min="8" Text="Password must be at least 8 characters." />
+                </Helper>
+            </RadzenFormField>
 
-        </div>
-    }
+            <RadzenFormField Text="Confirm password" Variant="@_variant">
+                <ChildContent>
+                    <RadzenPassword Name="ConfirmPassword"
+                                    @bind-Value="@_model.ConfirmPassword"
+                                    Placeholder="Repeat your password"
+                                    AutoComplete="false" />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="ConfirmPassword" Text="Please confirm your password." />
+                    <RadzenCompareValidator Component="ConfirmPassword"
+                                            Value="@_model.Password"
+                                            Text="Passwords do not match." />
+                </Helper>
+            </RadzenFormField>
 
-    <div class="form-group">
+            <RadzenButton ButtonType="ButtonType.Submit"
+                          class="submit-button"
+                          Disabled="@_isLoading"
+                          IsBusy="@_isLoading"
+                          BusyText="Creating account..."
+                          Text="Create account" />
 
-        <label for="register-name">
-            Full name
-        </label>
+            <p class="auth-switch">
+                Already have an account?
+                <a href="/login">Sign in</a>
+            </p>
 
-        <InputText id="register-name"
-                   class="form-control"
-                   @bind-Value="_model.FullName"
-                   autocomplete="name"
-                   placeholder="Juan dela Cruz" />
-
-        <ValidationMessage For="@(() => _model.FullName)" />
-
-    </div>
-
-    <div class="form-group">
-
-        <label for="register-email">
-            Email address
-        </label>
-
-        <InputText id="register-email"
-                   class="form-control"
-                   @bind-Value="_model.Email"
-                   autocomplete="email"
-                   placeholder="you@email.com" />
-
-        <ValidationMessage For="@(() => _model.Email)" />
-
-    </div>
-
-    <div class="form-group">
-
-        <label for="register-password">
-            Password
-        </label>
-
-        <InputText id="register-password"
-                   class="form-control"
-                   type="password"
-                   @bind-Value="_model.Password"
-                   autocomplete="new-password"
-                   placeholder="At least 8 characters" />
-
-        <ValidationMessage For="@(() => _model.Password)" />
-
-    </div>
-
-    <div class="form-group">
-
-        <label for="register-confirm-password">
-            Confirm password
-        </label>
-
-        <InputText id="register-confirm-password"
-                   class="form-control"
-                   type="password"
-                   @bind-Value="_model.ConfirmPassword"
-                   autocomplete="new-password"
-                   placeholder="Repeat your password" />
-
-        <ValidationMessage For="@(() => _model.ConfirmPassword)" />
-
-    </div>
-
-    <button class="submit-button"
-            type="submit"
-            disabled="@IsLoading">
-
-        @if (IsLoading)
-        {
-            <span class="loading-spinner"></span>
-            <span>Creating account...</span>
-        }
-        else
-        {
-            <span>Create account</span>
-            <span class="button-arrow">→</span>
-        }
-
-    </button>
-
-    <p class="auth-switch">
-
-        Already have an account?
-
-        <a href="/login">
-            Sign in
-        </a>
-
-    </p>
-
-</EditForm>
+        </RadzenStack>
+    </RadzenTemplateForm>
+</div>
 
 @code {
 
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    [Inject] private AuthService AuthService { get; set; } = default!;
+
+    private Variant _variant = Variant.Outlined;
     private RegisterDto _model = new();
+    private bool _isLoading;
+    private string? _error;
 
-    [Parameter]
-    public EventCallback<RegisterDto> OnSubmit { get; set; }
-
-    [Parameter]
-    public string? ErrorMessage { get; set; }
-
-    [Parameter]
-    public bool IsLoading { get; set; }
-
-    private async Task HandleSubmit()
+    private async Task HandleSubmit(RegisterDto model)
     {
-        await OnSubmit.InvokeAsync(_model);
+        _isLoading = true;
+        // _error = null;
+
+        var error = await AuthService.RegisterAsync(model);
+
+        if (error is null)
+        {
+            Navigation.NavigateTo("/dashboard");
+            return;
+        }
+
+        _error = error;
+        _isLoading = false;
+    }
+
+    private void OnInvalidSubmit()
+    {
+        _error = "Please fill in all required fields correctly.";
     }
 
 }

@@ -1,10 +1,16 @@
-﻿namespace FinanceTracker.Client.Pages
+﻿
+namespace FinanceTracker.Client.Pages
 {
     public partial class Dashboard
     {
         protected override async Task OnInitializedAsync()
         {
             await LoadDashboardAsync();
+
+            if (NotificationState.ConsumeReactivationFlag())
+            {
+                AppNotifier.Info(summary: "Welcome back! Your account has been reactivated.");
+            }
         }
 
         private async Task LoadDashboardAsync()

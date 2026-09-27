@@ -1,181 +1,119 @@
-﻿.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: .8rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: .35rem;
-}
-
-label {
-    color: var(--ink);
-    font-size: .8rem;
-    font-weight: 600;
-}
-
-.label-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
-.form-control {
+﻿/* Same as login form's styles — shared auth styling */
+.auth-form-wrapper {
     width: 100%;
-    min-height: 42px;
-    padding: 0 .875rem;
-    border: 1px solid var(--rule);
-    border-radius: 10px;
-    outline: none;
-    background: var(--white);
-    color: var(--ink);
-    font-family: var(--font-sans);
-    font-size: .875rem;
-    transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
-    .form-control:hover {
-        border-color: color-mix( in srgb, var(--primary) 45%, var(--rule) );
+    .auth-form-wrapper .rz-form-field {
+        width: 100%;
     }
 
-    .form-control:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px var(--primary-ring);
+    .auth-form-wrapper .rz-textbox,
+    .auth-form-wrapper .rz-password {
+        width: 100%;
+        min-height: 48px;
+        border-radius: 12px !important;
+        border: 1.5px solid var(--rule) !important;
+        font-size: .875rem !important;
+        font-family: var(--font-sans);
+        transition: border-color .2s ease, box-shadow .2s ease;
     }
 
-    .form-control::placeholder {
-        color: var(--muted);
-    }
-
-.forgot-link {
-    color: var(--primary);
-    font-size: .75rem;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-    .forgot-link:hover {
-        text-decoration: underline;
-    }
-
-.submit-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: .5rem;
-    width: 100%;
-    min-height: 44px;
-    margin-top: .25rem;
-    border: none;
-    border-radius: 10px;
-    background: var(--primary);
-    color: var(--white);
-    font-family: var(--font-sans);
-    font-size: .875rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
-}
-
-    .submit-button:hover:not(:disabled) {
-        background: var(--primary-hover);
-        box-shadow: 0 8px 20px color-mix( in srgb, var(--primary) 22%, transparent );
-        transform: translateY(-1px);
-    }
-
-    .submit-button:active:not(:disabled) {
-        transform: translateY(0);
-    }
-
-    .submit-button:disabled {
-        opacity: .65;
-        cursor: not-allowed;
-    }
-
-.button-arrow {
-    font-size: 1.1rem;
-}
-
-.auth-divider {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    color: var(--muted);
-    font-size: .7rem;
-}
-
-    .auth-divider::before,
-    .auth-divider::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: var(--rule);
-    }
-
-.auth-switch {
-    margin: 0;
-    color: var(--slate);
-    font-size: .8rem;
-    text-align: center;
-}
-
-    .auth-switch a {
-        color: var(--primary);
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-        .auth-switch a:hover {
-            text-decoration: underline;
+        .auth-form-wrapper .rz-textbox:hover,
+        .auth-form-wrapper .rz-password:hover {
+            border-color: color-mix(in srgb, var(--primary) 45%, var(--rule)) !important;
         }
 
-.auth-error {
-    display: flex;
-    align-items: flex-start;
-    gap: .65rem;
-    padding: .8rem .9rem;
-    border: 1px solid #fecaca;
-    border-radius: 10px;
-    background: var(--red-dim);
-    color: var(--red);
-    font-size: .8rem;
-    line-height: 1.4;
-}
+        .auth-form-wrapper .rz-textbox:focus,
+        .auth-form-wrapper .rz-password:focus,
+        .auth-form-wrapper .rz-state-focused {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 4px var(--primary-ring) !important;
+        }
 
-.error-icon {
-    display: grid;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    place-items: center;
-    border-radius: 50%;
-    background: currentColor;
-    color: var(--red-dim);
-    font-size: .7rem;
-    font-weight: 800;
-}
+    .auth-form-wrapper .rz-form-field-label {
+        color: var(--ink);
+        font-size: .8rem;
+        font-weight: 600;
+    }
 
-.loading-spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, .35);
-    border-top-color: var(--white);
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-}
+    .auth-form-wrapper .submit-button.rz-button {
+        width: 100%;
+        min-height: 50px;
+        border-radius: 12px !important;
+        background: linear-gradient(155deg, var(--primary), color-mix(in srgb, var(--primary) 80%, black)) !important;
+        border: none !important;
+        font-weight: 700 !important;
+        font-size: .875rem !important;
+        transition: box-shadow .25s ease, transform .15s ease;
+    }
 
-@keyframes spin {
+        .auth-form-wrapper .submit-button.rz-button:hover:not(:disabled) {
+            box-shadow: 0 10px 24px color-mix(in srgb, var(--primary) 30%, transparent);
+            transform: translateY(-1px);
+        }
+
+    .auth-form-wrapper .auth-switch {
+        margin: 0;
+        color: var(--slate);
+        font-size: .8rem;
+        text-align: center;
+    }
+
+        .auth-form-wrapper .auth-switch a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+            .auth-form-wrapper .auth-switch a:hover {
+                text-decoration: underline;
+            }
+
+    .auth-form-wrapper .auth-error {
+        display: flex;
+        align-items: flex-start;
+        gap: .65rem;
+        padding: .8rem .9rem;
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        background: var(--red-dim);
+        color: var(--red);
+        font-size: .8rem;
+        line-height: 1.4;
+        animation: error-enter .25s ease-out;
+    }
+
+    .auth-form-wrapper .error-icon {
+        display: grid;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        place-items: center;
+        border-radius: 50%;
+        background: currentColor;
+        color: var(--red-dim);
+        font-size: .7rem;
+        font-weight: 800;
+    }
+
+@keyframes error-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
 
     to {
-        transform: rotate(360deg);
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-.validation-message {
-    color: var(--red);
-    font-size: .7rem;
-    line-height: 1.2;
+@media (max-width: 480px) {
+    .auth-form-wrapper {
+        padding: 1.25rem;
+        max-width: 100%;
+    }
 }

@@ -13,35 +13,8 @@
 
     <ChildContent>
 
-        <RegisterForm OnSubmit="HandleRegister"
-                      ErrorMessage="@_error"
-                      IsLoading="@_isLoading" />
+        <RegisterForm />
 
     </ChildContent>
 
 </FormCard>
-
-@code {
-
-    private string? _error;
-
-    private bool _isLoading;
-
-    private async Task HandleRegister(RegisterDto model)
-    {
-        _isLoading = true;
-        _error = null;
-
-        var error = await AuthService.RegisterAsync(model);
-
-        if (error is null)
-        {
-            Navigation.NavigateTo("/dashboard");
-            return;
-        }
-
-        _error = error;
-        _isLoading = false;
-    }
-
-}

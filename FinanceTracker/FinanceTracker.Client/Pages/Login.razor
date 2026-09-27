@@ -1,47 +1,19 @@
 ﻿@page "/login"
 @layout AuthLayout
 
-@inject AuthService AuthService
-@inject NavigationManager Navigation
-
 <FormCard>
 
     <Header>
+
         <h2>Welcome back</h2>
         <p>Sign in to continue managing your finances.</p>
+
     </Header>
 
     <ChildContent>
 
-        <LoginForm OnSubmit="@HandleLogin"
-                   ErrorMessage="@_error"
-                   IsLoading="@_isLoading" />
+        <LoginForm />
 
     </ChildContent>
 
 </FormCard>
-
-@code {
-
-    private string? _error;
-
-    private bool _isLoading;
-
-    private async Task HandleLogin(LoginDto model)
-    {
-        _isLoading = true;
-        _error = null;
-
-        var error = await AuthService.LoginAsync(model);
-
-        if (error is null)
-        {
-            Navigation.NavigateTo("/dashboard");
-            return;
-        }
-
-        _error = error;
-        _isLoading = false;
-    }
-
-}

@@ -39,7 +39,11 @@ namespace FinanceTracker.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(ex.Message);
+                return Problem(
+                    statusCode: StatusCodes.Status401Unauthorized,
+                    title: "Unauthorized",
+                    detail: ex.Message
+                );  
             }
         }
 
