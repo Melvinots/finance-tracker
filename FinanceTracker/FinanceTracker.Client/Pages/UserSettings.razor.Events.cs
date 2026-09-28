@@ -61,6 +61,7 @@ namespace FinanceTracker.Client.Pages
                     await UserSettingsService.DeactivateAccountAsync();
                     AppNotifier.Success(summary: "Account deactivated successfully");
 
+                    await Task.Delay(1000);
                     await AuthService.LogoutAsync();
                     Navigation.NavigateTo("/", forceLoad: true);
                 }

@@ -29,10 +29,6 @@
 
 <ItemGroup>
 	<Content Remove="wwwroot\**" />
-</ItemGroup>	
-
-  <ItemGroup>
-    <Folder Include="Middleware\" />
-  </ItemGroup>
+</ItemGroup>
 
 </Project>

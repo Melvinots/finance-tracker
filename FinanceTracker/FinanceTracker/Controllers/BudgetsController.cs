@@ -40,49 +40,28 @@ namespace FinanceTracker.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(SaveBudgetDto dto)
         {
-            try
-            {
-                var userId = GetUserId();
-                var result = await _service.CreateAsync(dto, userId);
+            var userId = GetUserId();
+            var result = await _service.CreateAsync(dto, userId);
 
-                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, SaveBudgetDto dto)
         {
-            try
-            {
-                var userId = GetUserId();
-                var result = await _service.UpdateAsync(id, dto, userId);
+            var userId = GetUserId();
+            var result = await _service.UpdateAsync(id, dto, userId);
 
-                return Ok(result);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
+            return Ok(result);
         }
 
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                var userId = GetUserId();
-                await _service.DeleteAsync(id, userId);
+            var userId = GetUserId();
+            await _service.DeleteAsync(id, userId);
 
-                return NoContent();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
+            return NoContent();
         }
 
         // ── private helpers ──────────────────────────────────────────

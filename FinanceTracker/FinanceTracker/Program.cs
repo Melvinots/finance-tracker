@@ -1,4 +1,5 @@
 using FinanceTracker.Data;
+using FinanceTracker.Middleware;
 using FinanceTracker.Repositories;
 using FinanceTracker.Repositories.Dashboard;
 using FinanceTracker.Services;
@@ -105,7 +106,7 @@ var app = builder.Build();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseCors("BlazorClient");
 app.UseAuthentication();
 app.UseAuthorization();

@@ -18,47 +18,22 @@ namespace FinanceTracker.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
-            try
-            {
-                var result = await _authService.RegisterAsync(dto);
-                return Ok(result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await _authService.RegisterAsync(dto);
+            return Ok(result);
         }
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            try
-            {
-                var result = await _authService.LoginAsync(dto);
-                return Ok(result);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status401Unauthorized,
-                    title: "Unauthorized",
-                    detail: ex.Message
-                );  
-            }
+            var result = await _authService.LoginAsync(dto);
+            return Ok(result);
         }
 
         [HttpPost("Refresh")]
         public async Task<IActionResult> Refresh([FromBody] string refreshToken)
         {
-            try
-            {
-                var result = await _authService.RefreshTokenAsync(refreshToken);
-                return Ok(result);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
+            var result = await _authService.RefreshTokenAsync(refreshToken);
+            return Ok(result);
         }
 
         [HttpPost("ForgotPassword")]

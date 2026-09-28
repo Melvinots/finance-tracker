@@ -82,7 +82,7 @@ namespace FinanceTracker.Services
                 .FirstOrDefaultAsync(u => u.Email == dto.Email.ToLower());
 
             if (user is null) return;
-
+            
             var resetToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
             Console.WriteLine($"[DEV] Password reset token for {dto.Email}: {resetToken}");
         }
