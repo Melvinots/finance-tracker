@@ -7,7 +7,6 @@ namespace FinanceTracker.Client.Pages
         [Inject] private DashboardService DashboardService { get; set; } = default!;
         [Inject] private AppNotificationService AppNotifier { get; set; } = default!;
         [Inject] private NavigationManager Navigation { get; set; } = default!;
-        [Inject] private AuthNotificationState NotificationState { get; set; } = default!;
 
         private bool _isLoading = true;
 

@@ -1,6 +1,5 @@
 ﻿using FinanceTracker.Services;
 using FinanceTracker.Shared.DTOs.Auth;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceTracker.Controllers
 {

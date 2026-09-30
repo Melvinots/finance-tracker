@@ -1,7 +1,4 @@
 ﻿
-using Microsoft.JSInterop;
-using System.Transactions;
-
 namespace FinanceTracker.Client.Pages
 {
     public partial class UserSettings

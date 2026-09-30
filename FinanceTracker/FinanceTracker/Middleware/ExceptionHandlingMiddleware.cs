@@ -1,4 +1,5 @@
-﻿namespace FinanceTracker.Middleware
+﻿
+namespace FinanceTracker.Middleware
 {
     public class ExceptionHandlingMiddleware
     {

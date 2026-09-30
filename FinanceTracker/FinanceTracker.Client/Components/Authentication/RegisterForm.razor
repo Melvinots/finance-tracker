@@ -2,26 +2,24 @@
 @using Radzen
 
 <div class="auth-form-wrapper">
-    <RadzenTemplateForm TItem="RegisterDto" Data="@_model" Submit="@HandleSubmit" InvalidSubmit="@OnInvalidSubmit">
-        <RadzenStack Gap="1.25rem">
+    <RadzenTemplateForm TItem="RegisterDto"
+                        Data="@_model"
+                        Submit="@HandleSubmit"
+                        InvalidSubmit="@OnInvalidSubmit">
 
-            @if (!string.IsNullOrWhiteSpace(_error))
-            {
-                <div class="auth-error" role="alert">
-                    <span class="error-icon">!</span>
-                    <span>@_error</span>
-                </div>
-            }
+        <RadzenStack Gap="1.25rem">
 
             <RadzenFormField Text="Full name" Variant="@_variant">
                 <ChildContent>
                     <RadzenTextBox Name="FullName"
                                    @bind-Value="@_model.FullName"
-                                   Placeholder="Juan dela Cruz"
+                                   @oninput="ClearError"
                                    AutoCompleteType="AutoCompleteType.Name" />
                 </ChildContent>
+
                 <Helper>
-                    <RadzenRequiredValidator Component="FullName" Text="Full name is required." />
+                    <RadzenRequiredValidator Component="FullName"
+                                             Text="Full name is required." />
                 </Helper>
             </RadzenFormField>
 
@@ -29,12 +27,16 @@
                 <ChildContent>
                     <RadzenTextBox Name="Email"
                                    @bind-Value="@_model.Email"
-                                   Placeholder="you@email.com"
+                                   @oninput="ClearError"
                                    AutoCompleteType="AutoCompleteType.Email" />
                 </ChildContent>
+
                 <Helper>
-                    <RadzenRequiredValidator Component="Email" Text="Email is required." />
-                    <RadzenEmailValidator Component="Email" Text="Enter a valid email address." />
+                    <RadzenRequiredValidator Component="Email"
+                                             Text="Email is required." />
+
+                    <RadzenEmailValidator Component="Email"
+                                          Text="Enter a valid email address." />
                 </Helper>
             </RadzenFormField>
 
@@ -42,12 +44,14 @@
                 <ChildContent>
                     <RadzenPassword Name="Password"
                                     @bind-Value="@_model.Password"
-                                    Placeholder="At least 8 characters"
+                                    @oninput="ClearError"
                                     AutoComplete="false" />
                 </ChildContent>
+
                 <Helper>
-                    <RadzenRequiredValidator Component="Password" Text="Password is required." />
-                    <RadzenLengthValidator Component="Password" Min="8" Text="Password must be at least 8 characters." />
+                    <RadzenLengthValidator Component="Password"
+                                           Min="8"
+                                           Text="Password must be at least 8 characters." />
                 </Helper>
             </RadzenFormField>
 
@@ -55,16 +59,29 @@
                 <ChildContent>
                     <RadzenPassword Name="ConfirmPassword"
                                     @bind-Value="@_model.ConfirmPassword"
-                                    Placeholder="Repeat your password"
+                                    @oninput="ClearError"
                                     AutoComplete="false" />
                 </ChildContent>
+
                 <Helper>
-                    <RadzenRequiredValidator Component="ConfirmPassword" Text="Please confirm your password." />
+                    <RadzenRequiredValidator Component="ConfirmPassword"
+                                             Text="Please confirm your password." />
+
                     <RadzenCompareValidator Component="ConfirmPassword"
                                             Value="@_model.Password"
                                             Text="Passwords do not match." />
                 </Helper>
             </RadzenFormField>
+
+            <div class="auth-error-slot">
+                @if (!string.IsNullOrWhiteSpace(_error))
+                {
+                    <div class="auth-error" role="alert">
+                        <span class="error-icon">!</span>
+                        <span class="error-message">@_error</span>
+                    </div>
+                }
+            </div>
 
             <RadzenButton ButtonType="ButtonType.Submit"
                           class="submit-button"
@@ -95,7 +112,7 @@
     private async Task HandleSubmit(RegisterDto model)
     {
         _isLoading = true;
-        // _error = null;
+        _error = null;
 
         var error = await AuthService.RegisterAsync(model);
 
@@ -114,4 +131,11 @@
         _error = "Please fill in all required fields correctly.";
     }
 
+    private void ClearError()
+    {
+        if (_error is not null)
+        {
+            _error = null;
+        }
+    }
 }

@@ -1,10 +1,6 @@
-﻿using FinanceTracker.Data;
-using FinanceTracker.Shared.DTOs.Auth;
-using FinanceTracker.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using FinanceTracker.Shared.DTOs.Auth;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
@@ -39,7 +35,15 @@ namespace FinanceTracker.Services
                 IsActive = true
             };
 
+            var settings = new UserSettings
+            {
+                User = user,
+                Currency = "USD",
+                Appearance = "light"
+            };
+
             await _context.Users.AddAsync(user);
+            await _context.UserSettings.AddAsync(settings);
             await _context.SaveChangesAsync();
 
             await SeedDefaultCategoriesAsync(user.Id);
@@ -166,6 +170,8 @@ namespace FinanceTracker.Services
 
             return token;
         }
+
+
 
         public async Task SeedDefaultCategoriesAsync(int userId)
         {

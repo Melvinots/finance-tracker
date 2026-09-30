@@ -1,16 +1,14 @@
 ﻿
+using Microsoft.AspNetCore.WebUtilities;
+
 namespace FinanceTracker.Client.Pages
 {
     public partial class Dashboard
     {
         protected override async Task OnInitializedAsync()
         {
-            await LoadDashboardAsync();
-
-            if (NotificationState.ConsumeReactivationFlag())
-            {
-                AppNotifier.Info(summary: "Welcome back! Your account has been reactivated.");
-            }
+            CheckReactivationFlag();
+            await LoadDashboardAsync();           
         }
 
         private async Task LoadDashboardAsync()
@@ -31,6 +29,18 @@ namespace FinanceTracker.Client.Pages
             finally
             {
                 _isLoading = false;
+            }
+        }
+
+        private void CheckReactivationFlag()
+        {
+            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+            var query = QueryHelpers.ParseQuery(uri.Query);
+
+            if (query.TryGetValue("reactivated", out var value) && value == "true")
+            {
+                AppNotifier.Info(summary: "Welcome back! Your account has been reactivated.");
+                Navigation.NavigateTo("/dashboard", replace: true);
             }
         }
     }

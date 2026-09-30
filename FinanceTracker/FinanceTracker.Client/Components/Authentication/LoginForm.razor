@@ -1,18 +1,27 @@
 ﻿@using Radzen
 
 <div class="auth-form-wrapper">
-    <RadzenTemplateForm TItem="LoginDto" Data="@_model" Submit="@HandleSubmit" InvalidSubmit="@OnInvalidSubmit">
+    <RadzenTemplateForm TItem="LoginDto"
+                        Data="@_model"
+                        Submit="@HandleSubmit"
+                        InvalidSubmit="@OnInvalidSubmit">
+
         <RadzenStack Gap="1.25rem">
 
             <RadzenFormField Text="Email address" Variant="@_variant">
                 <ChildContent>
                     <RadzenTextBox Name="Email"
                                    @bind-Value="@_model.Email"
-                                   Placeholder="you@email.com"
+                                   @oninput="ClearError"
                                    AutoCompleteType="AutoCompleteType.Email" />
                 </ChildContent>
+
                 <Helper>
-                    <RadzenRequiredValidator Component="Email" Text="Email is required." />
+                    <RadzenRequiredValidator Component="Email"
+                                             Text="Email is required." />
+
+                    <RadzenEmailValidator Component="Email"
+                                          Text="Enter a valid email address." />
                 </Helper>
             </RadzenFormField>
 
@@ -20,16 +29,30 @@
                 <ChildContent>
                     <RadzenPassword Name="Password"
                                     @bind-Value="@_model.Password"
-                                    Placeholder="Enter your password"
+                                    @oninput="ClearError"
                                     AutoCompleteType="AutoCompleteType.Off"
                                     aria-label="Enter password" />
                 </ChildContent>
+
                 <Helper>
-                    <RadzenRequiredValidator Component="Password" Text="Password is required." />
+                    <RadzenRequiredValidator Component="Password"
+                                             Text="Password is required." />
                 </Helper>
             </RadzenFormField>
 
-            <a class="forgot-link" href="/forgot-password">Forgot password?</a>
+            <a class="forgot-link" href="/forgot-password">
+                Forgot password?
+            </a>
+
+            <div class="auth-error-slot">
+                @if (!string.IsNullOrWhiteSpace(_error))
+                {
+                    <div class="auth-error" role="alert">
+                        <span class="error-icon">!</span>
+                        <span class="error-message">@_error</span>
+                    </div>
+                }
+            </div>
 
             <RadzenButton ButtonType="ButtonType.Submit"
                           class="submit-button"
@@ -55,7 +78,6 @@
 
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private AuthService AuthService { get; set; } = default!;
-    [Inject] private AuthNotificationState NotificationState { get; set; } = default!;
 
     private Variant _variant = Variant.Outlined;
     private LoginDto _model = new();
@@ -71,8 +93,11 @@
 
         if (result.Success)
         {
-            NotificationState.WasReactivated = result.WasReactivated;
-            Navigation.NavigateTo("/dashboard");
+            var destination = result.WasReactivated
+                ? "/dashboard?reactivated=true"
+                : "/dashboard";
+
+            Navigation.NavigateTo(destination);
             return;
         }
 
@@ -85,4 +110,11 @@
         _error = "Please fill in all required fields.";
     }
 
+    private void ClearError()
+    {
+        if (_error is not null)
+        {
+            _error = null;
+        }
+    }
 }
