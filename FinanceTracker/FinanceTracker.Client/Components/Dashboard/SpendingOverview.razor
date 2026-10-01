@@ -85,7 +85,7 @@
     public List<MonthlySpendingDto> Data { get; set; } = new();
 
     [Parameter]
-    public string SelectedMonth { get; set; } = string.Empty;
+    public DateTime SelectedMonth { get; set; } = DateTime.Now;
 
     [Parameter]
     public string CurrencyCode { get; set; } = string.Empty;
@@ -101,18 +101,6 @@
 
     private void UpdateChart()
     {
-        if (string.IsNullOrWhiteSpace(SelectedMonth))
-        {
-            chartData = Enumerable.Empty<MonthlySpendingDto>();
-            return;
-        }
-
-        if (!DateTime.TryParseExact(SelectedMonth, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var selectedDate))
-        {
-            chartData = Enumerable.Empty<MonthlySpendingDto>();
-            return;
-        }
-
         var monthCount = selectedPeriod switch
         {
             SpendingPeriod.Last3Months => 3,
@@ -122,14 +110,14 @@
             _ => 6
         };
 
-        var startMonth = new DateTime(selectedDate.Year, selectedDate.Month, 1)
+        var startMonth = new DateTime(SelectedMonth.Year, SelectedMonth.Month, 1)
                             .AddMonths(-(monthCount - 1));
 
         chartData = Data
             .Where(x =>
             {
                 var itemMonth = new DateTime(x.Year, x.MonthNumber, 1);
-                return itemMonth >= startMonth && itemMonth <= selectedDate;
+                return itemMonth >= startMonth && itemMonth <= SelectedMonth;
             })
             .OrderBy(x => x.Year)
             .ThenBy(x => x.MonthNumber)

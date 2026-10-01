@@ -14,25 +14,24 @@
         </div>
 
         <div class="topbar-actions">
-            <span class="month-filter-label">Period</span>
 
-            <select class="month-select"
-                    @bind="_selectedMonth"
-                    @bind:after="LoadDashboardAsync">
+           <RadzenStack Orientation="Orientation.Horizontal"
+                         JustifyContent="JustifyContent.Center"
+                         AlignItems="AlignItems.Center"
+                         Gap="0.5rem"
+                         class="period-filter">
 
-                @for (int month = DateTime.Now.Month; month >= 1; month--)
-                {
-                    var date = new DateTime(
-                        DateTime.Now.Year,
-                        month,
-                        1);
+                <RadzenDatePicker @bind-Value="@_selectedMonth"
+                                  ShowDays="false"
+                                  DateFormat="yyyy/MM"
+                                  CurrentDateChanged="@OnCurrentDateChanged"
+                                  Name="DatePickerYearMonth" />
 
-                    <option value="@date.ToString("yyyy-MM")">
-                        @date.ToString("MMMM yyyy")
-                    </option>
-                }
+                <RadzenLabel Text="Select Period"
+                             Component="DatePickerYearMonth"
+                             class="month-filter-label" />
 
-            </select>
+            </RadzenStack>
 
         </div>
 

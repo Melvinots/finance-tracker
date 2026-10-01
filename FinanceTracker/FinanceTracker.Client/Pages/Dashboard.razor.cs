@@ -10,7 +10,7 @@ namespace FinanceTracker.Client.Pages
 
         private bool _isLoading = true;
 
-        private string _selectedMonth = DateTime.Now.ToString("yyyy-MM");
+        private DateTime _selectedMonth = DateTime.Now;
 
         private string _currencyCode = string.Empty;
 

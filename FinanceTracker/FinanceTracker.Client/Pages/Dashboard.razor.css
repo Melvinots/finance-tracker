@@ -72,7 +72,7 @@
     gap: 10px;
 }
 
-.month-filter-label {
+::deep .month-filter-label.rz-label {
     color: var(--muted);
     font-family: var(--font-sans);
     font-size: 0.75rem;
@@ -81,50 +81,31 @@
     text-transform: uppercase;
 }
 
-.month-select {
-    min-height: 40px;
-    min-width: 165px;
-    padding: 0 38px 0 14px;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-md);
-    background-color: var(--white);
-    color: var(--ink);
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    outline: none;
-    appearance: none;
-    /* Custom dropdown arrow */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-    transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
+.period-filter {
+    display: flex;
 }
 
-    .month-select:hover {
-        border-color: var(--primary);
-        background-color: var(--surface, #fafafa);
+@media (max-width: 640px) {
+    ::deep .period-filter {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.35rem !important;
+        width: 100%;
     }
 
-    .month-select:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-ring);
-    }
+        ::deep .period-filter .month-filter-label {
+            width: 100%;
+            text-align: center;
+        }
 
-    .month-select:active {
-        background-color: var(--surface, #f8f8f8);
-    }
+        ::deep .period-filter .rz-datepicker {
+            width: 100%;
+        }
 
-    .month-select option {
-        padding: 8px;
-        background: var(--white);
-        color: var(--ink);
-        font-family: var(--font-sans);
-        font-weight: 500;
-    }
+            ::deep .period-filter .rz-datepicker input {
+                width: 100%;
+            }
+}
 
 .add-transaction-button {
     display: inline-flex;
@@ -477,7 +458,6 @@
         width: 100%;
     }
 
-    .month-select,
     .add-transaction-button {
         flex: 1;
     }
@@ -503,7 +483,6 @@
         align-items: stretch;
     }
 
-    .month-select,
     .add-transaction-button {
         width: 100%;
     }

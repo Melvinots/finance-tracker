@@ -17,8 +17,8 @@ namespace FinanceTracker.Client.Pages
 
             try
             {
-                var selectedDate = DateTime.ParseExact(_selectedMonth, "yyyy-MM", null);
-                
+                var selectedDate = _selectedMonth;
+
                 _dashboard = await DashboardService.GetDashboardAsync(selectedDate.Month, selectedDate.Year);
                 _currencyCode = _dashboard.UserSettings.Currency ?? string.Empty;
             }
@@ -42,6 +42,12 @@ namespace FinanceTracker.Client.Pages
                 AppNotifier.Info(summary: "Welcome back! Your account has been reactivated.");
                 Navigation.NavigateTo("/dashboard", replace: true);
             }
+        }
+
+        private async Task OnCurrentDateChanged(DateTime args)
+        {
+            _selectedMonth = new DateTime(args.Year, args.Month, 1);
+            await LoadDashboardAsync();
         }
     }
 }
