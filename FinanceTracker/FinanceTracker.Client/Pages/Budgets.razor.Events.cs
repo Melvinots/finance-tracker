@@ -22,6 +22,13 @@ namespace FinanceTracker.Client.Pages
             _selectedBudget = null;
         }
 
+        private async Task OnCurrentDateChanged(DateTime args)
+        {
+            _selectedMonth = new DateTime(args.Year, args.Month, 1);
+            await LoadBudgetsAsync();
+            UpdateAvailableCategories();
+        }
+
         private async Task HandleSave(SaveBudgetDto budget)
         {
             try

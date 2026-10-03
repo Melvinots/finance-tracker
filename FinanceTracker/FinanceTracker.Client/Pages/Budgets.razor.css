@@ -4,7 +4,7 @@
 
 .budgets-page {
     min-height: 100%;
-    padding: 2rem;
+    /*padding: 2rem;*/
     background: var(--bg, var(--surface-alt));
 }
 
@@ -18,7 +18,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    margin-bottom: 1.75rem;
+    /*margin-bottom: 1.75rem;*/
+    padding: 1.25rem;
     animation: page-enter .3s ease-out;
 }
 
@@ -67,6 +68,12 @@
     line-height: 1.5;
 }
 
+.budgets-content {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1.75rem 2rem 2.5rem;
+}
 
 /* =========================================
    PAGE ACTIONS
@@ -80,11 +87,38 @@
     flex-shrink: 0;
 }
 
+.period-filter {
+    display: flex;
+}
+
+@media (max-width: 640px) {
+    ::deep .period-filter {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.35rem !important;
+        width: 100%;
+    }
+
+        ::deep .period-filter .rz-datepicker {
+            width: 100%;
+        }
+
+            ::deep .period-filter .rz-datepicker input {
+                width: 100%;
+            }
+}
+
+.budget-content {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1.75rem 2rem 2.5rem;
+}
+
 
 /* =========================================
    MONTH SELECT
    ========================================= */
-
 .month-select {
     min-height: 40px;
     min-width: 145px;
@@ -245,7 +279,7 @@
    RESPONSIVE
    ========================================= */
 
-@media (max-width: 800px) {
+/*@media (max-width: 800px) {
 
     .budgets-page {
         padding: 1.5rem;
@@ -258,19 +292,19 @@
     .primary-button {
         min-width: 150px;
     }
-}
+}*/
 
 
 @media (max-width: 640px) {
 
-    .budgets-page {
+    /*.budgets-page {
         padding: 1rem;
-    }
+    }*/
 
     .page-header {
         flex-direction: column;
         gap: 1rem;
-        margin-bottom: 1.25rem;
+        /*margin-bottom: 1.25rem;*/
     }
 
     .page-title-row {
@@ -294,16 +328,13 @@
         width: 100%;
     }
 
-    .month-select {
-        flex: 1;
-    }
-
     .primary-button {
         width: auto;
     }
 
     .content-header {
         min-height: auto;
+        padding-left: 1.25rem;
     }
 
     .empty-budgets {
@@ -316,7 +347,7 @@
         }
 }
 
-
+/*
 @media (max-width: 480px) {
 
     .page-actions {
@@ -328,7 +359,7 @@
         .page-actions .primary-button {
             width: 100%;
         }
-}
+}*/
 
 
 /* =========================================

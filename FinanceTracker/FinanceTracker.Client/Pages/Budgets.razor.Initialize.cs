@@ -24,7 +24,7 @@
 
         private async Task LoadBudgetsAsync()
         {
-            _budgets = await BudgetService.GetAllAsync(SelectedDate.Month, SelectedDate.Year);
+            _budgets = await BudgetService.GetAllAsync(_selectedMonth.Month, _selectedMonth.Year);
         }
 
         private async Task LoadCategoriesAsync()

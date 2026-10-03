@@ -16,7 +16,7 @@ namespace FinanceTracker.Client.Pages
 
         private bool _showModal;
 
-        private string _selectedMonth = DateTime.Now.ToString("yyyy-MM");
+        private DateTime _selectedMonth = DateTime.Now;
 
         private string _currencyCode = string.Empty;
 
@@ -29,7 +29,5 @@ namespace FinanceTracker.Client.Pages
         private List<CategoryDto> _categories = new();
 
         private BudgetDto? _selectedBudget;
-
-        private DateTime SelectedDate => DateTime.ParseExact(_selectedMonth, "yyyy-MM", null);
     }
 }

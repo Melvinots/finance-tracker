@@ -27,23 +27,19 @@
 
         <div class="page-actions">
 
-            <select class="month-select"
-                    @bind="_selectedMonth"
-                    @bind:after="LoadBudgetsAsync">
+            <RadzenStack Orientation="Orientation.Horizontal"
+                         JustifyContent="JustifyContent.Center"
+                         AlignItems="AlignItems.Center"
+                         Gap="0.5rem"
+                         class="period-filter">
 
-                @for (int month = DateTime.Now.Month; month >= 1; month--)
-                {
-                    var date = new DateTime(
-                        DateTime.Now.Year,
-                        month,
-                        1);
+                <RadzenDatePicker @bind-Value="@_selectedMonth"
+                                  ShowDays="false"
+                                  DateFormat="yyyy/MM"
+                                  CurrentDateChanged="@OnCurrentDateChanged"
+                                  Name="DatePickerYearMonth" />
 
-                    <option value="@date.ToString("yyyy-MM")">
-                        @date.ToString("MMMM yyyy")
-                    </option>
-                }
-
-            </select>
+            </RadzenStack>
 
             <button class="primary-button"
                     type="button"
@@ -58,56 +54,59 @@
         </div>
 
     </header>
+    <main class="budget-content">
 
-    <LoadingWrapper IsLoading="@_isLoading"
-                    Message="Loading your budgets...">
+        <LoadingWrapper IsLoading="@_isLoading"
+                        Message="Loading your budgets...">
 
-        <section class="budgets-content">
+            @* <section class="budgets-content"> *@
 
-            <div class="content-header">
+                <div class="content-header">
 
-                <div>
-                    <h2>Budget overview</h2>
+                    <div>
+                        <h2>Budget overview</h2>
 
-                    <p>
-                        @_budgets.Count
-                        budget@(_budgets.Count == 1 ? "" : "s")
-                    </p>
-                </div>
-
-            </div>
-
-            @if (_budgets.Any())
-            {
-                <BudgetList Budgets="@_budgets"
-                            CurrencyCode="@_currencyCode"
-                            OnEdit="@HandleEdit"
-                            OnDelete="@HandleDelete" />
-            }
-            else
-            {
-                <div class="empty-budgets">
-
-                    <p>
-                        No budgets have been created for this month.
-                    </p>
-
-                    <button class="primary-button"
-                            type="button"
-                            @onclick="OpenCreateModal">
-
-                        <Blazicon Svg="Lucide.Plus" />
-
-                        <span>Add your first budget</span>
-
-                    </button>
+                        <p>
+                            @_budgets.Count
+                            budget@(_budgets.Count == 1 ? "" : "s")
+                        </p>
+                    </div>
 
                 </div>
-            }
 
-        </section>
+                @if (_budgets.Any())
+                {
+                    <BudgetList Budgets="@_budgets"
+                                CurrencyCode="@_currencyCode"
+                                OnEdit="@HandleEdit"
+                                OnDelete="@HandleDelete" />
+                }
+                else
+                {
+                    <div class="empty-budgets">
 
-    </LoadingWrapper>
+                        <p>
+                            No budgets have been created for this month.
+                        </p>
+
+                        <button class="primary-button"
+                                type="button"
+                                @onclick="OpenCreateModal">
+
+                            <Blazicon Svg="Lucide.Plus" />
+
+                            <span>Add your first budget</span>
+
+                        </button>
+
+                    </div>
+                }
+
+            @* </section> *@
+
+        </LoadingWrapper>
+
+     </main>
 
 </div>
 
@@ -115,8 +114,8 @@
 {
     <BudgetForm Budget="@_selectedBudget"
                 Categories="@_categories"
-                Year="@SelectedDate.Year"
-                Month="@SelectedDate.Month"
+                Year="@_selectedMonth.Year"
+                Month="@_selectedMonth.Month"
                 OnSave="@HandleSave"
                 OnCancel="@CloseModal" />
 }
