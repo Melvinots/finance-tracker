@@ -1,97 +1,80 @@
 ﻿@page "/categories"
 @attribute [Authorize]
 
-<div class="categories-page">
+<PageContainer Title="Categories">
+    
+    <Icon>
+        <Blazicon Svg="Lucide.Tags" />
+    </Icon>
 
-    <header class="page-header">
+    <Subtitle>
+        Organise your transactions and budgets.
+    </Subtitle>
 
-        <div class="page-heading">
-
-            <div class="page-title-row">
-
-                <div class="page-title-icon">
-                    <Blazicon Svg="Lucide.Tags" />
-                </div>
-
-                <div>
-                    <h1>Categories</h1>
-
-                    <p>
-                        Organise your transactions and budgets.
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
-
-        <button class="primary-button"
-                type="button"
-                @onclick="OpenCreateModal">
-
+    <Actions>
+        <button class="primary-button" type="button" @onclick="OpenCreateModal">
             <Blazicon Svg="Lucide.Plus" />
-
             <span>Add category</span>
-
         </button>
+    </Actions>
 
-    </header>
+    <ChildContent>
+        <LoadingWrapper IsLoading="@_isLoading"
+                        Message="Loading your categories...">
 
-    <LoadingWrapper IsLoading="@_isLoading"
-                    Message="Loading your categories...">
+            <section class="categories-content">
 
-        <section class="categories-content">
+                <div class="content-header">
 
-            <div class="content-header">
+                    <div>
+                        <h2>All categories</h2>
 
-                <div>
-                    <h2>All categories</h2>
-
-                    <p>
-                        @_categories.Count @( _categories.Count == 1 ? "category" : "categories" )
-                    </p>
-                </div>
-
-            </div>
-
-            @if (_categories.Any())
-            {
-                <CategoryList Categories="@_categories"
-                              OnEdit="HandleEdit"
-                              OnDelete="HandleDelete" />
-            }
-            else
-            {
-                <div class="empty-state">
-
-                    <div class="empty-icon">
-                        <Blazicon Svg="Lucide.Tags" />
+                        <p>
+                            @_categories.Count @( _categories.Count == 1 ? "category" : "categories" )
+                        </p>
                     </div>
 
-                    <h3>No categories yet</h3>
-
-                    <p>
-                        Create your first category to start organising your transactions.
-                    </p>
-
-                    <button class="primary-button"
-                            type="button"
-                            @onclick="OpenCreateModal">
-
-                        <Blazicon Svg="Lucide.Plus" />
-
-                        <span>Add your first category</span>
-
-                    </button>
-
                 </div>
-            }
 
-        </section>
+                @if (_categories.Any())
+                {
+                    <CategoryList Categories="@_categories"
+                                  OnEdit="HandleEdit"
+                                  OnDelete="HandleDelete" />
+                }
+                else
+                {
+                    <div class="empty-state">
 
-    </LoadingWrapper>
+                        <div class="empty-icon">
+                            <Blazicon Svg="Lucide.Tags" />
+                        </div>
 
-</div>
+                        <h3>No categories yet</h3>
+
+                        <p>
+                            Create your first category to start organising your transactions.
+                        </p>
+
+                        <button class="primary-button"
+                                type="button"
+                                @onclick="OpenCreateModal">
+
+                            <Blazicon Svg="Lucide.Plus" />
+
+                            <span>Add your first category</span>
+
+                        </button>
+
+                    </div>
+                }
+
+            </section>
+
+        </LoadingWrapper>
+    </ChildContent>
+
+</PageContainer>
 
 @if (_showModal)
 {

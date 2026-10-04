@@ -14,8 +14,6 @@ namespace FinanceTracker.Client.Pages
 
         private bool _isSaving = false;
 
-        private string _itemType = "category";
-
         private int _categoryTransactionCount = 0;
 
         private List<CategoryDto> _categories = new();

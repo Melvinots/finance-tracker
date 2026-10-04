@@ -1,81 +1,4 @@
 /* =========================================
-   PAGE
-   ========================================= */
-
-.budgets-page {
-    min-height: 100%;
-    /*padding: 2rem;*/
-    background: var(--bg, var(--surface-alt));
-}
-
-
-/* =========================================
-   PAGE HEADER
-   ========================================= */
-
-.page-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    /*margin-bottom: 1.75rem;*/
-    padding: 1.25rem;
-    animation: page-enter .3s ease-out;
-}
-
-.page-heading {
-    min-width: 0;
-}
-
-.page-title-row {
-    display: flex;
-    align-items: center;
-    gap: 0.875rem;
-}
-
-.page-title-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-    border: 1px solid var(--primary-dim, var(--border));
-    border-radius: 12px;
-    background: var(--primary-tint, var(--surface-alt));
-    color: var(--primary);
-}
-
-    .page-title-icon svg {
-        width: 21px;
-        height: 21px;
-        stroke-width: 2;
-    }
-
-.page-header h1 {
-    margin: 0;
-    color: var(--text);
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.025em;
-}
-
-.page-header p {
-    margin: 0.35rem 0 0;
-    color: var(--text-muted);
-    font-size: 0.8125rem;
-    line-height: 1.5;
-}
-
-.budgets-content {
-    width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 1.75rem 2rem 2.5rem;
-}
-
-/* =========================================
    PAGE ACTIONS
    ========================================= */
 
@@ -106,102 +29,6 @@
             ::deep .period-filter .rz-datepicker input {
                 width: 100%;
             }
-}
-
-.budget-content {
-    width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 1.75rem 2rem 2.5rem;
-}
-
-
-/* =========================================
-   MONTH SELECT
-   ========================================= */
-.month-select {
-    min-height: 40px;
-    min-width: 145px;
-    padding: 0 0.875rem;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    background: var(--surface);
-    color: var(--text);
-    font-family: var(--font-sans);
-    font-size: 0.8125rem;
-    font-weight: 500;
-    cursor: pointer;
-    outline: none;
-    transition: border-color 150ms ease, box-shadow 150ms ease;
-}
-
-    .month-select:hover {
-        border-color: var(--border-hover, var(--border));
-    }
-
-    .month-select:focus-visible {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-ring, transparent);
-    }
-
-
-/* =========================================
-   PRIMARY ACTION
-   ========================================= */
-
-.primary-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    min-height: 40px;
-    padding: 0.625rem 0.9rem;
-    border: 1px solid var(--primary);
-    border-radius: 9px;
-    background: var(--primary);
-    color: var(--on-primary, #ffffff);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 100ms ease;
-}
-
-    .primary-button svg {
-        width: 16px;
-        height: 16px;
-        stroke-width: 2.25;
-    }
-
-    .primary-button:hover {
-        border-color: var(--primary-hover);
-        background: var(--primary-hover);
-        box-shadow: var(--shadow-md);
-    }
-
-    .primary-button:active {
-        transform: translateY(1px);
-    }
-
-    .primary-button:focus-visible {
-        outline: 2px solid var(--primary);
-        outline-offset: 2px;
-    }
-
-
-/* =========================================
-   CONTENT
-   ========================================= */
-
-.budgets-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.875rem;
-}
-
-.budgets-page ::deep .loading-wrapper {
-    width: 100%;
 }
 
 
@@ -259,82 +86,17 @@
 
 
 /* =========================================
-   ANIMATIONS
-   ========================================= */
-
-@keyframes page-enter {
-    from {
-        opacity: 0;
-        transform: translateY(4px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-/* =========================================
    RESPONSIVE
    ========================================= */
 
-/*@media (max-width: 800px) {
-
-    .budgets-page {
-        padding: 1.5rem;
-    }
-
-    .page-header {
-        align-items: stretch;
-    }
-
-    .primary-button {
-        min-width: 150px;
-    }
-}*/
-
-
 @media (max-width: 640px) {
-
-    /*.budgets-page {
-        padding: 1rem;
-    }*/
-
-    .page-header {
-        flex-direction: column;
-        gap: 1rem;
-        /*margin-bottom: 1.25rem;*/
-    }
-
-    .page-title-row {
-        align-items: flex-start;
-    }
-
-    .page-title-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .page-header h1 {
-        font-size: 1.25rem;
-    }
-
-    .page-header p {
-        font-size: 0.75rem;
-    }
 
     .page-actions {
         width: 100%;
     }
 
-    .primary-button {
-        width: auto;
-    }
-
     .content-header {
         min-height: auto;
-        padding-left: 1.25rem;
     }
 
     .empty-budgets {
@@ -345,35 +107,4 @@
         .empty-budgets .primary-button {
             width: 100%;
         }
-}
-
-/*
-@media (max-width: 480px) {
-
-    .page-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-        .month-select,
-        .page-actions .primary-button {
-            width: 100%;
-        }
-}*/
-
-
-/* =========================================
-   REDUCED MOTION
-   ========================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .page-header {
-        animation: none;
-    }
-
-    .primary-button,
-    .month-select {
-        transition: none;
-    }
 }

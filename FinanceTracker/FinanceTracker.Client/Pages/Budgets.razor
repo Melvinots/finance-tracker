@@ -1,32 +1,18 @@
 ﻿@page "/budgets"
 @attribute [Authorize]
 
-<div class="budgets-page">
+<PageContainer Title="Budgets">
+    
+    <Icon>
+        <Blazicon Svg="Lucide.WalletCards" />
+    </Icon>
 
-    <header class="page-header">
+    <Subtitle>
+        Set spending limits and keep your expenses on track.
+    </Subtitle>
 
-        <div class="page-heading">
-
-            <div class="page-title-row">
-
-                <div class="page-title-icon">
-                    <Blazicon Svg="Lucide.WalletCards" />
-                </div>
-
-                <div>
-                    <h1>Budgets</h1>
-
-                    <p>
-                        Set spending limits and keep your expenses on track.
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
-
+    <Actions>
         <div class="page-actions">
-
             <RadzenStack Orientation="Orientation.Horizontal"
                          JustifyContent="JustifyContent.Center"
                          AlignItems="AlignItems.Center"
@@ -41,25 +27,17 @@
 
             </RadzenStack>
 
-            <button class="primary-button"
-                    type="button"
-                    @onclick="OpenCreateModal">
-
-                <Blazicon Svg="Lucide.Plus" />
-
-                <span>Add budget</span>
-
-            </button>
+        <button class="primary-button" type="button" @onclick="OpenCreateModal">
+            <Blazicon Svg="Lucide.Plus" />
+            <span>Add budget</span>
+        </button>
 
         </div>
+    </Actions>
 
-    </header>
-    <main class="budget-content">
-
+    <ChildContent>
         <LoadingWrapper IsLoading="@_isLoading"
                         Message="Loading your budgets...">
-
-            @* <section class="budgets-content"> *@
 
                 <div class="content-header">
 
@@ -102,13 +80,10 @@
                     </div>
                 }
 
-            @* </section> *@
-
         </LoadingWrapper>
+    </ChildContent>
 
-     </main>
-
-</div>
+</PageContainer>
 
 @if (_showModal)
 {

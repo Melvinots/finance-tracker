@@ -10,7 +10,7 @@ namespace FinanceTracker.Client.Pages
             try
             {
                 await UserSettingsService.UpdateUserSettingsAsync(_userSettings.Id, _userSettings);
-                
+
                 await Task.Delay(1000);
                 AppNotifier.Success(summary: "Settings saved successfully");
             }

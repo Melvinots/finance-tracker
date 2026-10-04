@@ -1,0 +1,49 @@
+﻿@namespace FinanceTracker.Client.Components.UserSettings
+
+<section class="settings-section">
+    <header class="section-heading">
+        <div class="section-heading-group">
+            @if (Icon is not null)
+            {
+                <div class="section-icon @(Danger ? "danger" : null)" aria-hidden="true">
+                    @Icon
+                </div>
+            }
+
+            <div class="section-heading-text">
+                <h2>@Title</h2>
+
+                @if (!string.IsNullOrWhiteSpace(Description))
+                {
+                    <p>@Description</p>
+                }
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(StatusText))
+        {
+            <span class="save-status" role="status">
+                <Blazicon Svg="Lucide.Loader" />
+                <span>@StatusText</span>
+            </span>
+        }
+    </header>
+
+    <div class="settings-card @(Danger ? "danger-card" : null)">
+        @ChildContent
+    </div>
+</section>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public RenderFragment? Icon { get; set; }
+
+    /// <summary>Shows a spinner chip while non-empty, e.g. "Saving…". Pass null to hide.</summary>
+    [Parameter] public string? StatusText { get; set; }
+
+    /// <summary>Applies the red icon and card treatment.</summary>
+    [Parameter] public bool Danger { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

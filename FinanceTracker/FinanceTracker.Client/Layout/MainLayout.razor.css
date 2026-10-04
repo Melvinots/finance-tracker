@@ -1,15 +1,12 @@
-﻿/* MainLayout — authenticated two-column shell */
-
-.app-shell {
+﻿.app-shell {
     display: flex;
     min-height: 100vh;
 }
 
-/* The content area sits to the right of the fixed sidebar */
 .app-main {
     flex: 1;
-    min-width: 0; /* prevent flex overflow   */
-    margin-left: var(--sidebar-width); /* match NavMenu width     */
+    min-width: 0;
+    margin-left: var(--sidebar-width);
     display: flex;
     flex-direction: column;
 }
@@ -26,7 +23,6 @@
 
     .app-main {
         margin-left: 0;
-        /*padding-top: 4rem;*/
     }
 
     .mobile-nav-toggle {

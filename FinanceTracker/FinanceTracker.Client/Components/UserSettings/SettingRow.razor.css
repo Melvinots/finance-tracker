@@ -1,0 +1,179 @@
+.setting-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 68px;
+    padding: 0.875rem 1rem;
+    transition: background-color 150ms ease;
+}
+
+    .setting-row:hover {
+        background: var(--surface-alt);
+    }
+
+    /* Replaces the manual <div class="setting-divider">: any row after another row gets a line */
+    .setting-row + .setting-row::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        inset-inline: 1rem;
+        height: 1px;
+        background: var(--border);
+    }
+
+.setting-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.setting-label {
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.setting-description {
+    color: var(--text-muted);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+}
+
+.setting-value {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.setting-control {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+    /* ---------- Controls passed in from the page (need ::deep) ---------- */
+
+    .setting-control ::deep .settings-select {
+        min-width: 170px;
+        height: 36px;
+        padding: 0 2rem 0 0.7rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background-color: var(--surface);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.55rem center;
+        color: var(--text);
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        outline: none;
+        appearance: none;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+        .setting-control ::deep .settings-select:hover {
+            border-color: var(--border-hover, var(--border));
+        }
+
+        .setting-control ::deep .settings-select:focus-visible {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-ring);
+        }
+
+        .setting-control ::deep .settings-select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .setting-control ::deep .secondary-button,
+    .setting-control ::deep .danger-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        min-height: 36px;
+        padding: 0 0.75rem;
+        border-radius: var(--radius-md);
+        font-family: var(--font-sans);
+        font-size: 0.7rem;
+        font-weight: 600;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms ease;
+    }
+
+    .setting-control ::deep .secondary-button {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+    }
+
+        .setting-control ::deep .secondary-button:hover:not(:disabled) {
+            background: var(--surface-alt);
+            border-color: var(--border-hover, var(--border));
+        }
+
+    .setting-control ::deep .danger-button {
+        border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--border));
+        background: transparent;
+        color: var(--danger);
+    }
+
+        .setting-control ::deep .danger-button:hover:not(:disabled) {
+            background: var(--danger-dim);
+            border-color: var(--danger);
+        }
+
+        .setting-control ::deep .secondary-button:active:not(:disabled),
+        .setting-control ::deep .danger-button:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+    .setting-control ::deep button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .setting-control ::deep button svg {
+        width: 15px;
+        height: 15px;
+    }
+
+/* ---------- Small screens: stack, controls go full width ---------- */
+
+@media (max-width: 640px) {
+    .setting-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .setting-control {
+        width: 100%;
+    }
+
+        .setting-control ::deep .settings-select {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .setting-control ::deep .secondary-button,
+        .setting-control ::deep .danger-button {
+            width: 100%;
+        }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .setting-row,
+    .setting-control ::deep .settings-select,
+    .setting-control ::deep .secondary-button,
+    .setting-control ::deep .danger-button {
+        transition: none;
+    }
+}

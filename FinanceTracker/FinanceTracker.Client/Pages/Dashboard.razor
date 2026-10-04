@@ -1,17 +1,11 @@
 ﻿@page "/dashboard"
 @attribute [Authorize]
 
-<div class="dashboard-page">
+<PageContainer Title="Dashboard">
 
-    <header class="topbar">
+    <Subtitle>@DateTime.Now.ToString("dddd, MMMM d, yyyy")</Subtitle>
 
-        <div class="topbar-heading">
-            <h1>Dashboard</h1>
-
-            <p>
-                @DateTime.Now.ToString("dddd, MMMM d, yyyy")
-            </p>
-        </div>
+    <Actions>
 
         <div class="topbar-actions">
 
@@ -35,9 +29,9 @@
 
         </div>
 
-    </header>
+    </Actions>
 
-    <main class="dashboard-content">
+    <ChildContent>
 
         <LoadingWrapper IsLoading="_isLoading"
                         Message="Loading your dashboard...">
@@ -123,6 +117,6 @@
 
         </LoadingWrapper>
 
-    </main>
+    </ChildContent>
 
-</div>
+</PageContainer>

@@ -12,13 +12,9 @@ namespace FinanceTracker.Client.Pages
         [Inject] NavigationManager Navigation { get; set; } = default!;
 
         private bool _isLoading = true;
-
         private bool _isSaving;
-
         private bool _isExporting;
-
         private bool _isDeactivating;
-
         private UserSettingsDto _userSettings = new();
     }
 }

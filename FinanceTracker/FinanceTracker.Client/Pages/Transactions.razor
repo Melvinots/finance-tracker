@@ -1,57 +1,33 @@
 ﻿@page "/transactions"
 @attribute [Authorize]
 
-<div class="transactions-page">
+<PageContainer Title="Transactions">
+    
+    <Icon>
+        <Blazicon Svg="Lucide.ArrowLeftRight" />
+    </Icon>
 
-    <header class="page-header">
+    <Subtitle>
+        View, track, and manage your income and expenses.
+    </Subtitle>
 
-        <div class="page-heading">
-
-            <div class="page-title-row">
-
-                <div class="page-title-icon">
-                    <Blazicon Svg="Lucide.ArrowLeftRight" />
-                </div>
-
-                <div>
-                    <h1>Transactions</h1>
-
-                    <p>
-                        View, track, and manage your income and expenses.
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
-
-        <button class="primary-button"
-                type="button"
-                @onclick="OpenCreateModal">
-
+    <Actions>
+        <button class="primary-button" type="button" @onclick="OpenCreateModal">
             <Blazicon Svg="Lucide.Plus" />
-
             <span>Add transaction</span>
-
         </button>
+    </Actions>
 
-    </header>
+    <ChildContent>
 
-    <LoadingWrapper IsLoading="@_isLoading"
-                    Message="Loading your transactions...">
+        <div class="content-header">
 
-        <section class="transactions-content">
+            <div>
+                <h2>All transactions</h2>
 
-            <div class="content-header">
-
-                <div>
-                    <h2>All transactions</h2>
-
-                    <p>
-                        @_filteredTransactions.Count transaction@(_filteredTransactions.Count == 1 ? "" : "s")
-                    </p>
-                </div>
-
+                <p>
+                    @_filteredTransactions.Count transaction@(_filteredTransactions.Count == 1 ? "" : "s")
+                </p>
             </div>
 
             <TransactionToolbar SearchTerm="@_searchTerm"
@@ -59,26 +35,30 @@
                                 SelectedType="@_selectedType"
                                 OnSelectedTypeChanged="@HandleSelectedTypeChanged" />
 
-            @if (_filteredTransactions.Count > 0)
-            {
-                <TransactionTable Transactions="@_filteredTransactions"
-                                  CurrencyCode="@_currencyCode"
-                                  OnEdit="@HandleEdit"
-                                  OnDelete="@HandleDelete" />
-            }
-            else
-            {
-                <div class="empty-transactions">
-                    <p>No transactions match your filters.</p>
-                </div>
-                
-            }
+        </div>
 
-        </section>
+        <LoadingWrapper IsLoading="@_isLoading"
+                        Message="Loading your transactions...">
 
-    </LoadingWrapper>
+                @if (_filteredTransactions.Count > 0)
+                {
+                    <TransactionTable Transactions="@_filteredTransactions"
+                                      CurrencyCode="@_currencyCode"
+                                      OnEdit="@HandleEdit"
+                                      OnDelete="@HandleDelete" />
+                }
+                else
+                {
+                    <div class="empty-transactions">
+                        <p>No transactions match your filters.</p>
+                    </div>
 
-</div>
+                }
+
+        </LoadingWrapper>
+    </ChildContent>
+
+</PageContainer>
 
 @if (_showModal)
 {

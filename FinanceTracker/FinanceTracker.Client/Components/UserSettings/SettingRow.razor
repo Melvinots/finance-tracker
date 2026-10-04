@@ -1,0 +1,33 @@
+﻿@namespace FinanceTracker.Client.Components.UserSettings
+
+<div class="setting-row">
+    <div class="setting-info">
+        <span class="setting-label">@Label</span>
+
+        @if (!string.IsNullOrWhiteSpace(Description))
+        {
+            <span class="setting-description">@Description</span>
+        }
+    </div>
+
+    @if (Value is not null)
+    {
+        <span class="setting-value">@Value</span>
+    }
+
+    @if (ChildContent is not null)
+    {
+        <div class="setting-control">@ChildContent</div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public string? Description { get; set; }
+
+    /// <summary>Read-only text on the right (e.g. name, email).</summary>
+    [Parameter] public string? Value { get; set; }
+
+    /// <summary>Interactive control on the right (select, button, toggle...).</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

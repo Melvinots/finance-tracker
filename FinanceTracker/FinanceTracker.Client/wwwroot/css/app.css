@@ -88,6 +88,60 @@ a {
     display: block;
 }
 
+/* =========================================
+   PRIMARY BUTTON  (paste into app.css once)
+   Replaces the copies removed from Budgets,
+   Categories and Transactions .razor.css
+   ========================================= */
+
+.primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 40px;
+    padding: 0.625rem 0.9rem;
+    border: 1px solid var(--primary);
+    border-radius: 9px;
+    background: var(--primary);
+    color: var(--on-primary, #ffffff);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 100ms ease;
+}
+
+    .primary-button svg {
+        width: 16px;
+        height: 16px;
+        stroke-width: 2.25;
+    }
+
+    .primary-button:hover {
+        border-color: var(--primary-hover);
+        background: var(--primary-hover);
+        box-shadow: var(--shadow-md);
+    }
+
+    .primary-button:active {
+        transform: translateY(1px);
+    }
+
+    .primary-button:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
+
+@media (prefers-reduced-motion: reduce) {
+    .primary-button {
+        transition: none;
+    }
+}
+
+
+
 
  /*Reposition Radzen notifications to bottom-right*/ 
 .rz-notification-item-wrapper {

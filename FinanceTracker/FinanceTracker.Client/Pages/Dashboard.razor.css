@@ -1,69 +1,13 @@
-﻿/* =========================================================
+\xef\xbb\xbf/* =========================================================
    Dashboard.razor.css
    Uses design tokens from app.css — do not hardcode colors.
-   Variables: --primary, --ink, --slate, --muted, --rule,
-              --paper, --white, --green, --red, --gold,
-              --font-serif, --font-sans, --font-mono,
-              --radius-md, --radius-lg, --transition
+   Variables: --primary, --ink, --muted, --rule, --white,
+              --font-sans, --radius-md, --transition
    ========================================================= */
 
 
 /* =========================================================
-   PAGE SHELL
-   ========================================================= */
-
-.dashboard-page {
-    min-height: 100%;
-    background: var(--paper);
-}
-
-
-/* =========================================================
-   TOPBAR
-   ========================================================= */
-
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    padding: 1.5rem 2rem;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--rule);
-}
-
-.topbar-heading {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-    .topbar-heading h1 {
-        margin: 0;
-        color: var(--ink);
-        font-family: var(--font-sans);
-        font-size: 1.5rem;
-        font-weight: 700;
-        line-height: 1.15;
-        letter-spacing: -0.03em;
-    }
-
-    .topbar-heading p {
-        margin: 0;
-        color: var(--muted);
-        font-family: var(--font-sans);
-        font-size: 0.8rem;
-        font-weight: 400;
-        line-height: 1.4;
-    }
-
-
-/* =========================================================
-   TOPBAR ACTIONS
+   PAGE ACTIONS
    ========================================================= */
 
 .topbar-actions {
@@ -107,45 +51,6 @@
             }
 }
 
-.add-transaction-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    height: 38px;
-    padding: 0 14px;
-    border: none;
-    border-radius: var(--radius-md);
-    background: var(--primary);
-    color: var(--white);
-    font-family: var(--font-sans);
-    font-size: 0.825rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color var(--transition), box-shadow var(--transition), transform var(--transition);
-}
-
-    .add-transaction-button:hover {
-        background: var(--primary-hover);
-        box-shadow: 0 4px 14px var(--primary-ring);
-    }
-
-    .add-transaction-button:active {
-        transform: translateY(1px);
-    }
-
-
-/* =========================================================
-   CONTENT AREA
-   ========================================================= */
-
-.dashboard-content {
-    width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 1.75rem 2rem 2.5rem;
-}
-
 
 /* =========================================================
    STAT CARDS
@@ -177,39 +82,8 @@
 
 
 /* =========================================================
-   LOADING STATE
+   ERROR STATE
    ========================================================= */
-
-.dashboard-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 420px;
-    gap: 1rem;
-    color: var(--muted);
-    font-size: 0.875rem;
-}
-
-.loading-spinner {
-    width: 28px;
-    height: 28px;
-    border: 2.5px solid var(--rule);
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-
-/* =========================================
-   DASHBOARD ERROR
-   ========================================= */
 
 .dashboard-error {
     display: flex;
@@ -220,11 +94,6 @@
     padding: 2.5rem;
     text-align: center;
 }
-
-
-/* =========================================
-   BRAND DOT
-   ========================================= */
 
 .error-brand {
     display: flex;
@@ -244,11 +113,6 @@
         box-shadow: 0 0 0 4px var(--color-brand-soft);
         animation: errorDotPulse 2s ease-in-out infinite;
     }
-
-
-/* =========================================
-   CONTENT
-   ========================================= */
 
 .error-content {
     display: flex;
@@ -275,11 +139,6 @@
     line-height: 1.5;
 }
 
-
-/* =========================================
-   RETRY BUTTON
-   ========================================= */
-
 .error-retry {
     display: inline-flex;
     align-items: center;
@@ -314,11 +173,6 @@
         border-color: var(--primary);
         box-shadow: 0 0 0 3px var(--primary-ring);
     }
-
-
-/* =========================================
-   ANIMATION
-   ========================================= */
 
 @keyframes errorDotPulse {
     0%, 100% {
@@ -329,97 +183,6 @@
     50% {
         transform: scale(1.15);
         opacity: 1;
-    }
-}
-
-
-/* =========================================
-   REDUCED MOTION
-   ========================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .error-brand .brand-dot {
-        animation: none;
-    }
-}
-
-
-/* =========================================
-   MOBILE
-   ========================================= */
-
-@media (max-width: 480px) {
-
-    .dashboard-error {
-        min-height: 360px;
-        padding: 2rem 1.25rem;
-    }
-
-        .dashboard-error p {
-            max-width: 280px;
-        }
-}
-
-
-/* =========================================
-   RETRY BUTTON
-   ========================================= */
-
-.error-retry {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 38px;
-    padding: 0 1rem;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-md);
-    background: var(--white);
-    color: var(--ink);
-    font-family: var(--font-sans);
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-    transition: color var(--transition), border-color var(--transition), background-color var(--transition), box-shadow var(--transition), transform var(--transition);
-}
-
-    .error-retry:hover {
-        border-color: var(--primary);
-        background: var(--primary-dim);
-        color: var(--primary);
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
-    }
-
-    .error-retry:active {
-        transform: translateY(1px);
-    }
-
-    .error-retry:focus-visible {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-ring);
-    }
-
-
-/* =========================================
-   MOBILE
-   ========================================= */
-
-@media (max-width: 480px) {
-
-    .dashboard-error {
-        min-height: 360px;
-        padding: 2rem 1.25rem;
-    }
-
-    .error-icon {
-        width: 44px;
-        height: 44px;
-    }
-
-    .dashboard-error p {
-        max-width: 280px;
     }
 }
 
@@ -447,23 +210,8 @@
 
 @media (max-width: 768px) {
 
-    .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1.25rem;
-        gap: 1rem;
-    }
-
     .topbar-actions {
         width: 100%;
-    }
-
-    .add-transaction-button {
-        flex: 1;
-    }
-
-    .dashboard-content {
-        padding: 1.25rem;
     }
 }
 
@@ -483,15 +231,36 @@
         align-items: stretch;
     }
 
-    .add-transaction-button {
-        width: 100%;
-    }
-
-    .dashboard-content {
-        padding: 1rem;
-    }
-
     .dashboard-grid ::deep .panel-header {
         padding: 1rem;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — EXTRA SMALL  (≤ 480px)
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .dashboard-error {
+        min-height: 360px;
+        padding: 2rem 1.25rem;
+    }
+
+        .dashboard-error p {
+            max-width: 280px;
+        }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .error-brand .brand-dot {
+        animation: none;
     }
 }
