@@ -170,3 +170,23 @@
         padding-inline: max( env(safe-area-inset-left), max( var(--page-gutter), calc((100% - var(--page-max-width)) / 2 + var(--page-gutter)) ) );
     }
 }
+
+/* ---------- Clear the mobile nav toggle (top-right, ≤768px) ---------- */
+
+@media (max-width: 768px) {
+    /* title and actions can share a row here, so keep the whole header clear */
+    .page-header {
+        padding-inline-end: var(--nav-clearance);
+    }
+}
+
+@media (max-width: 575.98px) {
+    /* actions wrap onto their own row below the button, so only the title row needs room */
+    .page-header {
+        padding-inline-end: max(env(safe-area-inset-right, 0px), var(--page-gutter));
+    }
+
+    .page-heading {
+        margin-inline-end: calc(var(--nav-clearance) - var(--page-gutter));
+    }
+}

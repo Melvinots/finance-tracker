@@ -1,3 +1,4 @@
+using FinanceTracker.Client.Components.Transactions;
 using FinanceTracker.Shared.DTOs.Categories;
 
 namespace FinanceTracker.Client.Pages
@@ -14,9 +15,7 @@ namespace FinanceTracker.Client.Pages
 
         private bool _showModal = false;
 
-        private string _searchTerm = string.Empty;
-
-        private TransactionTypeFilter _selectedType = TransactionTypeFilter.All;
+        private TransactionFilter _filter = new("", TransactionTypeFilter.All, []);
 
         private string _itemType = "transaction";
 

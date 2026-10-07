@@ -28,24 +28,28 @@
 
     </div>
 
-    <div class="transaction-category">
+    <div class="transaction-meta">
 
-        <span class="category-badge"
-              style="
-            --category-color: @(Transaction.CategoryColor ?? "#64748B");
-            --category-color-soft: @((Transaction.CategoryColor ?? "#64748B") + "18");
-            ">
+        <div class="transaction-category">
 
-            <span class="category-dot"></span>
+            <span class="category-badge"
+                  style="
+                --category-color: @(Transaction.CategoryColor ?? "#64748B");
+                --category-color-soft: @((Transaction.CategoryColor ?? "#64748B") + "18");
+                ">
 
-            @Transaction.CategoryName
+                <span class="category-dot"></span>
 
-        </span>
+                <span class="category-label">@Transaction.CategoryName</span>
 
-    </div>
+            </span>
 
-    <div class="transaction-date">
-        @Transaction.Date.ToString("MMM d, yyyy")
+        </div>
+
+        <div class="transaction-date">
+            @Transaction.Date.ToString("MMM d, yyyy")
+        </div>
+
     </div>
 
     <div class="transaction-amount @(Transaction.IsExpense ? "expense" : "income")">

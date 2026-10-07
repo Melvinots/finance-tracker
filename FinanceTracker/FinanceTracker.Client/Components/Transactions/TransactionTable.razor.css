@@ -1,10 +1,11 @@
-/* =========================================
-   TRANSACTION PANEL
-   ========================================= */
+/* ---------- Panel ---------- */
 
 .transaction-panel {
-    width: 100%;
+    /* Column template shared by the header below and every TransactionRow.
+       Custom properties inherit into child components, so it is defined once. */
+    --transaction-columns: minmax(200px, 2fr) minmax(120px, 1fr) minmax(110px, 1fr) minmax(110px, 1fr) 72px;
 
+    width: 100%;
     overflow: hidden;
 
     border: 1px solid var(--border-color, #e5e7eb);
@@ -17,30 +18,14 @@
         0 6px 18px rgb(15 23 42 / 3%);
 }
 
-
-/* =========================================
-   TABLE
-   ========================================= */
-
-.transaction-table {
-    width: 100%;
-    overflow-x: auto;
-}
+/* ---------- Table header (wide screens only) ---------- */
 
 .table-header {
     display: grid;
-
-    grid-template-columns:
-        minmax(240px, 2fr)
-        minmax(140px, 1fr)
-        minmax(120px, 1.1fr)
-        minmax(120px, 1fr)
-        72px;
-
+    grid-template-columns: var(--transaction-columns);
     align-items: center;
     gap: 1rem;
 
-    min-width: 820px;
     padding: 0.75rem 1.25rem;
 
     border-bottom: 1px solid var(--border-color, #e5e7eb);
@@ -55,10 +40,11 @@
     text-transform: uppercase;
 }
 
-.table-header span:nth-child(4) {
+.amount-heading {
     text-align: right;
 }
 
+/* Hides the word "Actions" visually and shows an ellipsis instead */
 .actions-heading {
     text-align: right;
     font-size: 0;
@@ -70,10 +56,7 @@
     letter-spacing: 0.1rem;
 }
 
-
-/* =========================================
-   EMPTY STATE
-   ========================================= */
+/* ---------- Empty state ---------- */
 
 .empty-state {
     display: flex;
@@ -99,13 +82,11 @@
     border: 1px solid #e2e8f0;
     border-radius: 16px;
 
-    background:
-        linear-gradient(145deg, #f8fafc, #f1f5f9);
+    background: linear-gradient(145deg, #f8fafc, #f1f5f9);
 
     color: #64748b;
 
-    box-shadow:
-        0 1px 2px rgb(15 23 42 / 4%);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
 }
 
 .empty-icon svg {
@@ -135,30 +116,30 @@
     line-height: 1.65;
 }
 
+/* ---------- Responsive ---------- */
 
-/* =========================================
-   RESPONSIVE
-   ========================================= */
+/* Rows become stacked cards here (see TransactionRow), so the column header
+   no longer lines up with anything. 1100px = table width + sidebar + page gutters;
+   raise it if you widen the sidebar or add columns. */
+@media (max-width: 1099.98px) {
+    .table-header {
+        display: none;
+    }
+}
 
 @media (max-width: 900px) {
-
     .transaction-panel {
         border-radius: 14px;
-    }
-
-    .transaction-table {
-        overflow-x: auto;
     }
 }
 
 @media (max-width: 640px) {
-
     .transaction-panel {
         border-radius: 12px;
     }
 
-    .table-header {
-        padding-left: 1rem;
-        padding-right: 1rem;
+    .empty-state {
+        min-height: 280px;
+        padding: 2.5rem 1.25rem;
     }
 }

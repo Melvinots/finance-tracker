@@ -37,6 +37,10 @@
     --topbar-height: 56px;
     --red: #dc2626;
     --red-dim: #fef2f2;
+
+    --nav-toggle-size: 40px;
+    --nav-toggle-inset: 1rem;
+    --nav-clearance: calc(var(--nav-toggle-inset) + var(--nav-toggle-size) + 0.5rem);
 }
 
 /* ── Reset ────────────────────────────────────────────────── */

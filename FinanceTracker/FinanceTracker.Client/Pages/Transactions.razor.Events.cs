@@ -1,29 +1,38 @@
-﻿namespace FinanceTracker.Client.Pages
+﻿using FinanceTracker.Client.Components.Transactions;
+using static System.Net.WebRequestMethods;
+
+namespace FinanceTracker.Client.Pages
 {
     public partial class Transactions
     {
-        private void ApplyFilters()
+        private void HandleFilterChanged(TransactionFilter filter)
+        {
+            _filter = filter;
+            ApplyFilters(filter);
+        }
+
+        private void ApplyFilters(TransactionFilter filter)
         {
             _filteredTransactions = _transactions
-                .Where(MatchesSearch)
-                .Where(MatchesType)
+                .Where(t => MatchesSearch(t, filter.SearchTerm))
+                .Where(t => MatchesType(t, filter.Type))
+                .Where(t => MatchesCategories(t, filter.CategoryIds))
                 .ToList();
         }
 
-        private bool MatchesSearch(TransactionDto transaction)
+        private bool MatchesSearch(TransactionDto transaction, string searchTerm)
         {
-            if (string.IsNullOrWhiteSpace(_searchTerm))
+            if (string.IsNullOrWhiteSpace(searchTerm))
             {
                 return true;
             }
 
-            return transaction.Description.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    transaction.CategoryName.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase);
+            return transaction.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase);
         }
 
-        private bool MatchesType(TransactionDto transaction)
+        private bool MatchesType(TransactionDto transaction, TransactionTypeFilter selectedType)
         {
-            return _selectedType switch
+            return selectedType switch
             {
                 TransactionTypeFilter.Income => !transaction.IsExpense,
                 TransactionTypeFilter.Expense => transaction.IsExpense,
@@ -31,16 +40,14 @@
             };
         }
 
-        private void HandleSearchTermChanged(string value)
+        private bool MatchesCategories(TransactionDto transaction, IReadOnlyCollection<int> categoryIds)
         {
-            _searchTerm = value;
-            ApplyFilters();
-        }
+            if (categoryIds == null || !categoryIds.Any())
+            {
+                return true;
+            }
 
-        private void HandleSelectedTypeChanged(TransactionTypeFilter value)
-        {
-            _selectedType = value;
-            ApplyFilters();
+            return categoryIds.Contains(transaction.CategoryId);
         }
 
         private void OpenCreateModal()
@@ -97,9 +104,9 @@
                 try
                 {
                     await TransactionService.DeleteAsync(transaction.Id);
-                    _transactions.Remove(transaction);
+                    _transactions.RemoveAll(t => t.Id == transaction.Id);
 
-                    ApplyFilters();
+                    ApplyFilters(_filter);
                     AppNotifier.Success("Transaction deleted");
                 }
                 catch (Exception ex)

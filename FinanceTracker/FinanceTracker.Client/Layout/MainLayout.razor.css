@@ -28,10 +28,10 @@
     .mobile-nav-toggle {
         display: flex;
         position: fixed;
-        top: 1rem;
-        right: 1rem;
-        width: 40px;
-        height: 40px;
+        top: var(--nav-toggle-inset);
+        right: var(--nav-toggle-inset);
+        width: var(--nav-toggle-size);
+        height: var(--nav-toggle-size);
         align-items: center;
         justify-content: center;
         border: 1px solid var(--color-rule);

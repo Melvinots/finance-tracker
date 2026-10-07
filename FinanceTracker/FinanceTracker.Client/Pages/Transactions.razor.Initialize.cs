@@ -1,4 +1,6 @@
-﻿namespace FinanceTracker.Client.Pages
+﻿using FinanceTracker.Client.Components.Transactions;
+
+namespace FinanceTracker.Client.Pages
 {
     public partial class Transactions
     {
@@ -25,7 +27,7 @@
         private async Task LoadTransactionsAsync()
         {
             _transactions = await TransactionService.GetAllAsync();
-            ApplyFilters();
+            ApplyFilters(_filter);
         }
 
         private async Task LoadCategoriesAsync()

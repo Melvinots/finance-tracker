@@ -1,16 +1,10 @@
-/* =========================================
-   ROW
-   ========================================= */
+/* ---------- Row ---------- */
 
 .transaction-row {
+    /* --transaction-columns is defined on .transaction-panel in TransactionTable */
     display: grid;
-    grid-template-columns:
-        minmax(240px, 2fr)
-        minmax(140px, 1fr)
-        minmax(120px, 1.1fr)
-        minmax(120px, 1fr)
-        72px;
-
+    grid-template-columns: var(--transaction-columns);
+    grid-template-areas: "description category date amount actions";
     align-items: center;
     gap: 1rem;
 
@@ -18,28 +12,35 @@
     padding: 0.75rem 1.25rem;
 
     background: var(--surface-color, #fff);
-    border-bottom: 1px solid var(--border-subtle, #f1f5f9);
+    border-bottom: 1px solid var(--border, #e2e8f0);
+
 
     transition:
         background-color 150ms ease,
         box-shadow 150ms ease;
 }
 
-.transaction-row:hover {
-    background: #fafbfc;
-    box-shadow: inset 3px 0 0 var(--accent-color, #6366f1);
-}
-
 .transaction-row:last-child {
     border-bottom: 0;
 }
 
+/* Hover styling only where hovering exists, so it doesn't stick after a tap */
+@media (hover: hover) {
+    .transaction-row:hover {
+        background: #fafbfc;
+        box-shadow: inset 3px 0 0 var(--accent-color, #6366f1);
+    }
 
-/* =========================================
-   DESCRIPTION
-   ========================================= */
+    .transaction-row:hover .transaction-icon {
+        transform: scale(1.04);
+        box-shadow: 0 3px 8px color-mix(in srgb, var(--category-color) 15%, transparent);
+    }
+}
+
+/* ---------- Description ---------- */
 
 .transaction-description {
+    grid-area: description;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -55,12 +56,7 @@
     height: 40px;
     flex-shrink: 0;
 
-    border: 1px solid color-mix(
-        in srgb,
-        var(--category-color) 24%,
-        transparent
-    );
-
+    border: 1px solid color-mix(in srgb, var(--category-color) 24%, transparent);
     border-radius: 11px;
 
     background: var(--category-color-soft);
@@ -71,29 +67,13 @@
         box-shadow 150ms ease;
 }
 
-.transaction-row:hover .transaction-icon {
-    transform: scale(1.04);
-    box-shadow: 0 3px 8px color-mix(
-        in srgb,
-        var(--category-color) 15%,
-        transparent
-    );
-}
-
 .transaction-icon svg {
     width: 19px;
     height: 19px;
     stroke-width: 2;
 }
 
-.transaction-icon i {
-    font-size: 0.9rem;
-}
-
-
-/* =========================================
-   INFO
-   ========================================= */
+/* ---------- Info ---------- */
 
 .transaction-info {
     display: flex;
@@ -135,12 +115,19 @@
     opacity: 0.55;
 }
 
+/* ---------- Meta (category + date) ---------- */
 
-/* =========================================
-   CATEGORY
-   ========================================= */
+/* Wide screens: the wrapper disappears and category/date become grid columns.
+   Small screens: see the responsive block, where it becomes one flex row. */
+.transaction-meta {
+    display: contents;
+}
+
+/* ---------- Category ---------- */
 
 .transaction-category {
+    grid-area: category;
+    display: flex;      /* makes the badge a flex item, so it shrinks and truncates reliably */
     min-width: 0;
 }
 
@@ -149,30 +136,18 @@
     align-items: center;
     gap: 0.4rem;
 
+    min-width: 0;
     max-width: 100%;
     padding: 0.35rem 0.65rem;
 
-    border: 1px solid color-mix(
-        in srgb,
-        var(--category-color) 18%,
-        transparent
-    );
-
+    border: 1px solid color-mix(in srgb, var(--category-color) 18%, transparent);
     border-radius: 999px;
 
     background: var(--category-color-soft);
-    color: color-mix(
-        in srgb,
-        var(--category-color) 78%,
-        #0f172a
-    );
+    color: color-mix(in srgb, var(--category-color) 78%, #0f172a);
 
     font-size: 0.6875rem;
     font-weight: 600;
-
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .category-dot {
@@ -184,24 +159,29 @@
     background: var(--category-color);
 }
 
+/* Truncates long names inside the badge (text-overflow doesn't work on a flex container) */
+.category-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
-/* =========================================
-   DATE
-   ========================================= */
+/* ---------- Date ---------- */
 
 .transaction-date {
+    grid-area: date;
+
     color: var(--muted, #64748b);
     font-size: 0.75rem;
     font-weight: 500;
     white-space: nowrap;
 }
 
-
-/* =========================================
-   AMOUNT
-   ========================================= */
+/* ---------- Amount ---------- */
 
 .transaction-amount {
+    grid-area: amount;
     display: flex;
     align-items: baseline;
     justify-content: flex-end;
@@ -229,12 +209,10 @@
     opacity: 0.8;
 }
 
-
-/* =========================================
-   ACTIONS
-   ========================================= */
+/* ---------- Actions ---------- */
 
 .transaction-actions {
+    grid-area: actions;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -292,20 +270,65 @@
     stroke-width: 1.9;
 }
 
+/* ---------- Responsive: stacked card layout ---------- */
 
-/* =========================================
-   RESPONSIVE
-   ========================================= */
-
-@media (max-width: 900px) {
-
+/* Same breakpoint as the header in TransactionTable.
+   Row 1: description + amount. Row 2: category and date, with actions on the right. */
+@media (max-width: 1099.98px) {
     .transaction-row {
-        min-width: 820px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "description amount"
+            "meta        actions";
+        gap: 0.625rem 0.75rem;
+
+        min-height: 0;
+        padding: 0.875rem 1rem;
+    }
+
+    .transaction-meta {
+        grid-area: meta;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-width: 0;
+    }
+
+    /* The category shrinks (and truncates) before the date does */
+    .transaction-category {
+        flex: 0 1 auto;
+    }
+
+    .transaction-date {
+        flex-shrink: 0;
+        font-size: 0.7rem;
+    }
+
+    .transaction-amount {
+        font-size: 0.875rem;
+    }
+
+    /* Let long descriptions wrap to two lines instead of cutting off at one */
+    .transaction-info strong {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        white-space: normal;
+        overflow-wrap: anywhere;
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* Larger touch targets on touch screens */
+@media (max-width: 1099.98px) and (pointer: coarse) {
+    .icon-button {
+        width: 38px;
+        height: 38px;
+    }
+}
 
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
     .transaction-row,
     .transaction-icon,
     .icon-button {
