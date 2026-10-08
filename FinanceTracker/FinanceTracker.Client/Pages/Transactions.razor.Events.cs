@@ -42,12 +42,7 @@ namespace FinanceTracker.Client.Pages
 
         private bool MatchesCategories(TransactionDto transaction, IReadOnlyCollection<int> categoryIds)
         {
-            if (categoryIds == null || !categoryIds.Any())
-            {
-                return true;
-            }
-
-            return categoryIds.Contains(transaction.CategoryId);
+            return categoryIds.Count == 0 || categoryIds.Contains(transaction.CategoryId);
         }
 
         private void OpenCreateModal()

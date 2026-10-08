@@ -83,11 +83,13 @@
 
     private string _searchTerm = string.Empty;
     private TransactionTypeFilter _selectedType = TransactionTypeFilter.All;
-    private IList<int> _categoryIds = new List<int>();
+    private IList<int>? _categoryIds = new List<int>();
 
     private Task NotifyFilterChanged()
-        => OnFilterChanged.InvokeAsync(
-            new TransactionFilter(_searchTerm, _selectedType, _categoryIds.ToArray()));
+    {
+        return OnFilterChanged.InvokeAsync(
+            new TransactionFilter(_searchTerm, _selectedType, _categoryIds?.ToArray() ?? []));
+    }
 
     private async Task ClearSearch()
     {
