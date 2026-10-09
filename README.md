@@ -73,20 +73,28 @@ FinanceTracker.sln
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - dotnet-ef CLI: `dotnet tool install --global dotnet-ef`
 
-### Run the Server
-```bash
-cd FinanceTracker
-dotnet ef database update
-dotnet run
-```
+### Run the Application
+1. Open `FinanceTracker.sln` in Visual Studio.
+2. In **Solution Explorer**, right-click the `FinanceTracker` project.
+3. Select **Set as Startup Project**.
+4. Open **Tools → NuGet Package Manager → Package Manager Console**, or use a terminal in the project folder.
+5. Run the database migrations:
+   ```bash
+   cd FinanceTracker
+   dotnet ef database update
+   ```
+6. Press **F5** or click **Start** to run the application.
 
-### Run the Client
-```bash
-cd FinanceTracker.Client
-dotnet run
-```
+The `FinanceTracker` project hosts both the API and the Blazor WebAssembly client, so you don't need to run `FinanceTracker.Client` separately.
 
-The client calls the API at `https://localhost:7022`. Start the server first.
+### Test Account
+
+Use these credentials to sign in:
+
+| Field    | Value              |
+| -------- | ------------------ |
+| Email    | `test@example.com` |
+| Password | `default123`       |
 
 ---
 
@@ -107,3 +115,19 @@ Ideas for a future version, in no particular order:
 ## Author
 
 **Melvin** — [GitHub](https://github.com/Melvinots)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
