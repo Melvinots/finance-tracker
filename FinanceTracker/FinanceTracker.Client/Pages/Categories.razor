@@ -19,57 +19,54 @@
     </Actions>
 
     <ChildContent>
+
+        <div class="content-header">
+
+            <div>
+                <h2>All categories</h2>
+
+                <p>
+                    @_categories.Count @( _categories.Count == 1 ? "category" : "categories" )
+                </p>
+            </div>
+
+        </div>
+
         <LoadingWrapper IsLoading="@_isLoading"
                         Message="Loading your categories...">
 
-            <section class="categories-content">
+            @if (_categories.Any())
+            {
+                <CategoryList Categories="@_categories"
+                                OnEdit="HandleEdit"
+                                OnDelete="HandleDelete" />
+            }
+            else
+            {
+                <div class="empty-state">
 
-                <div class="content-header">
-
-                    <div>
-                        <h2>All categories</h2>
-
-                        <p>
-                            @_categories.Count @( _categories.Count == 1 ? "category" : "categories" )
-                        </p>
+                    <div class="empty-icon">
+                        <Blazicon Svg="Lucide.Tags" />
                     </div>
+
+                    <h3>No categories yet</h3>
+
+                    <p>
+                        Create your first category to start organising your transactions.
+                    </p>
+
+                    <button class="primary-button"
+                            type="button"
+                            @onclick="OpenCreateModal">
+
+                        <Blazicon Svg="Lucide.Plus" />
+
+                        <span>Add your first category</span>
+
+                    </button>
 
                 </div>
-
-                @if (_categories.Any())
-                {
-                    <CategoryList Categories="@_categories"
-                                  OnEdit="HandleEdit"
-                                  OnDelete="HandleDelete" />
-                }
-                else
-                {
-                    <div class="empty-state">
-
-                        <div class="empty-icon">
-                            <Blazicon Svg="Lucide.Tags" />
-                        </div>
-
-                        <h3>No categories yet</h3>
-
-                        <p>
-                            Create your first category to start organising your transactions.
-                        </p>
-
-                        <button class="primary-button"
-                                type="button"
-                                @onclick="OpenCreateModal">
-
-                            <Blazicon Svg="Lucide.Plus" />
-
-                            <span>Add your first category</span>
-
-                        </button>
-
-                    </div>
-                }
-
-            </section>
+            }
 
         </LoadingWrapper>
     </ChildContent>

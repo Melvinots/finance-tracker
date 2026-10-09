@@ -1,44 +1,61 @@
-﻿.auth-layout {
+﻿/* =========================================================
+   Auth layout (login / register)
+   Tokens use your existing variables first, then Radzen's.
+   ========================================================= */
+
+.auth-layout {
+    --auth-primary: var(--primary, var(--rz-primary));
+    --auth-primary-light: var(--primary-ring, var(--primary-light, var(--rz-primary-lighter)));
+    --auth-bg: var(--paper, var(--rz-base-background-color));
+    --auth-text: var(--ink, var(--rz-text-color));
+    --auth-text-2: var(--slate, var(--rz-text-secondary-color));
+    --auth-muted: var(--muted, var(--rz-text-tertiary-color));
+    --on-brand: #fff;
+    --on-brand-muted: rgb(255 255 255 / .78);
+    --on-brand-subtle: rgb(255 255 255 / .16);
+    --on-brand-border: rgb(255 255 255 / .2);
+    --auth-radius-sm: calc(var(--rz-border-radius, 6px) * 1.5);
+    --auth-radius: calc(var(--rz-border-radius, 6px) * 2);
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(460px, 560px);
-    height: 100dvh;
     min-height: 100dvh;
-    overflow: hidden;
-    background: var(--paper);
+    background: var(--auth-bg);
 }
 
-/* =========================================
-   BRAND PANEL
-   ========================================= */
+/* ---------- Brand panel ----------
+   Sticky and exactly one screen tall, so the form column can
+   scroll on short screens without moving the brand panel. */
 
 .auth-brand {
-    position: relative;
+    position: sticky;
+    top: 0;
     display: flex;
     align-items: center;
     height: 100dvh;
-    padding: clamp(2rem, 6vw, 6rem);
+    padding: clamp(2rem, 6vw, 5.5rem);
     overflow: hidden;
-    background: radial-gradient(circle at 85% 15%, rgba(255, 255, 255, .14), transparent 32%), radial-gradient(circle at 10% 90%, rgba(255, 255, 255, .08), transparent 30%), linear-gradient(155deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 78%, black) 100%);
-    color: var(--white);
+    background: linear-gradient(160deg, var(--auth-primary), color-mix(in srgb, var(--auth-primary) 78%, black));
+    color: var(--on-brand);
 }
 
-.brand-grid {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(rgba(255, 255, 255, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .06) 1px, transparent 1px);
-    background-size: 42px 42px;
-    mask-image: radial-gradient(circle at 60% 40%, black, transparent 75%);
-}
+    /* the one decorative element */
+    .auth-brand::before {
+        content: "";
+        position: absolute;
+        top: -180px;
+        right: -260px;
+        width: 520px;
+        aspect-ratio: 1;
+        border: 1px solid var(--on-brand-subtle);
+        border-radius: 50%;
+    }
 
 .brand-content {
     position: relative;
-    z-index: 1;
     width: min(100%, 520px);
 }
 
-/* =========================================
-   BRAND
-   ========================================= */
+/* ---------- Brand link (used in panel and mobile header) ---------- */
 
 .brand {
     display: inline-flex;
@@ -50,18 +67,17 @@
 
 .brand-mark {
     display: grid;
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     place-items: center;
-    border: 1px solid rgba(255, 255, 255, .2);
-    border-radius: 13px;
-    background: rgba(255, 255, 255, .14);
-    color: var(--white);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
-    backdrop-filter: blur(6px);
+    border: 1px solid var(--on-brand-border);
+    border-radius: var(--auth-radius-sm);
+    background: var(--on-brand-subtle);
+    color: var(--on-brand);
 }
 
-    .brand-mark svg {
+    /* Blazicon renders its own <svg>, so scoped CSS needs ::deep to reach it */
+    .brand-mark ::deep svg {
         width: 20px;
         height: 20px;
     }
@@ -69,147 +85,111 @@
 .brand-name {
     font-size: 1rem;
     font-weight: 700;
-    letter-spacing: -.01em;
 }
 
-/* =========================================
-   BRAND COPY
-   ========================================= */
+/* ---------- Copy ---------- */
 
 .brand-copy {
-    margin-top: clamp(3rem, 9vh, 5.5rem);
+    margin-top: clamp(2.5rem, 8vh, 5rem);
 }
 
-.brand-eyebrow {
-    display: inline-block;
-    margin-bottom: 1.25rem;
-    color: rgba(255, 255, 255, .65);
-    font-size: .7rem;
-    font-weight: 700;
-    letter-spacing: .14em;
-}
-
-.brand-copy h1 {
-    max-width: 600px;
-    margin: 0;
-    color: var(--white);
-    font-family: var(--font-serif);
-    font-size: clamp(2.5rem, 4.5vw, 4.25rem);
-    font-weight: 500;
-    line-height: .98;
-    letter-spacing: -.045em;
-}
-
-    .brand-copy h1 span {
-        display: block;
-        color: rgba(255, 255, 255, .62);
+    .brand-copy h1 {
+        max-width: 14ch;
+        margin: 0;
+        color: inherit;
+        font-family: var(--font-serif, Georgia, serif);
+        font-size: clamp(2.5rem, 4.5vw, 4rem);
+        font-weight: 500;
+        line-height: 1.02;
+        letter-spacing: -.035em;
     }
 
-.brand-copy p {
-    max-width: 430px;
-    margin: 1.5rem 0 0;
-    color: rgba(255, 255, 255, .72);
-    font-size: 1rem;
-    line-height: 1.7;
-}
+        .brand-copy h1 span {
+            display: block;
+            color: var(--on-brand-muted);
+        }
 
-/* =========================================
-   FEATURES — glassmorphism pills
-   ========================================= */
+    .brand-copy p {
+        max-width: 44ch;
+        margin: 1.5rem 0 0;
+        color: var(--on-brand-muted);
+        line-height: 1.7;
+    }
+
+/* ---------- Feature list + stat card ---------- */
 
 .brand-panels {
     display: flex;
     align-items: stretch;
-    gap: 1rem;
+    gap: 1.5rem;
     margin-top: 2.25rem;
 }
 
 .brand-features {
     display: flex;
+    flex: 1;
     flex-direction: column;
     justify-content: center;
-    gap: .6rem;
-    flex: 1;
-    min-width: 0;
-}
-
-.brand-feature {
-    display: flex;
-    align-items: center;
     gap: .75rem;
-    padding: .55rem .85rem;
-    border: 1px solid rgba(255, 255, 255, .12);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, .06);
-    backdrop-filter: blur(8px);
-    color: rgba(255, 255, 255, .88);
-    font-size: .8rem;
-    transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: .875rem;
 }
 
-    .brand-feature:hover {
-        background: rgba(255, 255, 255, .1);
-        border-color: rgba(255, 255, 255, .22);
-        transform: translateX(2px);
+    .brand-features li {
+        display: flex;
+        align-items: center;
+        gap: .65rem;
     }
 
 .feature-icon {
     display: grid;
     width: 22px;
     height: 22px;
-    flex-shrink: 0;
+    flex: none;
     place-items: center;
     border-radius: 50%;
-    background: rgba(255, 255, 255, .16);
-    color: var(--white);
+    background: var(--on-brand-subtle);
 }
 
-    .feature-icon svg {
+    .feature-icon ::deep svg {
         width: 12px;
         height: 12px;
     }
 
-/* =========================================
-   FLOATING STAT CARD
-   ========================================= */
-
 .brand-stat-card {
-    width: min(100%, 240px);
-    flex-shrink: 0;
-    margin-top: 0;
+    width: 220px;
+    flex: none;
     padding: 1rem 1.1rem;
-    border: 1px solid var(--rule);
-    border-radius: 16px;
-    /*background: var(--white);*/
-    box-shadow: 0 20px 40px rgba(15, 23, 42, .08);
-    animation: stat-card-float 5s ease-in-out infinite;
+    border: 1px solid var(--on-brand-border);
+    border-radius: var(--auth-radius);
+    background: rgb(255 255 255 / .1);
 }
 
 .stat-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: rgba(255, 255, 255, .65);
-    font-size: .68rem;
+    color: var(--on-brand-muted);
+    font-size: .75rem;
     font-weight: 600;
-    letter-spacing: .02em;
 }
 
 .stat-card-badge {
     padding: .15rem .5rem;
     border-radius: 999px;
-    background: rgba(255, 255, 255, .16);
-    color: var(--white);
-    font-size: .65rem;
-    font-weight: 700;
+    background: var(--on-brand-subtle);
+    color: var(--on-brand);
+    font-size: .7rem;
 }
 
 .stat-card-amount {
-    margin-top: .45rem;
-    color: var(--white);
-    font-family: var(--font-serif);
+    margin-top: .4rem;
+    font-family: var(--font-serif, Georgia, serif);
     font-size: 1.6rem;
-    font-weight: 500;
+    font-variant-numeric: tabular-nums;
     letter-spacing: -.02em;
 }
 
@@ -218,110 +198,135 @@
     align-items: flex-end;
     gap: .35rem;
     height: 44px;
-    margin-top: .9rem;
+    margin-top: .85rem;
 }
 
     .stat-card-bars span {
         flex: 1;
         height: var(--h);
         border-radius: 3px;
-        background: rgba(255, 255, 255, .3);
+        background: rgb(255 255 255 / .3);
     }
 
         .stat-card-bars span:last-child {
-            background: var(--white);
+            background: var(--on-brand);
         }
 
-@keyframes stat-card-float {
-    0%, 100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-8px);
-    }
-}
-
-/* =========================================
-   DECORATION
-   ========================================= */
-
-.brand-decoration {
-    position: absolute;
-    border: 1px solid rgba(255, 255, 255, .08);
-    border-radius: 50%;
-}
-
-.brand-decoration-one {
-    width: 520px;
-    height: 520px;
-    right: -260px;
-    top: -180px;
-}
-
-.brand-decoration-two {
-    width: 380px;
-    height: 380px;
-    bottom: -220px;
-    left: -180px;
-}
-
-/* =========================================
-   AUTH CONTENT
-   ========================================= */
+/* ---------- Form column ----------
+   The page scrolls naturally when a form (register) is taller than
+   the viewport; the card stays centered when there is room. */
 
 .auth-content {
     display: flex;
     flex-direction: column;
-    height: 100dvh;
-    min-height: 0;
+    min-height: 100dvh;
     padding: 1.25rem 2rem;
-    overflow: hidden;
 }
 
 .auth-card-container {
     display: flex;
     flex: 1;
-    min-height: 0;
     align-items: center;
     justify-content: center;
+    padding-block: 1.5rem;
 }
 
+    /* The container centers its child with flexbox, so without an explicit width the
+   card shrinks to fit its content and differs per page (header text, validation
+   messages). Give whatever the page renders one fixed width. */
+    .auth-card-container > ::deep * {
+        width: 100%;
+        max-width: 440px;
+    }
+
 .auth-footer {
-    margin: .75rem 0 0;
-    color: var(--muted);
-    font-size: .7rem;
+    margin: 0;
+    color: var(--auth-muted);
+    font-size: .75rem;
     text-align: center;
 }
 
-/* =========================================
-   MOBILE BRAND
-   ========================================= */
+/* ---------- Shared form styles (Login, Register, ...) ----------
+   Forms are child components, so ::deep is needed to reach them.
+   Inputs, buttons and alerts are left to the Radzen theme on purpose. */
+
+.auth-card-container ::deep .auth-form-wrapper {
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-card-container ::deep .password-group {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.auth-card-container ::deep .forgot-link {
+    align-self: flex-end;
+}
+
+.auth-card-container ::deep .auth-switch {
+    margin: 0;
+    color: var(--auth-text-2);
+    font-size: .875rem;
+    text-align: center;
+}
+
+    .auth-card-container ::deep .forgot-link,
+    .auth-card-container ::deep .auth-switch a {
+        color: var(--auth-primary);
+        font-size: .8rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .auth-card-container ::deep .auth-switch a {
+        font-size: inherit;
+    }
+
+        .auth-card-container ::deep .forgot-link:hover,
+        .auth-card-container ::deep .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+/* ---------- Mobile header ---------- */
 
 .mobile-brand {
     display: none;
 }
 
+    .mobile-brand .brand {
+        color: var(--auth-text);
+    }
+
     .mobile-brand .brand-mark {
-        background: var(--primary-ring);
-        color: var(--primary);
         border-color: transparent;
+        background: var(--auth-primary-light);
+        color: var(--auth-primary);
     }
 
-    .mobile-brand .brand-name {
-        color: var(--ink);
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1200px) {
+    .brand-panels {
+        flex-direction: column;
     }
 
-/* =========================================
-   RESPONSIVE
-   ========================================= */
+    .brand-stat-card {
+        width: 100%;
+    }
+}
+
+/* short desktop windows: keep the headline, drop the extras */
+@media (max-height: 720px) {
+    .brand-panels {
+        display: none;
+    }
+}
 
 @media (max-width: 1000px) {
-
     .auth-layout {
         display: block;
-        height: 100dvh;
-        min-height: 100dvh;
     }
 
     .auth-brand {
@@ -329,12 +334,7 @@
     }
 
     .auth-content {
-        display: grid;
-        grid-template-rows: auto minmax(0, 1fr) auto;
-        width: 100%;
         max-width: 560px;
-        height: 100dvh;
-        min-height: 0;
         margin: 0 auto;
     }
 
@@ -344,30 +344,7 @@
 }
 
 @media (max-width: 560px) {
-
     .auth-content {
         padding: 1rem 1.25rem;
-    }
-
-    .auth-card-container {
-        overflow-y: auto;
-        align-items: flex-start;
-        padding: 1rem 0;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .brand-stat-card {
-        animation: none;
-    }
-}
-
-@media (max-width: 1200px) {
-    .brand-panels {
-        flex-direction: column;
-    }
-
-    .brand-stat-card {
-        width: 100%;
     }
 }

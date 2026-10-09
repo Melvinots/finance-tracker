@@ -1,0 +1,101 @@
+﻿@namespace FinanceTracker.Client.Components
+
+<div class="dash-preview" role="img" aria-label="Preview of the Finance Tracker dashboard">
+
+    <header class="dp-header">
+        <div>
+            <strong>Dashboard</strong>
+            <span>Your month at a glance</span>
+        </div>
+        <span class="dp-period">This month</span>
+    </header>
+
+    <div class="dp-stats">
+        @foreach (var stat in _stats)
+        {
+            <div class="dp-card">
+                <div class="dp-card-top">
+                    <span class="dp-label">@stat.Label</span>
+                    <span class="dp-icon dp-icon-@stat.Tone" aria-hidden="true">@stat.Icon</span>
+                </div>
+                <strong class="dp-value">@stat.Value</strong>
+                <span class="dp-pill dp-pill-@stat.Tone">@stat.Pill</span>
+            </div>
+        }
+    </div>
+
+    <div class="dp-panels">
+
+        <section class="dp-panel">
+            <div class="dp-panel-head">
+                <strong>Spending Overview</strong>
+                <span>Track your spending over time</span>
+            </div>
+            <div class="dp-panel-body">
+                <div class="dp-bars">
+                    @foreach (var m in _months)
+                    {
+                        <div class="dp-bar-group">
+                            <div class="dp-bar-pair">
+                                <span class="dp-bar dp-bar-income" style="height:@(m.Income)%"></span>
+                                <span class="dp-bar dp-bar-expense" style="height:@(m.Expense)%"></span>
+                            </div>
+                            <small>@m.Name</small>
+                        </div>
+                    }
+                </div>
+                <div class="dp-legend dp-legend-row">
+                    <span><i class="dp-swatch dp-bar-income"></i>Income</span>
+                    <span><i class="dp-swatch dp-bar-expense"></i>Expenses</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="dp-panel">
+            <div class="dp-panel-head">
+                <strong>Spending by Category</strong>
+                <span>Expenses this month</span>
+            </div>
+            <div class="dp-panel-body dp-donut-body">
+                <div class="dp-donut"></div>
+                <div class="dp-legend">
+                    @foreach (var s in _slices)
+                    {
+                        <span><i class="dp-swatch" style="background:@s.Color"></i>@s.Name</span>
+                    }
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</div>
+
+@code {
+    private record Stat(string Label, string Value, string Tone, string Icon, string Pill);
+    private record Month(string Name, int Income, int Expense);
+    private record Slice(string Name, string Color);
+
+    private static readonly Stat[] _stats =
+    [
+        new("Total income", "₱11,000.00", "income", "↓", "▲ this month"),
+        new("Total expenses", "₱3,344.00", "expense", "↑", "▼ this month"),
+        new("Net savings", "₱7,656.00", "net", "◧", "▲ this month"),
+        new("Transactions", "11", "count", "≡", "This month")
+    ];
+
+    // Heights are % of the chart area (150k = 100%).
+    private static readonly Month[] _months =
+    [
+        new("May", 33, 20), new("Jun", 41, 25), new("Jul", 38, 17),
+        new("Aug", 33, 95), new("Sep", 39, 29), new("Oct", 7, 2)
+    ];
+
+    private static readonly Slice[] _slices =
+    [
+        new("Utilities", "var(--dp-slice-1)"),
+        new("Food", "var(--dp-slice-2)"),
+        new("Shopping", "var(--dp-slice-3)"),
+        new("Misc", "var(--dp-slice-4)")
+    ];
+}

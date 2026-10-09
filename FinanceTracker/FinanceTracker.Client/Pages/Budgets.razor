@@ -36,21 +36,22 @@
     </Actions>
 
     <ChildContent>
+
+        <div class="content-header">
+
+            <div>
+                <h2>Budget overview</h2>
+
+                <p>
+                    @_budgets.Count
+                    budget@(_budgets.Count == 1 ? "" : "s")
+                </p>
+            </div>
+
+        </div>
+
         <LoadingWrapper IsLoading="@_isLoading"
                         Message="Loading your budgets...">
-
-                <div class="content-header">
-
-                    <div>
-                        <h2>Budget overview</h2>
-
-                        <p>
-                            @_budgets.Count
-                            budget@(_budgets.Count == 1 ? "" : "s")
-                        </p>
-                    </div>
-
-                </div>
 
                 @if (_budgets.Any())
                 {

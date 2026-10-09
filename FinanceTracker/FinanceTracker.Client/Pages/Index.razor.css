@@ -1,0 +1,6 @@
+.auth-check {
+    display: grid;
+    min-height: 100dvh;
+    place-items: center;
+    background: var(--paper, var(--rz-base-background-color));
+}

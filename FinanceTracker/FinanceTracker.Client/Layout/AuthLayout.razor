@@ -1,24 +1,16 @@
 ﻿@namespace FinanceTracker.Client.Layout
 @inherits LayoutComponentBase
 
+<PageTitle>Finance Tracker</PageTitle>
+
 <div class="auth-layout">
 
-    <section class="auth-brand">
-
-        <div class="brand-grid"></div>
-
+    <aside class="auth-brand">
         <div class="brand-content">
 
-            <a class="brand" href="/">
-                <span class="brand-mark">
-                    <Blazicon Svg="Lucide.Wallet" />
-                </span>
-                <span class="brand-name">Finance Tracker</span>
-            </a>
+            @BrandLink
 
             <div class="brand-copy">
-                <span class="brand-eyebrow">PERSONAL FINANCE, SIMPLIFIED</span>
-
                 <h1>
                     Take control of
                     <span>your money.</span>
@@ -29,66 +21,65 @@
                     better financial habits with a clearer view of your money.
                 </p>
             </div>
-            <div class="brand-panels">
-                <div class="brand-features">
-                    <div class="brand-feature">
-                        <span class="feature-icon"><Blazicon Svg="Lucide.Check" /></span>
-                        <span>Track income and expenses</span>
-                    </div>
-                    <div class="brand-feature">
-                        <span class="feature-icon"><Blazicon Svg="Lucide.Check" /></span>
-                        <span>Set and monitor monthly budgets</span>
-                    </div>
-                    <div class="brand-feature">
-                        <span class="feature-icon"><Blazicon Svg="Lucide.Check" /></span>
-                        <span>Understand your spending habits</span>
-                    </div>
-                </div>
 
-                <!-- Floating stat card — modern fintech marketing-panel touch -->
-                <div class="brand-stat-card">
+            <div class="brand-panels">
+                <ul class="brand-features">
+                    @foreach (var feature in _features)
+                    {
+                        <li>
+                            <span class="feature-icon" aria-hidden="true"><Blazicon Svg="Lucide.Check" /></span>
+                            @feature
+                        </li>
+                    }
+                </ul>
+
+                <div class="brand-stat-card" aria-hidden="true">
                     <div class="stat-card-header">
-                        <span>This month</span>
+                        <span>Net savings</span>
                         <span class="stat-card-badge">+12.4%</span>
                     </div>
-                    <div class="stat-card-amount">₱48,250.00</div>
+                    <div class="stat-card-amount">48,250.00</div>
                     <div class="stat-card-bars">
-                        <span style="--h: 40%"></span>
-                        <span style="--h: 65%"></span>
-                        <span style="--h: 45%"></span>
-                        <span style="--h: 80%"></span>
-                        <span style="--h: 60%"></span>
-                        <span style="--h: 90%"></span>
-                        <span style="--h: 70%"></span>
+                        @foreach (var height in _bars)
+                        {
+                            <span style="--h: @height%"></span>
+                        }
                     </div>
                 </div>
             </div>
+
         </div>
-
-        <div class="brand-decoration brand-decoration-one"></div>
-        <div class="brand-decoration brand-decoration-two"></div>
-
-    </section>
+    </aside>
 
     <main class="auth-content">
 
         <div class="mobile-brand">
-            <a class="brand" href="/">
-                <span class="brand-mark">
-                    <Blazicon Svg="Lucide.Wallet" />
-                </span>
-                <span class="brand-name">Finance Tracker</span>
-            </a>
+            @BrandLink
         </div>
 
         <div class="auth-card-container">
             @Body
         </div>
 
-        <p class="auth-footer">
-            © @DateTime.Now.Year Finance Tracker
-        </p>
+        <p class="auth-footer">© @DateTime.Now.Year Finance Tracker</p>
 
     </main>
 
 </div>
+
+@code {
+    private static readonly string[] _features =
+    [
+        "Track income and expenses",
+        "Set and monitor monthly budgets",
+        "Understand your spending habits"
+    ];
+
+    private static readonly int[] _bars = [40, 65, 45, 80, 60, 90, 70];
+
+    // Rendered twice (brand panel on desktop, header on mobile) from one definition.
+    private RenderFragment BrandLink => @<a class="brand" href="/">
+        <span class="brand-mark"><Blazicon Svg="Lucide.Wallet" /></span>
+        <span class="brand-name">Finance Tracker</span>
+    </a>;
+}

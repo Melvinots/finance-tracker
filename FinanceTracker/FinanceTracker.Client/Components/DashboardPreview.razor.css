@@ -1,0 +1,300 @@
+.dash-preview {
+    --dp-surface: var(--white, var(--rz-white, #fff));
+    --dp-panel-head: var(--paper, var(--rz-base-100, #f8f9fc));
+    --dp-border: var(--rule, var(--rz-base-300, #e4e8f0));
+    --dp-text: var(--ink, var(--rz-text-color, #111827));
+    --dp-text-2: var(--slate, var(--rz-text-secondary-color, #5b6475));
+    --dp-text-3: var(--muted, var(--rz-text-tertiary-color, #8a93a6));
+    --dp-success: var(--green, var(--rz-success, #1fa34a));
+    --dp-success-bg: var(--green-dim, #dcf8e6);
+    --dp-danger: var(--red, var(--rz-danger, #e5484d));
+    --dp-danger-bg: var(--red-dim, #fde4e4);
+    /* chart colors match Radzen's series palette, with the screenshot's values as fallback */
+    --dp-income: var(--rz-series-1, #0679cd);
+    --dp-expense: var(--rz-series-2, #6ad5c7);
+    --dp-slice-1: #8d96a8;
+    --dp-slice-2: #f27272;
+    --dp-slice-3: #a0d74e;
+    --dp-slice-4: #c3c9d6;
+    width: min(100%, 580px);
+    padding: 1rem;
+    border: 1px solid var(--dp-border);
+    border-radius: 18px;
+    background: var(--dp-surface);
+    box-shadow: 0 1px 2px rgb(15 23 42 / .06), 0 16px 40px rgb(15 23 42 / .1);
+    color: var(--dp-text);
+}
+
+/* ---------- Header ---------- */
+
+.dp-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: .25rem .25rem 1rem;
+}
+
+    .dp-header strong {
+        display: block;
+        font-size: 1.15rem;
+        font-weight: 700;
+    }
+
+    .dp-header span:not(.dp-period) {
+        color: var(--dp-text-3);
+        font-size: .75rem;
+    }
+
+.dp-period {
+    padding: .4rem .7rem;
+    border: 1px solid var(--dp-border);
+    border-radius: 8px;
+    color: var(--dp-text-2);
+    font-size: .75rem;
+}
+
+/* ---------- Stat cards ---------- */
+
+.dp-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .6rem;
+}
+
+.dp-card,
+.dp-panel {
+    border: 1px solid var(--dp-border);
+    border-radius: 14px;
+    background: var(--dp-surface);
+}
+
+.dp-card {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    padding: .85rem;
+}
+
+.dp-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.dp-label {
+    color: var(--dp-text-2);
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.dp-icon {
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border-radius: 8px;
+    font-size: .75rem;
+    font-weight: 700;
+}
+
+.dp-icon-income {
+    background: var(--dp-success-bg);
+    color: var(--dp-success);
+}
+
+.dp-icon-expense {
+    background: var(--dp-danger-bg);
+    color: var(--dp-danger);
+}
+
+.dp-icon-net {
+    background: #e8eefc;
+    color: #3b5bdb;
+}
+
+.dp-icon-count {
+    background: #eef5e4;
+    color: #5d8a1f;
+}
+
+.dp-value {
+    font-family: var(--font-serif, Georgia, serif);
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+}
+
+.dp-pill {
+    align-self: flex-start;
+    padding: .15rem .55rem;
+    border-radius: 999px;
+    font-size: .65rem;
+    font-weight: 600;
+}
+
+.dp-pill-income,
+.dp-pill-net {
+    background: var(--dp-success-bg);
+    color: var(--dp-success);
+}
+
+.dp-pill-expense {
+    background: var(--dp-danger-bg);
+    color: var(--dp-danger);
+}
+
+.dp-pill-count {
+    border: 1px solid var(--dp-border);
+    color: var(--dp-text-2);
+}
+
+/* ---------- Panels ---------- */
+
+.dp-panels {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: .6rem;
+    margin-top: .6rem;
+}
+
+.dp-panel {
+    overflow: hidden;
+}
+
+.dp-panel-head {
+    padding: .7rem .85rem;
+    border-bottom: 1px solid var(--dp-border);
+    background: var(--dp-panel-head);
+}
+
+    .dp-panel-head strong {
+        display: block;
+        font-size: .8rem;
+    }
+
+    .dp-panel-head span {
+        color: var(--dp-text-3);
+        font-size: .65rem;
+    }
+
+.dp-panel-body {
+    padding: .85rem;
+}
+
+/* ---------- Bar chart ---------- */
+
+.dp-bars {
+    display: flex;
+    height: 140px;
+}
+
+.dp-bar-group {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.dp-bar-pair {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2px;
+    border-bottom: 1px solid var(--dp-border);
+    background: linear-gradient(var(--dp-border) 1px, transparent 1px) 0 0 / 100% 33.33% repeat-y;
+}
+
+.dp-bar {
+    width: 38%;
+    max-width: 14px;
+    border-radius: 2px 2px 0 0;
+}
+
+.dp-bar-income {
+    background: var(--dp-income);
+}
+
+.dp-bar-expense {
+    background: var(--dp-expense);
+}
+
+.dp-bar-group small {
+    padding-top: .3rem;
+    color: var(--dp-text-3);
+    font-size: .6rem;
+    text-align: center;
+}
+
+.dp-bars + .dp-legend {
+    margin-top: .6rem;
+}
+
+/* ---------- Legends ---------- */
+
+.dp-legend {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    color: var(--dp-text-2);
+    font-size: .7rem;
+}
+
+    .dp-legend span {
+        display: flex;
+        align-items: center;
+        gap: .4rem;
+    }
+
+.dp-legend-row {
+    flex-direction: row;
+    justify-content: center;
+    gap: .9rem;
+}
+
+.dp-swatch {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+}
+
+/* ---------- Donut ---------- */
+
+.dp-donut-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .85rem;
+}
+
+.dp-donut {
+    position: relative;
+    width: 96px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient( var(--dp-slice-1) 0 12%, var(--dp-slice-2) 12% 26%, var(--dp-slice-3) 26% 40%, var(--dp-slice-4) 40% 100%);
+}
+
+    .dp-donut::after {
+        content: "";
+        position: absolute;
+        inset: 25%;
+        border-radius: 50%;
+        background: var(--dp-surface);
+    }
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 560px) {
+    .dp-panels {
+        grid-template-columns: 1fr;
+    }
+
+    .dp-donut-body {
+        flex-direction: row;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+}

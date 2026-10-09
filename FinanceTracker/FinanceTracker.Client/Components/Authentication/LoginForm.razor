@@ -1,69 +1,57 @@
 ﻿@using Radzen
 
 <div class="auth-form-wrapper">
-    <RadzenTemplateForm TItem="LoginDto"
-                        Data="@_model"
-                        Submit="@HandleSubmit"
-                        InvalidSubmit="@OnInvalidSubmit">
+
+    <RadzenTemplateForm TItem="LoginDto" Data="@_model" Submit="@HandleSubmit">
 
         <RadzenStack Gap="1.25rem">
 
-            <RadzenFormField Text="Email address" Variant="@_variant">
+            <RadzenFormField Text="Email address" Variant="Variant.Outlined" Style="width: 100%">
                 <ChildContent>
                     <RadzenTextBox Name="Email"
                                    @bind-Value="@_model.Email"
                                    @oninput="ClearError"
-                                   AutoCompleteType="AutoCompleteType.Email" />
+                                   AutoCompleteType="AutoCompleteType.Email"
+                                   aria-label="Email address" />
                 </ChildContent>
-
                 <Helper>
-                    <RadzenRequiredValidator Component="Email"
-                                             Text="Email is required." />
-
-                    <RadzenEmailValidator Component="Email"
-                                          Text="Enter a valid email address." />
+                    <RadzenRequiredValidator Component="Email" Text="Email is required." />
+                    <RadzenEmailValidator Component="Email" Text="Enter a valid email address." />
                 </Helper>
             </RadzenFormField>
 
-            <RadzenFormField Text="Password" Variant="@_variant">
-                <ChildContent>
-                    <RadzenPassword Name="Password"
-                                    @bind-Value="@_model.Password"
-                                    @oninput="ClearError"
-                                    AutoCompleteType="AutoCompleteType.Off"
-                                    aria-label="Enter password" />
-                </ChildContent>
+            <div class="password-group">
+                <RadzenFormField Text="Password" Variant="Variant.Outlined" Style="width: 100%">
+                    <ChildContent>
+                        <RadzenPassword Name="Password"
+                                        @bind-Value="@_model.Password"
+                                        @oninput="ClearError"
+                                        AutoCompleteType="AutoCompleteType.CurrentPassword"
+                                        aria-label="Password" />
+                    </ChildContent>
+                    <Helper>
+                        <RadzenRequiredValidator Component="Password" Text="Password is required." />
+                    </Helper>
+                </RadzenFormField>
 
-                <Helper>
-                    <RadzenRequiredValidator Component="Password"
-                                             Text="Password is required." />
-                </Helper>
-            </RadzenFormField>
-
-            <a class="forgot-link" href="/forgot-password">
-                Forgot password?
-            </a>
-
-            <div class="auth-error-slot">
-                @if (!string.IsNullOrWhiteSpace(_error))
-                {
-                    <div class="auth-error" role="alert">
-                        <span class="error-icon">!</span>
-                        <span class="error-message">@_error</span>
-                    </div>
-                }
+                <a class="forgot-link" href="/forgot-password">Forgot password?</a>
             </div>
+
+            <RadzenAlert Visible="@(_error is not null)"
+                         AlertStyle="AlertStyle.Danger"
+                         Variant="Variant.Flat"
+                         Shade="Shade.Lighter"
+                         Size="AlertSize.Small"
+                         AllowClose="false">
+                @_error
+            </RadzenAlert>
 
             <RadzenButton ButtonType="ButtonType.Submit"
-                          class="submit-button"
-                          Disabled="@_isLoading"
-                          IsBusy="@_isLoading"
+                          Text="Sign in"
                           BusyText="Signing in..."
-                          Text="Sign in" />
-
-            <div class="auth-divider">
-                <span>or</span>
-            </div>
+                          IsBusy="@_isLoading"
+                          Size="ButtonSize.Large"
+                          Style="width: 100%" />
 
             <p class="auth-switch">
                 Don't have an account?
@@ -79,8 +67,7 @@
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private AuthService AuthService { get; set; } = default!;
 
-    private Variant _variant = Variant.Outlined;
-    private LoginDto _model = new();
+    private readonly LoginDto _model = new();
     private bool _isLoading;
     private string? _error;
 
@@ -89,32 +76,29 @@
         _isLoading = true;
         _error = null;
 
-        var result = await AuthService.LoginAsync(model);
-
-        if (result.Success)
+        try
         {
-            var destination = result.WasReactivated
-                ? "/dashboard?reactivated=true"
-                : "/dashboard";
+            var result = await AuthService.LoginAsync(model);
 
-            Navigation.NavigateTo(destination);
-            return;
+            if (result.Success)
+            {
+                // Leave the button busy while navigating away.
+                Navigation.NavigateTo(result.WasReactivated
+                    ? "/dashboard?reactivated=true"
+                    : "/dashboard");
+                return;
+            }
+
+            _error = result.Error;
+        }
+        catch (Exception)
+        {
+            // Network or API failure: without this the button would stay busy forever.
+            _error = "We couldn't sign you in. Check your connection and try again.";
         }
 
-        _error = result.Error;
         _isLoading = false;
     }
 
-    private void OnInvalidSubmit()
-    {
-        _error = "Please fill in all required fields.";
-    }
-
-    private void ClearError()
-    {
-        if (_error is not null)
-        {
-            _error = null;
-        }
-    }
+    private void ClearError() => _error = null;
 }

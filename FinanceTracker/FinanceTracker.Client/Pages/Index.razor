@@ -1,18 +1,36 @@
 ﻿@page "/"
 @layout LandingLayout
+@inject AuthStateProvider AuthStateProvider
+@inject NavigationManager Navigation
 
-<AuthorizeView>
-    <NotAuthorized>
-        <LandingPage />
-    </NotAuthorized>
-    <Authorized>
-        @{
-            Navigation.NavigateTo("/dashboard");
+@if (_checking)
+{
+    <div class="auth-check" role="status" aria-label="Checking your session">
+        <RadzenProgressBarCircular ShowValue="false"
+                                   Mode="ProgressBarMode.Indeterminate"
+                                   Size="ProgressBarCircularSize.Medium" />
+    </div>
+}
+else
+{
+    <LandingPage />
+}
+
+@code {
+    private bool _checking = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
+
+        if (state.User.Identity?.IsAuthenticated == true)
+        {
+            // replace: true keeps "/" out of history, so Back doesn't bounce off this page.
+            // _checking stays true so the landing page never flashes before the redirect.
+            Navigation.NavigateTo("/dashboard", replace: true);
+            return;
         }
-    </Authorized>
-    <Authorizing>
-        <div style="display:flex;align-items:center;justify-content:center;min-height:100vh">
-            <div class="spinner-border text-primary"></div>
-        </div>
-    </Authorizing>
-</AuthorizeView>
+
+        _checking = false;
+    }
+}

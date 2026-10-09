@@ -2,93 +2,85 @@
 @using Radzen
 
 <div class="auth-form-wrapper">
-    <RadzenTemplateForm TItem="RegisterDto"
-                        Data="@_model"
-                        Submit="@HandleSubmit"
-                        InvalidSubmit="@OnInvalidSubmit">
+
+    <RadzenTemplateForm TItem="RegisterDto" Data="@_model" Submit="@HandleSubmit">
 
         <RadzenStack Gap="1.25rem">
 
-            <RadzenFormField Text="Full name" Variant="@_variant">
+            <RadzenFormField Text="Full name" Variant="Variant.Outlined" Style="width: 100%">
                 <ChildContent>
                     <RadzenTextBox Name="FullName"
                                    @bind-Value="@_model.FullName"
                                    @oninput="ClearError"
-                                   AutoCompleteType="AutoCompleteType.Name" />
+                                   AutoCompleteType="AutoCompleteType.Name"
+                                   aria-label="Full name" />
                 </ChildContent>
-
                 <Helper>
-                    <RadzenRequiredValidator Component="FullName"
-                                             Text="Full name is required." />
+                    <RadzenRequiredValidator Component="FullName" Text="Full name is required." />
                 </Helper>
             </RadzenFormField>
 
-            <RadzenFormField Text="Email address" Variant="@_variant">
+            <RadzenFormField Text="Email address" Variant="Variant.Outlined" Style="width: 100%">
                 <ChildContent>
                     <RadzenTextBox Name="Email"
                                    @bind-Value="@_model.Email"
                                    @oninput="ClearError"
-                                   AutoCompleteType="AutoCompleteType.Email" />
+                                   AutoCompleteType="AutoCompleteType.Email"
+                                   aria-label="Email address" />
                 </ChildContent>
-
                 <Helper>
-                    <RadzenRequiredValidator Component="Email"
-                                             Text="Email is required." />
-
-                    <RadzenEmailValidator Component="Email"
-                                          Text="Enter a valid email address." />
+                    <RadzenRequiredValidator Component="Email" Text="Email is required." />
+                    <RadzenEmailValidator Component="Email" Text="Enter a valid email address." />
                 </Helper>
             </RadzenFormField>
 
-            <RadzenFormField Text="Password" Variant="@_variant">
+            <RadzenFormField Text="Password" Variant="Variant.Outlined" Style="width: 100%">
                 <ChildContent>
                     <RadzenPassword Name="Password"
                                     @bind-Value="@_model.Password"
                                     @oninput="ClearError"
-                                    AutoComplete="false" />
+                                    AutoCompleteType="AutoCompleteType.NewPassword"
+                                    aria-label="Password" />
                 </ChildContent>
-
                 <Helper>
+                    <RadzenRequiredValidator Component="Password" Text="Password is required." />
                     <RadzenLengthValidator Component="Password"
                                            Min="8"
                                            Text="Password must be at least 8 characters." />
                 </Helper>
             </RadzenFormField>
 
-            <RadzenFormField Text="Confirm password" Variant="@_variant">
+            <RadzenFormField Text="Confirm password" Variant="Variant.Outlined" Style="width: 100%">
                 <ChildContent>
                     <RadzenPassword Name="ConfirmPassword"
                                     @bind-Value="@_model.ConfirmPassword"
                                     @oninput="ClearError"
-                                    AutoComplete="false" />
+                                    AutoCompleteType="AutoCompleteType.NewPassword"
+                                    aria-label="Confirm password" />
                 </ChildContent>
-
                 <Helper>
-                    <RadzenRequiredValidator Component="ConfirmPassword"
-                                             Text="Please confirm your password." />
-
+                    <RadzenRequiredValidator Component="ConfirmPassword" Text="Please confirm your password." />
                     <RadzenCompareValidator Component="ConfirmPassword"
                                             Value="@_model.Password"
                                             Text="Passwords do not match." />
                 </Helper>
             </RadzenFormField>
 
-            <div class="auth-error-slot">
-                @if (!string.IsNullOrWhiteSpace(_error))
-                {
-                    <div class="auth-error" role="alert">
-                        <span class="error-icon">!</span>
-                        <span class="error-message">@_error</span>
-                    </div>
-                }
-            </div>
+            <RadzenAlert Visible="@(_error is not null)"
+                         AlertStyle="AlertStyle.Danger"
+                         Variant="Variant.Flat"
+                         Shade="Shade.Lighter"
+                         Size="AlertSize.Small"
+                         AllowClose="false">
+                @_error
+            </RadzenAlert>
 
             <RadzenButton ButtonType="ButtonType.Submit"
-                          class="submit-button"
-                          Disabled="@_isLoading"
-                          IsBusy="@_isLoading"
+                          Text="Create account"
                           BusyText="Creating account..."
-                          Text="Create account" />
+                          IsBusy="@_isLoading"
+                          Size="ButtonSize.Large"
+                          Style="width: 100%" />
 
             <p class="auth-switch">
                 Already have an account?
@@ -104,8 +96,7 @@
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private AuthService AuthService { get; set; } = default!;
 
-    private Variant _variant = Variant.Outlined;
-    private RegisterDto _model = new();
+    private readonly RegisterDto _model = new();
     private bool _isLoading;
     private string? _error;
 
@@ -114,28 +105,27 @@
         _isLoading = true;
         _error = null;
 
-        var error = await AuthService.RegisterAsync(model);
-
-        if (error is null)
+        try
         {
-            Navigation.NavigateTo("/dashboard");
-            return;
+            var error = await AuthService.RegisterAsync(model);
+
+            if (error is null)
+            {
+                // Leave the button busy while navigating away.
+                Navigation.NavigateTo("/dashboard");
+                return;
+            }
+
+            _error = error;
+        }
+        catch (Exception)
+        {
+            // Network or API failure: without this the button would stay busy forever.
+            _error = "We couldn't create your account. Check your connection and try again.";
         }
 
-        _error = error;
         _isLoading = false;
     }
 
-    private void OnInvalidSubmit()
-    {
-        _error = "Please fill in all required fields correctly.";
-    }
-
-    private void ClearError()
-    {
-        if (_error is not null)
-        {
-            _error = null;
-        }
-    }
+    private void ClearError() => _error = null;
 }

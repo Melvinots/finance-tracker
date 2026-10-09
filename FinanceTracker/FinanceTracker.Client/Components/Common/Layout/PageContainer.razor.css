@@ -66,8 +66,8 @@
 }
 
     .page-header-icon ::deep svg {
-        width: 1.25rem;
-        height: 1.25rem;
+        width: 1rem;
+        height: 1rem;
     }
 
 .page-header-text {
@@ -81,7 +81,7 @@
     margin: 0;
     color: var(--ink);
     font-family: var(--page-title-family);
-    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+    font-size: clamp(1rem, 1.1rem + 0.6vw, 1.25rem);
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.03em;
