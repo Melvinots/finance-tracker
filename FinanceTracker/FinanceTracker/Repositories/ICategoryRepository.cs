@@ -1,6 +1,4 @@
-﻿using FinanceTracker.Models;
-using FinanceTracker.Shared.DTOs.Categories;
-
+﻿
 namespace FinanceTracker.Repositories
 {
     public interface ICategoryRepository

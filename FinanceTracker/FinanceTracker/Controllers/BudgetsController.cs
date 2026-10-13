@@ -1,16 +1,12 @@
 ﻿using FinanceTracker.Services;
 using FinanceTracker.Shared.DTOs.Budgets;
-using FinanceTracker.Shared.DTOs.Categories;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace FinanceTracker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class BudgetsController : Controller
+    public class BudgetsController : ControllerBase
     {
         private readonly IBudgetService _service;
 

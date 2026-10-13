@@ -1,16 +1,13 @@
 ﻿using FinanceTracker.Data;
 using FinanceTracker.Services;
 using FinanceTracker.Shared.DTOs.Categories;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace FinanceTracker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class CategoriesController : Controller
+    public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _service;
 

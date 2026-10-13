@@ -65,7 +65,7 @@ namespace FinanceTracker.Services
             if (transaction.CategoryId != dto.CategoryId)
             {
                 var newCategory = await _repo.GetCategoryByIdAsync(dto.CategoryId, userId)
-                    ?? throw new InvalidOperationException("Category not found.");
+                    ?? throw new KeyNotFoundException("Category not found.");
 
                 transaction.CategoryId = dto.CategoryId;
                 transaction.Category = newCategory;

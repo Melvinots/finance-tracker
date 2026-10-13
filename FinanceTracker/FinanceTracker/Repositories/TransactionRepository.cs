@@ -1,7 +1,4 @@
-﻿using FinanceTracker.Data;
-using FinanceTracker.Models;
-using Microsoft.EntityFrameworkCore;
-
+﻿
 namespace FinanceTracker.Repositories
 {
     public class TransactionRepository : ITransactionRepository

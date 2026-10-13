@@ -1,15 +1,11 @@
 ﻿ using FinanceTracker.Services;
-using FinanceTracker.Shared.DTOs.UserSettings;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace FinanceTracker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class UserSettingsController : Controller
+    public class UserSettingsController : ControllerBase
     {
         private readonly IUserSettingsService _service;
 

@@ -1,6 +1,4 @@
-﻿using FinanceTracker.Models;
-using FinanceTracker.Shared.DTOs.UserSettings;
-
+﻿
 namespace FinanceTracker.Repositories
 {
     public interface IUserSettingsRepository

@@ -1,5 +1,4 @@
-﻿using FinanceTracker.Shared.DTOs.UserSettings;
-
+﻿
 namespace FinanceTracker.Services
 {
     public interface IUserSettingsService
