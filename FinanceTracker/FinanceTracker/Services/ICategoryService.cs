@@ -1,5 +1,4 @@
-﻿using FinanceTracker.Models;
-using FinanceTracker.Shared.DTOs.Categories;
+﻿using FinanceTracker.Shared.DTOs.Categories;
 
 namespace FinanceTracker.Services
 {

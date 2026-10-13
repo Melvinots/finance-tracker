@@ -1,5 +1,4 @@
-﻿using FinanceTracker.Models;
-
+﻿
 namespace FinanceTracker.Repositories
 {
     public interface IBudgetRepository

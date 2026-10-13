@@ -1,5 +1,4 @@
-﻿using FinanceTracker.Models;
-using FinanceTracker.Repositories;
+﻿using FinanceTracker.Repositories;
 using FinanceTracker.Shared.DTOs.Categories;
 
 namespace FinanceTracker.Services
@@ -34,7 +33,7 @@ namespace FinanceTracker.Services
         {
             var category = new Category
             {
-                Name = dto.Name,
+                Name = dto.Name ?? "",
                 Color = dto.Color,
                 Icon = dto.Icon,
                 UserId = userId
@@ -49,7 +48,7 @@ namespace FinanceTracker.Services
             var category = await _repo.GetByIdAsync(id, userId)
                 ?? throw new KeyNotFoundException("Category not found.");
 
-            category.Name = dto.Name;
+            category.Name = dto.Name ?? "";
             category.Color = dto.Color;
             category.Icon = dto.Icon;
 
