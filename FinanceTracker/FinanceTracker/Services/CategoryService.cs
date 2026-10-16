@@ -33,7 +33,7 @@ namespace FinanceTracker.Services
         {
             var category = new Category
             {
-                Name = dto.Name ?? "",
+                Name = dto.Name,
                 Color = dto.Color,
                 Icon = dto.Icon,
                 UserId = userId
@@ -48,7 +48,7 @@ namespace FinanceTracker.Services
             var category = await _repo.GetByIdAsync(id, userId)
                 ?? throw new KeyNotFoundException("Category not found.");
 
-            category.Name = dto.Name ?? "";
+            category.Name = dto.Name;
             category.Color = dto.Color;
             category.Icon = dto.Icon;
 
@@ -76,8 +76,8 @@ namespace FinanceTracker.Services
         {
             Id = t.Id,
             Name = t.Name,
-            Icon = t.Icon ?? string.Empty,
-            Color = t.Color ?? string.Empty,
+            Icon = t.Icon,
+            Color = t.Color,
             IsSystemDefault = t.IsSystemDefault
         };
     }

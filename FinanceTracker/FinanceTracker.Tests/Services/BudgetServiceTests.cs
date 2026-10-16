@@ -31,6 +31,7 @@ namespace FinanceTracker.Tests.Services
                 new() { Id = 1, LimitAmount = 100m, Month = 10, Year = 2026, CategoryId = 2, Category = Food() },
                 new() { Id = 2, LimitAmount = 200m, Month = 10, Year = 2026, CategoryId = 2, Category = Food() }
             };
+
             _repo.Setup(r => r.GetAllByUserAsync(UserId, 10, 2026)).ReturnsAsync(list);
 
             var result = await _sut.GetAllByUserAsync(UserId, 10, 2026);
@@ -126,6 +127,9 @@ namespace FinanceTracker.Tests.Services
             _repo.Verify(r => r.CreateAsync(It.Is<Budget>(b =>
                 b.UserId == UserId &&
                 b.CategoryId == 2 &&
+                b.LimitAmount == 300m &&
+                b.Month == 10 &&
+                b.Year == 2026 &&
                 b.Category == category)), Times.Once);
         }
 
@@ -142,36 +146,45 @@ namespace FinanceTracker.Tests.Services
             _repo.Verify(r => r.CreateAsync(It.IsAny<Budget>()), Times.Never);
         }
 
-        // Documents current behavior: a null limit is stored as 0
         [Fact]
-        public async Task CreateAsync_WithNullLimit_StoresZero()
+        public async Task CreateAsync_WithNullLimit_ThrowsBeforeTouchingTheRepository()
         {
-            _repo.Setup(r => r.GetCategoryByIdAsync(2, UserId)).ReturnsAsync(Food());
-            _repo.Setup(r => r.CreateAsync(It.IsAny<Budget>()))
-                 .ReturnsAsync((Budget b) => b);
-
             var dto = new SaveBudgetDto { LimitAmount = null, CategoryId = 2 };
 
-            var result = await _sut.CreateAsync(dto, UserId);
+            await Assert.ThrowsAsync<ArgumentException>(() => _sut.CreateAsync(dto, UserId));
 
-            Assert.Equal(0m, result.LimitAmount);
+            _repo.Verify(r => r.GetCategoryByIdAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
+            _repo.Verify(r => r.CreateAsync(It.IsAny<Budget>()), Times.Never);
         }
 
         // ── UpdateAsync ──────────────────────────────────────────────
+
+        [Fact]
+        public async Task UpdateAsync_WithNullLimit_ThrowsBeforeTouchingTheRepository()
+        {
+            var dto = new SaveBudgetDto { LimitAmount = null, CategoryId = 2 };
+
+            await Assert.ThrowsAsync<ArgumentException>(() => _sut.UpdateAsync(1, dto, UserId));
+
+            _repo.Verify(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
+            _repo.Verify(r => r.UpdateAsync(It.IsAny<Budget>()), Times.Never);
+        }
 
         [Fact]
         public async Task UpdateAsync_WhenNotFound_ThrowsAndDoesNotSave()
         {
             _repo.Setup(r => r.GetByIdAsync(1, UserId)).ReturnsAsync((Budget?)null);
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(
-                () => _sut.UpdateAsync(1, new SaveBudgetDto(), UserId));
+            // Limit must be valid, or the null check would throw first
+            var dto = new SaveBudgetDto { LimitAmount = 100m, CategoryId = 2 };
+
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => _sut.UpdateAsync(1, dto, UserId));
 
             _repo.Verify(r => r.UpdateAsync(It.IsAny<Budget>()), Times.Never);
         }
 
         [Fact]
-        public async Task UpdateAsync_WhenFound_UpdatesFieldsAndSaves()
+        public async Task UpdateAsync_WhenFound_UpdatesFieldsOnFetchedBudgetAndSaves()
         {
             var existing = new Budget
             {
@@ -194,7 +207,34 @@ namespace FinanceTracker.Tests.Services
             Assert.Equal(450m, result.LimitAmount);
             Assert.Equal(11, result.Month);
             Assert.Equal(2027, result.Year);
+
             _repo.Verify(r => r.UpdateAsync(existing), Times.Once);
+            Assert.Equal(1, existing.Id);
+            Assert.Equal(UserId, existing.UserId);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_IgnoresCategoryIdInDto_KeepsExistingCategory()
+        {
+            var existing = new Budget
+            {
+                Id = 1,
+                UserId = UserId,
+                LimitAmount = 100m,
+                CategoryId = 2,
+                Category = Food()
+            };
+            _repo.Setup(r => r.GetByIdAsync(1, UserId)).ReturnsAsync(existing);
+            _repo.Setup(r => r.UpdateAsync(It.IsAny<Budget>()))
+                 .ReturnsAsync((Budget b) => b);
+
+            var dto = new SaveBudgetDto { LimitAmount = 150m, CategoryId = 3 };   // different category
+
+            var result = await _sut.UpdateAsync(1, dto, UserId);
+
+            Assert.Equal(2, result.CategoryId);
+            Assert.Equal("Food", result.CategoryName);
+            _repo.Verify(r => r.GetCategoryByIdAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
         }
 
         // ── DeleteAsync ──────────────────────────────────────────────
@@ -204,8 +244,7 @@ namespace FinanceTracker.Tests.Services
         {
             _repo.Setup(r => r.GetByIdAsync(1, UserId)).ReturnsAsync((Budget?)null);
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(
-                () => _sut.DeleteAsync(1, UserId));
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => _sut.DeleteAsync(1, UserId));
 
             _repo.Verify(r => r.DeleteAsync(It.IsAny<Budget>()), Times.Never);
         }

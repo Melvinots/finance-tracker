@@ -140,7 +140,7 @@
     {
         _model = new SaveCategoryDto
         {
-            Name = Category?.Name,
+            Name = Category?.Name ?? "",
             Color = Category?.Color ?? "",
             Icon = Category?.Icon ?? ""
         };

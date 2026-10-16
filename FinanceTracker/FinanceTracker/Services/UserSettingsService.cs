@@ -19,7 +19,8 @@ namespace FinanceTracker.Services
 
         public async Task<UserSettingsDto> UpdateAsync(int id, SaveUserSettingsDto dto, int userId)
         {
-            var settings = await _repo.GetByIdAsync(id, userId);
+            var settings = await _repo.GetByIdAsync(id, userId)
+                ?? throw new KeyNotFoundException("User settings not found.");
 
             settings.Currency = dto.Currency;
             settings.Appearance = dto.Appearance;

@@ -1,6 +1,5 @@
 ﻿using FinanceTracker.Controllers;
 using FinanceTracker.Services;
-using FinanceTracker.Shared.DTOs.Settings;
 using FinanceTracker.Shared.DTOs.UserSettings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +8,6 @@ using Moq;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace FinanceTracker.Tests.Controllers
 {

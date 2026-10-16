@@ -81,19 +81,6 @@ namespace FinanceTracker.Tests.Services
             Assert.True(result.IsSystemDefault);
         }
 
-        [Fact]
-        public async Task GetByIdAsync_WhenColorAndIconAreNull_MapsToEmptyStrings()
-        {
-            var category = new Category { Id = 1, Name = "Food", Color = null!, Icon = null! };
-            _repo.Setup(r => r.GetByIdAsync(1, UserId)).ReturnsAsync(category);
-
-            var result = await _sut.GetByIdAsync(1, UserId);
-
-            Assert.NotNull(result);
-            Assert.Equal(string.Empty, result.Color);
-            Assert.Equal(string.Empty, result.Icon);
-        }
-
         // ── GetTransactionCountAsync ─────────────────────────────────
 
         [Fact]
@@ -112,7 +99,7 @@ namespace FinanceTracker.Tests.Services
         public async Task CreateAsync_SavesCategoryForCurrentUser_AndReturnsDto()
         {
             _repo.Setup(r => r.CreateAsync(It.IsAny<Category>()))
-                 .ReturnsAsync((Category c) => c);
+                 .ReturnsAsync((Category c) => c);   // echo: result reflects what the service built
 
             var dto = new SaveCategoryDto { Name = "Food", Color = "#fff", Icon = "Cart" };
 
@@ -123,36 +110,13 @@ namespace FinanceTracker.Tests.Services
             Assert.Equal("Cart", result.Icon);
             Assert.False(result.IsSystemDefault);
 
+            // What was actually saved
             _repo.Verify(r => r.CreateAsync(It.Is<Category>(c =>
                 c.UserId == UserId &&
                 c.Name == "Food" &&
+                c.Color == "#fff" &&
+                c.Icon == "Cart" &&
                 !c.IsSystemDefault)), Times.Once);
-        }
-
-        // Documents current behavior: a null name is saved as an empty string
-        [Fact]
-        public async Task CreateAsync_WithNullName_SavesEmptyName()
-        {
-            _repo.Setup(r => r.CreateAsync(It.IsAny<Category>()))
-                 .ReturnsAsync((Category c) => c);
-
-            var result = await _sut.CreateAsync(new SaveCategoryDto { Name = null }, UserId);
-
-            Assert.Equal(string.Empty, result.Name);
-        }
-
-        [Fact]
-        public async Task CreateAsync_WithNullColorAndIcon_ReturnsEmptyStrings()
-        {
-            _repo.Setup(r => r.CreateAsync(It.IsAny<Category>()))
-                 .ReturnsAsync((Category c) => c);
-
-            var dto = new SaveCategoryDto { Name = "Food", Color = null, Icon = null };
-
-            var result = await _sut.CreateAsync(dto, UserId);
-
-            Assert.Equal(string.Empty, result.Color);
-            Assert.Equal(string.Empty, result.Icon);
         }
 
         // ── UpdateAsync ──────────────────────────────────────────────
@@ -169,7 +133,7 @@ namespace FinanceTracker.Tests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_WhenFound_UpdatesFieldsAndSaves()
+        public async Task UpdateAsync_WhenFound_UpdatesFieldsOnFetchedCategoryAndSaves()
         {
             var existing = new Category
             {
@@ -177,7 +141,7 @@ namespace FinanceTracker.Tests.Services
                 UserId = UserId,
                 Name = "Old",
                 Color = "#000",
-                Icon = "Old"
+                Icon = "OldIcon"
             };
             _repo.Setup(r => r.GetByIdAsync(1, UserId)).ReturnsAsync(existing);
             _repo.Setup(r => r.UpdateAsync(It.IsAny<Category>()))
@@ -190,7 +154,11 @@ namespace FinanceTracker.Tests.Services
             Assert.Equal("New", result.Name);
             Assert.Equal("#fff", result.Color);
             Assert.Equal("Cart", result.Icon);
+
+            // The SAME fetched object must be saved (not a new one), and its identity must not change
             _repo.Verify(r => r.UpdateAsync(existing), Times.Once);
+            Assert.Equal(1, existing.Id);
+            Assert.Equal(UserId, existing.UserId);
         }
 
         // ── DeleteAsync ──────────────────────────────────────────────
@@ -216,7 +184,7 @@ namespace FinanceTracker.Tests.Services
             await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _sut.DeleteAsync(1, UserId));
 
-            // Stops before even looking for a fallback
+            // The guard runs first: no fallback lookup, no delete
             _repo.Verify(r => r.GetSystemDefaultAsync(It.IsAny<int>()), Times.Never);
             _repo.Verify(r => r.DeleteWithReassignmentAsync(
                 It.IsAny<Category>(), It.IsAny<int>(), It.IsAny<int>()), Times.Never);
@@ -246,7 +214,7 @@ namespace FinanceTracker.Tests.Services
 
             await _sut.DeleteAsync(2, UserId);
 
-            // Transactions must move to the fallback (99), not to some other ID
+            // Transactions must move to the fallback (99), for this user
             _repo.Verify(r => r.DeleteWithReassignmentAsync(category, 99, UserId), Times.Once);
         }
     }

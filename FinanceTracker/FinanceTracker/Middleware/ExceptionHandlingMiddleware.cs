@@ -33,6 +33,11 @@ namespace FinanceTracker.Middleware
                 _logger.LogWarning(ex, "Invalid operation");
                 await WriteProblem(context, StatusCodes.Status400BadRequest, "Bad Request", ex.Message);
             }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Invalid argument");
+                await WriteProblem(context, StatusCodes.Status400BadRequest, "Bad Request", ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception on {Path}", context.Request.Path);
