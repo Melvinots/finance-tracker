@@ -19,7 +19,7 @@ namespace FinanceTracker.Client.Services
             {
                 Severity = NotificationSeverity.Success,
                 Summary = summary,
-                Detail = detail ?? "An unexpected error occurred.",
+                Detail = detail ?? "",
                 Duration = duration,
                 Payload = DateTime.Now.Ticks
             });
@@ -49,7 +49,7 @@ namespace FinanceTracker.Client.Services
             {
                 Severity = NotificationSeverity.Warning,
                 Summary = summary,
-                Detail = detail ?? "An unexpected error occurred.",
+                Detail = detail ?? "",
                 Duration = duration,
                 Payload = DateTime.Now.Ticks
             });
@@ -61,7 +61,7 @@ namespace FinanceTracker.Client.Services
             {
                 Severity = NotificationSeverity.Info,
                 Summary = summary,
-                Detail = detail ?? "An unexpected error occurred.",
+                Detail = detail ?? "",
                 Duration = duration,
                 Payload = DateTime.Now.Ticks
             });

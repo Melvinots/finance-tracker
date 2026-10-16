@@ -22,10 +22,13 @@ namespace FinanceTracker.Services
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
         {
             var exists = await _context.Users
-                .AnyAsync(u => u.Email == dto.Email);
+                .AnyAsync(u => u.Email == dto.Email.ToLower());
 
             if (exists)
                 throw new InvalidOperationException("Email already registered.");
+
+            ValidateEmail(dto.Email);
+            ValidatePassword(dto.Password);
 
             var user = new User
             {
@@ -88,7 +91,7 @@ namespace FinanceTracker.Services
             if (user is null) return;
             
             var resetToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
-            Console.WriteLine($"[DEV] Password reset token for {dto.Email}: {resetToken}");
+            //Console.WriteLine($"[DEV] Password reset token for {dto.Email}: {resetToken}");
         }
 
         public async Task RevokeTokenAsync(string refreshToken)
@@ -171,9 +174,7 @@ namespace FinanceTracker.Services
             return token;
         }
 
-
-
-        public async Task SeedDefaultCategoriesAsync(int userId)
+        private async Task SeedDefaultCategoriesAsync(int userId)
         {
             var exists = await _context.Categories
                 .AnyAsync(c => c.UserId == userId && c.Name == "Other");
@@ -190,6 +191,39 @@ namespace FinanceTracker.Services
                 });
                 await _context.SaveChangesAsync();
             }
+        }
+
+        private void ValidateEmail(string? email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                throw new InvalidOperationException("Email is required.");
+
+            if (!System.Net.Mail.MailAddress.TryCreate(email, out var address)
+                || address.Address != email)
+            {
+                throw new InvalidOperationException("Please enter a valid email address.");
+            }
+        }
+
+        private void ValidatePassword(string? password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+                throw new InvalidOperationException("Password is required.");
+
+            if (password.Length < 8)
+                throw new InvalidOperationException("Password must be at least 8 characters long.");
+
+            if (!password.Any(char.IsUpper))
+                throw new InvalidOperationException("Password must contain at least one uppercase letter.");
+
+            if (!password.Any(char.IsLower))
+                throw new InvalidOperationException("Password must contain at least one lowercase letter.");
+
+            if (!password.Any(char.IsDigit))
+                throw new InvalidOperationException("Password must contain at least one number.");
+
+            if (!password.Any(c => !char.IsLetterOrDigit(c)))
+                throw new InvalidOperationException("Password must contain at least one special character.");
         }
     }
 }

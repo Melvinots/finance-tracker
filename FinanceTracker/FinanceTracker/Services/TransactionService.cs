@@ -27,6 +27,9 @@ namespace FinanceTracker.Services
 
         public async Task<TransactionDto> CreateAsync(SaveTransactionDto dto, int userId)
         {
+            var amount = dto.Amount
+                ?? throw new ArgumentException("Amount is required.", nameof(dto));
+
             var category = await _repo.GetCategoryByIdAsync(dto.CategoryId, userId);
 
             if (category == null)
@@ -37,7 +40,7 @@ namespace FinanceTracker.Services
 
             var transaction = new Transaction
             {
-                Amount = dto.Amount ?? 0,
+                Amount = amount,
                 Description = dto.Description,
                 Date = dto.Date,
                 IsExpense = dto.IsExpense,
@@ -53,10 +56,13 @@ namespace FinanceTracker.Services
 
         public async Task<TransactionDto> UpdateAsync(int id, SaveTransactionDto dto, int userId)
         {
+            var amount = dto.Amount
+                ?? throw new ArgumentException("Amount is required.", nameof(dto));
+
             var transaction = await _repo.GetByIdAsync(id, userId)
                 ?? throw new KeyNotFoundException("Transaction not found.");
 
-            transaction.Amount = dto.Amount ?? 0;
+            transaction.Amount = amount;
             transaction.Description = dto.Description;
             transaction.Date = dto.Date;
             transaction.IsExpense = dto.IsExpense;

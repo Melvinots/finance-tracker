@@ -26,12 +26,15 @@ namespace FinanceTracker.Services
 
         public async Task<BudgetDto> CreateAsync(SaveBudgetDto dto, int userId)
         {
+            var amount = dto.LimitAmount
+                ?? throw new ArgumentException("Limit Amount is required.", nameof(dto));
+
             var category = await _repo.GetCategoryByIdAsync(dto.CategoryId, userId)
                 ?? throw new InvalidOperationException("Category not found.");
 
             var budget = new Budget
             {
-                LimitAmount = dto.LimitAmount ?? 0,
+                LimitAmount = amount,
                 Month = dto.Month,
                 Year = dto.Year,
                 CategoryId = dto.CategoryId,
@@ -45,10 +48,13 @@ namespace FinanceTracker.Services
 
         public async Task<BudgetDto> UpdateAsync(int id, SaveBudgetDto dto, int userId)
         {
+            var amount = dto.LimitAmount
+                ?? throw new ArgumentException("Limit Amount is required.", nameof(dto));
+
             var budget = await _repo.GetByIdAsync(id, userId)
                 ?? throw new KeyNotFoundException("Budget not found.");
 
-            budget.LimitAmount = dto.LimitAmount ?? 0;
+            budget.LimitAmount = amount;
             budget.Month = dto.Month;
             budget.Year = dto.Year;
 

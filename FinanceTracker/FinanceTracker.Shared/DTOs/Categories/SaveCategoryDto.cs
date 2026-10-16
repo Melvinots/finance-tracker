@@ -6,7 +6,7 @@ namespace FinanceTracker.Shared.DTOs.Categories
     {
         [Required(ErrorMessage = "Category name is required.")]
         [StringLength(50, ErrorMessage = "Category name must be 50 characters or less.")]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public string Color { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
     }
