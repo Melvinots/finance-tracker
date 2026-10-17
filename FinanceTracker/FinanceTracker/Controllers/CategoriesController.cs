@@ -3,9 +3,10 @@ using FinanceTracker.Shared.DTOs.Categories;
 
 namespace FinanceTracker.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     [Authorize]
+    [ApiController]
+    [Route("api/categories")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _service;
@@ -15,7 +16,8 @@ namespace FinanceTracker.Controllers
             _service = service;
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet]
+        [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<CategoryDto>>> GetAll()
         {
             var userId = GetUserId();
@@ -24,8 +26,10 @@ namespace FinanceTracker.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetById/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("{id:int}", Name = "GetCategoryById")]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<CategoryDto>> GetById(int id)
         {
             var userId = GetUserId();
             var result = await _service.GetByIdAsync(id, userId);
@@ -33,8 +37,9 @@ namespace FinanceTracker.Controllers
             return result is null ? NotFound() : Ok(result);
         }
 
-        [HttpGet("GetTransactionCount/{id}")]
-        public async Task<IActionResult> GetTransactionCount(int id)
+        [HttpGet("{id:int}/transaction-count")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> GetTransactionCount(int id)
         {
             var userId = GetUserId();
             var result = await _service.GetTransactionCountAsync(id, userId);
@@ -42,17 +47,22 @@ namespace FinanceTracker.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create(SaveCategoryDto dto)
+        [HttpPost]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CategoryDto>> Create([FromBody] SaveCategoryDto dto)
         {
             var userId = GetUserId();
             var result = await _service.CreateAsync(dto, userId);
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            return CreatedAtRoute("GetCategoryById", new { id = result.Id }, result);
         }
 
-        [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int id, SaveCategoryDto dto)
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<CategoryDto>> Update(int id, [FromBody] SaveCategoryDto dto)
         {
             var userId = GetUserId();
             var result = await _service.UpdateAsync(id, dto, userId);
@@ -60,7 +70,9 @@ namespace FinanceTracker.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetUserId();

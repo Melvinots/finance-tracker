@@ -38,10 +38,11 @@ namespace FinanceTracker.Tests.Controllers
         [Fact]
         public async Task GetAll_ReturnsOkWithBudgets_ForRequestedMonthAndYear()
         {
+            var dto = new BudgetQueryDto { Month = 10, Year = 2026 };
             var list = new List<BudgetDto> { new() { Id = 1 }, new() { Id = 2 } };
-            _service.Setup(s => s.GetAllByUserAsync(UserId, 10, 2026)).ReturnsAsync(list);
+            _service.Setup(s => s.GetAllByUserAsync(UserId, dto.Month, dto.Year)).ReturnsAsync(list);
 
-            var result = await _sut.GetAll(10, 2026);
+            var result = await _sut.GetAll(dto);
 
             // GetAll returns ActionResult<T>, so the response is in .Result
             var ok = Assert.IsType<OkObjectResult>(result.Result);
@@ -57,7 +58,7 @@ namespace FinanceTracker.Tests.Controllers
 
             var result = await _sut.GetById(1);
 
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<NotFoundResult>(result.Result);
         }
 
         [Fact]
@@ -68,7 +69,7 @@ namespace FinanceTracker.Tests.Controllers
 
             var result = await _sut.GetById(1);
 
-            var ok = Assert.IsType<OkObjectResult>(result);
+            var ok = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Same(dto, ok.Value);
         }
 
@@ -96,8 +97,8 @@ namespace FinanceTracker.Tests.Controllers
 
             var result = await _sut.Create(input);
 
-            var createdResult = Assert.IsType<CreatedAtActionResult>(result);
-            Assert.Equal(nameof(BudgetsController.GetById), createdResult.ActionName);
+            var createdResult = Assert.IsType<CreatedAtRouteResult>(result.Result);
+            Assert.Equal("GetBudgetById", createdResult.RouteName);
             Assert.Equal(10, createdResult.RouteValues!["id"]);
             Assert.Same(created, createdResult.Value);
         }
@@ -113,7 +114,7 @@ namespace FinanceTracker.Tests.Controllers
 
             var result = await _sut.Update(1, input);
 
-            var ok = Assert.IsType<OkObjectResult>(result);
+            var ok = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Same(updated, ok.Value);
         }
 

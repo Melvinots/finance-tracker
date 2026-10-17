@@ -57,7 +57,7 @@ namespace FinanceTracker.Tests.Controllers
 
             var result = await _sut.GetById(1);
 
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<NotFoundResult>(result.Result);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace FinanceTracker.Tests.Controllers
 
             var result = await _sut.GetById(1);
 
-            var ok = Assert.IsType<OkObjectResult>(result);
+            var ok = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Same(dto, ok.Value);
         }
 
@@ -94,7 +94,7 @@ namespace FinanceTracker.Tests.Controllers
 
             var result = await _sut.GetTransactionCount(2);
 
-            var ok = Assert.IsType<OkObjectResult>(result);
+            var ok = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Equal(7, ok.Value);
         }
 
@@ -109,8 +109,8 @@ namespace FinanceTracker.Tests.Controllers
 
             var result = await _sut.Create(input);
 
-            var createdResult = Assert.IsType<CreatedAtActionResult>(result);
-            Assert.Equal(nameof(CategoriesController.GetById), createdResult.ActionName);
+            var createdResult = Assert.IsType<CreatedAtRouteResult>(result.Result);
+            Assert.Equal("GetCategoryById", createdResult.RouteName);
             Assert.Equal(10, createdResult.RouteValues!["id"]);
             Assert.Same(created, createdResult.Value);
         }
@@ -126,7 +126,7 @@ namespace FinanceTracker.Tests.Controllers
 
             var result = await _sut.Update(1, input);
 
-            var ok = Assert.IsType<OkObjectResult>(result);
+            var ok = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Same(updated, ok.Value);
         }
 

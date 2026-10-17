@@ -3,9 +3,10 @@ using FinanceTracker.Shared.DTOs.Budgets;
 
 namespace FinanceTracker.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     [Authorize]
+    [ApiController]
+    [Route("api/budgets")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class BudgetsController : ControllerBase
     {
         private readonly IBudgetService _service;
@@ -15,17 +16,21 @@ namespace FinanceTracker.Controllers
             _service = service;
         }
 
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<List<BudgetDto>>> GetAll([FromQuery] int month, [FromQuery] int year)
+        [HttpGet]
+        [ProducesResponseType(typeof(List<BudgetDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<BudgetDto>>> GetAll([FromQuery] BudgetQueryDto dto)
         {
             var userId = GetUserId();
-            var result = await _service.GetAllByUserAsync(userId, month, year);
+            var result = await _service.GetAllByUserAsync(userId, dto.Month, dto.Year);
 
             return Ok(result);
         }
 
-        [HttpGet("GetById/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("{id:int}", Name = "GetBudgetById")]
+        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<BudgetDto>> GetById(int id)
         {
             var userId = GetUserId();
             var result = await _service.GetByIdAsync(id, userId);
@@ -33,17 +38,22 @@ namespace FinanceTracker.Controllers
             return result is null ? NotFound() : Ok(result);
         }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create(SaveBudgetDto dto)
+        [HttpPost]
+        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BudgetDto>> Create([FromBody] SaveBudgetDto dto)
         {
             var userId = GetUserId();
             var result = await _service.CreateAsync(dto, userId);
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            return CreatedAtRoute("GetBudgetById", new { id = result.Id }, result);
         }
 
-        [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int id, SaveBudgetDto dto)
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<BudgetDto>> Update(int id, [FromBody] SaveBudgetDto dto)
         {
             var userId = GetUserId();
             var result = await _service.UpdateAsync(id, dto, userId);
@@ -51,7 +61,9 @@ namespace FinanceTracker.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetUserId();

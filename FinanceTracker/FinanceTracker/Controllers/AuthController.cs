@@ -14,38 +14,38 @@ namespace FinanceTracker.Controllers
             _authService = authService;
         }
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
             var result = await _authService.RegisterAsync(dto);
             return Ok(result);
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var result = await _authService.LoginAsync(dto);
             return Ok(result);
         }
 
-        [HttpPost("Refresh")]
-        public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(RefreshTokenDto dto)
         {
-            var result = await _authService.RefreshTokenAsync(refreshToken);
+            var result = await _authService.RefreshTokenAsync(dto.RefreshToken);
             return Ok(result);
         }
 
-        [HttpPost("ForgotPassword")]
+        [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
         {
             await _authService.ForgotPasswordAsync(dto);
             return Ok("If that email exists, a reset link has been sent.");
         }
 
-        [HttpPost("Revoke")]
-        public async Task<IActionResult> Revoke([FromBody] string refreshToken)
+        [HttpPost("revoke")]
+        public async Task<IActionResult> Revoke(RefreshTokenDto dto)
         {
-            await _authService.RevokeTokenAsync(refreshToken);
+            await _authService.RevokeTokenAsync(dto.RefreshToken);
             return NoContent();
         }
     }
