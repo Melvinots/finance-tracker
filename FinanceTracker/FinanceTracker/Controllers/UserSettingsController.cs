@@ -1,10 +1,11 @@
-﻿ using FinanceTracker.Services;
+﻿using FinanceTracker.Services;
 
 namespace FinanceTracker.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     [Authorize]
+    [ApiController]
+    [Route("api/user-settings")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class UserSettingsController : ControllerBase
     {
         private readonly IUserSettingsService _service;
@@ -14,8 +15,9 @@ namespace FinanceTracker.Controllers
             _service = settingsService;
         }
 
-        [HttpGet("GetUserSettings")]
-        public async Task<IActionResult> GetUserSettings()
+        [HttpGet]
+        [ProducesResponseType(typeof(UserSettingsDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserSettingsDto>> GetUserSettings()
         {
             var userId = GetUserId();
             var settings = await _service.GetAsync(userId);
@@ -23,37 +25,17 @@ namespace FinanceTracker.Controllers
             return Ok(settings);
         }
 
-        [HttpPut("UpdateUserSettings/{id}")]
-        public async Task<IActionResult> UpdateUserSettings(int id, SaveUserSettingsDto dto)
+        [HttpPut]
+        [ProducesResponseType(typeof(UserSettingsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UserSettingsDto>> UpdateUserSettings([FromBody] SaveUserSettingsDto dto)
         {
             var userId = GetUserId();
-            var settings = await _service.UpdateAsync(id, dto, userId);
+            var settings = await _service.UpdateAsync(dto, userId);
 
             return Ok(settings);
         }
-
-        [HttpGet("Export")]
-        public async Task<IActionResult> ExportData()
-        {
-            var userId = GetUserId();
-            var csv = await _service.ExportDataAsync(userId);
-
-            var fileName = $"financetracker_export_{DateTime.UtcNow:yyyyMMdd}.csv";
-            var bytes = System.Text.Encoding.UTF8.GetBytes(csv);
-
-            return File(bytes, "text/csv", fileName);
-        }
-
-        [HttpPost("Deactivate")]
-        public async Task<IActionResult> DeactivateAccount()
-        {
-            var userId = GetUserId();
-            await _service.DeactivateAccountAsync(userId);
-
-            return Ok(new { Message = "Account deactivated successfully." });
-        }
-
-
 
         // ── private helpers ──────────────────────────────────────────
 

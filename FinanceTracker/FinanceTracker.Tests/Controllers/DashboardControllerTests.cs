@@ -1,10 +1,12 @@
 ﻿using FinanceTracker.Controllers;
 using FinanceTracker.Services.Dashboard;
+using FinanceTracker.Shared.DTOs.Common;
 using FinanceTracker.Shared.DTOs.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Radzen;
 using System.Reflection;
 using System.Security.Claims;
 
@@ -13,9 +15,12 @@ namespace FinanceTracker.Tests.Controllers
     public class DashboardControllerTests
     {
         private const int UserId = 5;
+        private const int Month = 10;
+        private const int Year = 2026;
 
         private readonly Mock<IDashboardService> _service = new();
         private readonly DashboardController _sut;
+        private readonly MonthYearQueryDto _query = new() { Month = Month, Year = Year };
 
         public DashboardControllerTests()
         {
@@ -37,9 +42,9 @@ namespace FinanceTracker.Tests.Controllers
         public async Task GetDashboard_ReturnsOkWithDashboard()
         {
             var dashboard = new DashboardDto();
-            _service.Setup(s => s.GetDashboardAsync(UserId, 10, 2026)).ReturnsAsync(dashboard);
+            _service.Setup(s => s.GetDashboardAsync(UserId, Month, Year)).ReturnsAsync(dashboard);
 
-            var result = await _sut.GetDashboard(10, 2026);
+            var result = await _sut.GetDashboard(_query);
 
             // ActionResult<T>: the response is in .Result
             var ok = Assert.IsType<OkObjectResult>(result.Result);
@@ -49,11 +54,11 @@ namespace FinanceTracker.Tests.Controllers
         [Fact]
         public async Task GetDashboard_ForwardsMonthAndYearInOrder()
         {
-            _service.Setup(s => s.GetDashboardAsync(UserId, 10, 2026)).ReturnsAsync(new DashboardDto());
+            _service.Setup(s => s.GetDashboardAsync(UserId, Month, Year)).ReturnsAsync(new DashboardDto());
 
-            await _sut.GetDashboard(month: 10, year: 2026);
+            await _sut.GetDashboard(_query);
 
-            _service.Verify(s => s.GetDashboardAsync(UserId, 10, 2026), Times.Once);
+            _service.Verify(s => s.GetDashboardAsync(UserId, Month, Year), Times.Once);
         }
 
         [Theory]
@@ -62,11 +67,11 @@ namespace FinanceTracker.Tests.Controllers
         public async Task GetDashboard_UsesUserIdFromClaims(int userId)
         {
             SetUser(userId);
-            _service.Setup(s => s.GetDashboardAsync(userId, 10, 2026)).ReturnsAsync(new DashboardDto());
+            _service.Setup(s => s.GetDashboardAsync(userId, Month, Year)).ReturnsAsync(new DashboardDto());
 
-            await _sut.GetDashboard(10, 2026);
+            await _sut.GetDashboard(_query);
 
-            _service.Verify(s => s.GetDashboardAsync(userId, 10, 2026), Times.Once);
+            _service.Verify(s => s.GetDashboardAsync(userId, Month, Year), Times.Once);
         }
 
         [Fact]

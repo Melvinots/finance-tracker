@@ -8,6 +8,8 @@ namespace FinanceTracker.Tests.Services
     public class DashboardServiceTests
     {
         private const int UserId = 5;
+        private const int Month = 10;
+        private const int Year = 2026;
 
         private readonly Mock<IDashboardRepository> _repo = new();
         private readonly DashboardService _sut;
@@ -21,9 +23,9 @@ namespace FinanceTracker.Tests.Services
         public async Task GetDashboardAsync_ReturnsDashboardFromRepository()
         {
             var dashboard = new DashboardDto();
-            _repo.Setup(r => r.GetDashboardAsync(UserId, 10, 2026)).ReturnsAsync(dashboard);
+            _repo.Setup(r => r.GetDashboardAsync(UserId, Month, Year)).ReturnsAsync(dashboard);
 
-            var result = await _sut.GetDashboardAsync(UserId, 10, 2026);
+            var result = await _sut.GetDashboardAsync(UserId, Month, Year);
 
             Assert.Same(dashboard, result);
         }
@@ -32,21 +34,21 @@ namespace FinanceTracker.Tests.Services
         [Fact]
         public async Task GetDashboardAsync_ForwardsUserMonthAndYearInOrder()
         {
-            _repo.Setup(r => r.GetDashboardAsync(UserId, 10, 2026)).ReturnsAsync(new DashboardDto());
+            _repo.Setup(r => r.GetDashboardAsync(UserId, Month, Year)).ReturnsAsync(new DashboardDto());
 
-            await _sut.GetDashboardAsync(UserId, 10, 2026);
+            await _sut.GetDashboardAsync(UserId, Month, Year);
 
-            _repo.Verify(r => r.GetDashboardAsync(UserId, 10, 2026), Times.Once);
+            _repo.Verify(r => r.GetDashboardAsync(UserId, Month, Year), Times.Once);
         }
 
         [Fact]
         public async Task GetDashboardAsync_WhenRepositoryThrows_PropagatesException()
         {
-            _repo.Setup(r => r.GetDashboardAsync(UserId, 10, 2026))
+            _repo.Setup(r => r.GetDashboardAsync(UserId, Month, Year))
                  .ThrowsAsync(new InvalidOperationException("db down"));
 
             await Assert.ThrowsAsync<InvalidOperationException>(
-                () => _sut.GetDashboardAsync(UserId, 10, 2026));
+                () => _sut.GetDashboardAsync(UserId, Month, Year));
         }
     }
 }

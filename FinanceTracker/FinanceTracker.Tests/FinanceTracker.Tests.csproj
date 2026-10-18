@@ -24,4 +24,9 @@
     <ProjectReference Include="..\FinanceTracker\FinanceTracker.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <NoWarn>NU1903</NoWarn>
+  </PropertyGroup>
+	
+
 </Project>

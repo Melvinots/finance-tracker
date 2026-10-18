@@ -6,3 +6,4 @@ global using Microsoft.EntityFrameworkCore;
 global using FinanceTracker.Data;
 global using FinanceTracker.Models;
 global using FinanceTracker.Shared.DTOs.UserSettings;
+global using FinanceTracker.Shared.DTOs.Common;

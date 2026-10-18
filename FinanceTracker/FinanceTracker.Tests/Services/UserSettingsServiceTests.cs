@@ -52,13 +52,13 @@ namespace FinanceTracker.Tests.Services
             var reloaded = SettingsFor(1, "PHP", "Dark");
 
             // The service reads twice: before saving, then again after saving
-            _repo.SetupSequence(r => r.GetByIdAsync(1, UserId))
+            _repo.SetupSequence(r => r.GetAsync(UserId))
                  .ReturnsAsync(existing)
                  .ReturnsAsync(reloaded);
 
             var dto = new SaveUserSettingsDto { Currency = "PHP", Appearance = "Dark" };
 
-            var result = await _sut.UpdateAsync(1, dto, UserId);
+            var result = await _sut.UpdateAsync(dto, UserId);
 
             // What was saved
             _repo.Verify(r => r.UpdateAsync(It.Is<UserSettings>(s =>
@@ -70,29 +70,6 @@ namespace FinanceTracker.Tests.Services
             Assert.Equal("PHP", result.Currency);
             Assert.Equal("Dark", result.Appearance);
             Assert.Equal("Melvin", result.FullName);
-        }
-
-        // ── ExportDataAsync ──────────────────────────────────────────
-
-        [Fact]
-        public async Task ExportDataAsync_ReturnsCsvFromRepository_ForCurrentUser()
-        {
-            _repo.Setup(r => r.ExportDataAsync(UserId)).ReturnsAsync("Date,Amount\n2026-10-01,50");
-
-            var result = await _sut.ExportDataAsync(UserId);
-
-            Assert.Equal("Date,Amount\n2026-10-01,50", result);
-        }
-
-        // ── DeactivateAccountAsync ───────────────────────────────────
-
-        [Fact]
-        public async Task DeactivateAccountAsync_DeactivatesOnlyTheGivenUser()
-        {
-            await _sut.DeactivateAccountAsync(UserId);
-
-            _repo.Verify(r => r.DeactivateAccountAsync(UserId), Times.Once);
-            _repo.Verify(r => r.DeactivateAccountAsync(It.Is<int>(id => id != UserId)), Times.Never);
         }
     }
 }

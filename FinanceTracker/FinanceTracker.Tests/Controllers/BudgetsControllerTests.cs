@@ -1,6 +1,7 @@
 ﻿using FinanceTracker.Controllers;
 using FinanceTracker.Services;
 using FinanceTracker.Shared.DTOs.Budgets;
+using FinanceTracker.Shared.DTOs.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ namespace FinanceTracker.Tests.Controllers
         [Fact]
         public async Task GetAll_ReturnsOkWithBudgets_ForRequestedMonthAndYear()
         {
-            var dto = new BudgetQueryDto { Month = 10, Year = 2026 };
+            var dto = new MonthYearQueryDto { Month = 10, Year = 2026 };
             var list = new List<BudgetDto> { new() { Id = 1 }, new() { Id = 2 } };
             _service.Setup(s => s.GetAllByUserAsync(UserId, dto.Month, dto.Year)).ReturnsAsync(list);
 

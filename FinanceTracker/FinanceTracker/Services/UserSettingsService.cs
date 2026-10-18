@@ -17,9 +17,9 @@ namespace FinanceTracker.Services
             return MapToDto(userSettings);
         }
 
-        public async Task<UserSettingsDto> UpdateAsync(int id, SaveUserSettingsDto dto, int userId)
+        public async Task<UserSettingsDto> UpdateAsync(SaveUserSettingsDto dto, int userId)
         {
-            var settings = await _repo.GetByIdAsync(id, userId)
+            var settings = await _repo.GetAsync(userId)
                 ?? throw new KeyNotFoundException("User settings not found.");
 
             settings.Currency = dto.Currency;
@@ -27,18 +27,8 @@ namespace FinanceTracker.Services
 
             await _repo.UpdateAsync(settings);
 
-            var result = await _repo.GetByIdAsync(id, userId);
+            var result = await _repo.GetAsync(userId);
             return MapToDto(result);
-        }
-
-        public async Task<string> ExportDataAsync(int userId)
-        {
-            return await _repo.ExportDataAsync(userId);
-        }
-
-        public async Task DeactivateAccountAsync(int userId)
-        {
-            await _repo.DeactivateAccountAsync(userId);
         }
 
         // ── private helpers ──────────────────────────────────────────

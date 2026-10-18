@@ -3,9 +3,10 @@ using FinanceTracker.Shared.DTOs.Dashboard;
 
 namespace FinanceTracker.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     [Authorize]
+    [ApiController]
+    [Route("api/dashboard")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class DashboardController : ControllerBase
     {
         private readonly IDashboardService _dashboardService;
@@ -15,11 +16,13 @@ namespace FinanceTracker.Controllers
             _dashboardService = dashboardService;
         }
 
-        [HttpGet("GetDashboard")]
-        public async Task<ActionResult<DashboardDto>> GetDashboard([FromQuery] int month, [FromQuery] int year)
+        [HttpGet]
+        [ProducesResponseType(typeof(DashboardDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<DashboardDto>> GetDashboard([FromQuery] MonthYearQueryDto dto)
         {
             var userId = GetUserId();
-            var dashboard = await _dashboardService.GetDashboardAsync(userId, month, year);
+            var dashboard = await _dashboardService.GetDashboardAsync(userId, dto.Month, dto.Year);
 
             return Ok(dashboard);
         }

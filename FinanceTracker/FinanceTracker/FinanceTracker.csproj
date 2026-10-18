@@ -31,4 +31,9 @@
 	<Content Remove="wwwroot\**" />
 </ItemGroup>
 
+	<PropertyGroup>
+		<NoWarn>NU1903</NoWarn>
+	</PropertyGroup>
+
+
 </Project>

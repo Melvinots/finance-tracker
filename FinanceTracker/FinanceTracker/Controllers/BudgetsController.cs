@@ -19,7 +19,7 @@ namespace FinanceTracker.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<BudgetDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<BudgetDto>>> GetAll([FromQuery] BudgetQueryDto dto)
+        public async Task<ActionResult<List<BudgetDto>>> GetAll([FromQuery] MonthYearQueryDto dto)
         {
             var userId = GetUserId();
             var result = await _service.GetAllByUserAsync(userId, dto.Month, dto.Year);

@@ -18,38 +18,12 @@ namespace FinanceTracker.Repositories
                 .FirstAsync(us => us.UserId == userId);
         }
 
-        public async Task<UserSettings> GetByIdAsync(int id, int userId)
-        {
-            return await _context.UserSettings
-                .Include(us => us.User)
-                .FirstAsync(us => us.Id == id && us.UserId == userId);
-        }
-
         public async Task<UserSettings> UpdateAsync(UserSettings settings)
         {
             _context.UserSettings.Update(settings);
             await _context.SaveChangesAsync();
 
             return settings;
-        }
-
-        public async Task<string> ExportDataAsync(int userId)
-        {
-            var transactions = await _context.Transactions
-                .Include(t => t.Category)
-                .Where(t => t.UserId == userId)
-                .OrderByDescending(t => t.Date)
-                .ToListAsync();
-
-            return CsvExporter.BuildTransactionsCsv(transactions);
-        }
-
-        public async Task DeactivateAccountAsync(int userId)
-        {
-            var user = await _context.Users.FirstAsync(u => u.Id == userId);
-            user.IsActive = false;
-
-            await _context.SaveChangesAsync();
         }
     }
 }
