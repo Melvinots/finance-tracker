@@ -16,42 +16,33 @@ namespace FinanceTracker.Client.Services
 
         public async Task<string?> RegisterAsync(RegisterDto dto)
         {
-            var response = await _http.PostAsJsonAsync("api/Auth/Register", dto);
+            var response = await _http.PostAsJsonAsync(ApiRoutes.AuthRegister, dto);
+            var (result, error) = await response.TryReadAsync<AuthResponseDto>();
 
-            if (!response.IsSuccessStatusCode)
-                return await response.Content.ReadAsStringAsync();
+            if (error is not null)
+                return error;
 
-            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-            _refreshToken = result!.RefreshToken;
             await _authStateProvider.NotifyUserLoginAsync(result!);
             return null;
         }
 
         public async Task<LoginResult> LoginAsync(LoginDto dto)
         {
-            var response = await _http.PostAsJsonAsync("api/Auth/Login", dto);
+            var response = await _http.PostAsJsonAsync(ApiRoutes.AuthLogin, dto);
+            var (result, error) = await response.TryReadAsync<AuthResponseDto>();
 
-            if (!response.IsSuccessStatusCode)
-            {
-                var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-                return new LoginResult(Success: false, Error: problem?.Detail ?? "Login failed.", WasReactivated: false);
-            }
+            if (error is not null)
+                return new LoginResult(Success: false, Error: error, WasReactivated: false);
 
-            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>()
-                ?? throw new InvalidOperationException("Login succeeded but response was empty.");
-
-            _refreshToken = result.RefreshToken;
-            await _authStateProvider.NotifyUserLoginAsync(result);
-
-            return new LoginResult(Success: true, Error: null, WasReactivated: result.IsReactivated);
+            await _authStateProvider.NotifyUserLoginAsync(result!);
+            return new LoginResult(Success: true, Error: null, WasReactivated: result!.IsReactivated);
         }
 
         public async Task LogoutAsync()
         {
             try
             {
-                await _http.PostAsJsonAsync("api/Auth/Revoke",
-                    _authStateProvider.RefreshToken);
+                await _http.PostAsJsonAsync(ApiRoutes.AuthRevoke, _authStateProvider.RefreshToken);
             }
             catch { }
             finally

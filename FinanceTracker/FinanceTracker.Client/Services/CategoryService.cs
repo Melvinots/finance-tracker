@@ -1,7 +1,4 @@
-﻿using FinanceTracker.Shared.DTOs.Categories;
-using static System.Net.WebRequestMethods;
-
-namespace FinanceTracker.Client.Services
+﻿namespace FinanceTracker.Client.Services
 {
     public class CategoryService
     {
@@ -14,34 +11,38 @@ namespace FinanceTracker.Client.Services
 
         public async Task<List<CategoryDto>> GetAllAsync()
         {
-            return await _http.GetFromJsonAsync<List<CategoryDto>>("api/Categories/GetAll") 
-                ?? new List<CategoryDto>();
+            var response = await _http.GetAsync(ApiRoutes.Categories);
+            return await response.ReadOrThrowAsync<List<CategoryDto>>();
         }
 
         public async Task<CategoryDto?> GetByIdAsync(int id)
         {
-            return await _http.GetFromJsonAsync<CategoryDto>($"api/Categories/GetById/{id}")
-                ?? new CategoryDto();
+            var response = await _http.GetAsync(ApiRoutes.CategoryById(id));
+            return await response.ReadOrDefaultAsync<CategoryDto>();
         }
 
         public async Task<int> GetCountByCategoryAsync(int categoryId)
         {
-            return await _http.GetFromJsonAsync<int>($"api/Categories/GetTransactionCount/{categoryId}");
+            var response = await _http.GetAsync(ApiRoutes.CategoryTransactionCount(categoryId));
+            return await response.ReadOrThrowAsync<int>();
         }
 
-        public async Task<HttpResponseMessage> CreateAsync(SaveCategoryDto dto)
+        public async Task<CategoryDto> CreateAsync(SaveCategoryDto dto)
         {
-            return await _http.PostAsJsonAsync("api/Categories/Create", dto);
+            var response = await _http.PostAsJsonAsync(ApiRoutes.Categories, dto);
+            return await response.ReadOrThrowAsync<CategoryDto>();
         }
 
-        public async Task<HttpResponseMessage> UpdateAsync(int id, SaveCategoryDto dto)
+        public async Task<CategoryDto> UpdateAsync(int id, SaveCategoryDto dto)
         {
-            return await _http.PutAsJsonAsync($"api/Categories/Update/{id}", dto);
+            var response = await _http.PutAsJsonAsync(ApiRoutes.CategoryById(id), dto);
+            return await response.ReadOrThrowAsync<CategoryDto>();
         }
 
-        public async Task<HttpResponseMessage> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _http.DeleteAsync($"api/Categories/Delete/{id}");
+            var response = await _http.DeleteAsync(ApiRoutes.CategoryById(id));
+            await response.EnsureSuccessOrThrowAsync();
         }
     }
 }

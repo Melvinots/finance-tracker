@@ -16,20 +16,20 @@ namespace FinanceTracker.Client.Services
 
         public async Task<UserSettingsDto> GetUserSettingsAsync()
         {
-            return await _http.GetFromJsonAsync<UserSettingsDto>("api/UserSettings/GetUserSettings")
-                ?? new UserSettingsDto();
+            var response = await _http.GetAsync(ApiRoutes.UserSettings);
+            return await response.ReadOrThrowAsync<UserSettingsDto>();
         }
 
-        public async Task UpdateUserSettingsAsync(int id, UserSettingsDto dto)
+        public async Task<UserSettingsDto> UpdateUserSettingsAsync(UserSettingsDto dto)
         {
-            var response = await _http.PutAsJsonAsync($"api/UserSettings/UpdateUserSettings/{id}", dto);
-            response.EnsureSuccessStatusCode();
+            var response = await _http.PutAsJsonAsync(ApiRoutes.UserSettings, dto);
+            return await response.ReadOrThrowAsync<UserSettingsDto>();
         }
 
         public async Task DownloadExportAsync()
         {
-            var response = await _http.GetAsync("api/UserSettings/Export");
-            response.EnsureSuccessStatusCode();
+            var response = await _http.GetAsync(ApiRoutes.AccountExport);
+            await response.EnsureSuccessOrThrowAsync();
 
             var bytes = await response.Content.ReadAsByteArrayAsync();
             var fileName = $"financetracker_export_{DateTime.UtcNow:yyyyMMdd}.csv";
@@ -39,8 +39,8 @@ namespace FinanceTracker.Client.Services
 
         public async Task DeactivateAccountAsync()
         {
-            var response = await _http.PostAsync("api/UserSettings/Deactivate", null);
-            response.EnsureSuccessStatusCode();
+            var response = await _http.DeleteAsync(ApiRoutes.Account);
+            await response.EnsureSuccessOrThrowAsync();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using FinanceTracker.Shared.DTOs.Budgets;
-
-namespace FinanceTracker.Client.Services
+﻿namespace FinanceTracker.Client.Services
 {
     public class BudgetService
     {
@@ -13,28 +11,32 @@ namespace FinanceTracker.Client.Services
 
         public async Task<List<BudgetDto>> GetAllAsync(int month, int year)
         {
-            return await _http.GetFromJsonAsync<List<BudgetDto>>($"api/Budgets/GetAll?month={month}&year={year}")
-                ?? new List<BudgetDto>();
+            var response = await _http.GetAsync(ApiRoutes.BudgetsByMonth(month, year));
+            return await response.ReadOrThrowAsync<List<BudgetDto>>();
         }
 
         public async Task<BudgetDto?> GetByIdAsync(int id)
         {
-            return await _http.GetFromJsonAsync<BudgetDto>($"api/Budgets/GetById/{id}");
+            var response = await _http.GetAsync(ApiRoutes.BudgetById(id));
+            return await response.ReadOrDefaultAsync<BudgetDto>();
         }
 
-        public async Task<HttpResponseMessage> CreateAsync(SaveBudgetDto dto)
+        public async Task<BudgetDto> CreateAsync(SaveBudgetDto dto)
         {
-            return await _http.PostAsJsonAsync("api/Budgets/Create", dto);
+            var response = await _http.PostAsJsonAsync(ApiRoutes.Budgets, dto);
+            return await response.ReadOrThrowAsync<BudgetDto>();
         }
 
-        public async Task<HttpResponseMessage> UpdateAsync(int id, SaveBudgetDto dto)
+        public async Task<BudgetDto> UpdateAsync(int id, SaveBudgetDto dto)
         {
-            return await _http.PutAsJsonAsync($"api/Budgets/Update/{id}", dto);
+            var response = await _http.PutAsJsonAsync(ApiRoutes.BudgetById(id), dto);
+            return await response.ReadOrThrowAsync<BudgetDto>();
         }
 
-        public async Task<HttpResponseMessage> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _http.DeleteAsync($"api/Budgets/Delete/{id}");
+            var response = await _http.DeleteAsync(ApiRoutes.BudgetById(id));
+            await response.EnsureSuccessOrThrowAsync();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 
-namespace FinanceTracker.Client.Services
+namespace FinanceTracker.Client.Middleware
 {
     public class AuthHeaderHandler : DelegatingHandler
     {

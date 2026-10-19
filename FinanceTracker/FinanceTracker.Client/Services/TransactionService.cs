@@ -1,6 +1,4 @@
-﻿using FinanceTracker.Shared.DTOs.Transactions;
-
-namespace FinanceTracker.Client.Services
+﻿namespace FinanceTracker.Client.Services
 {
     public class TransactionService
     {
@@ -11,31 +9,34 @@ namespace FinanceTracker.Client.Services
             _http = http;
         }
 
-        public async Task<List<TransactionDto>>GetAllAsync()
+        public async Task<List<TransactionDto>> GetAllAsync()
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>("api/Transactions/GetAll")
-                ?? new List<TransactionDto>();
+            var response = await _http.GetAsync(ApiRoutes.Transactions);
+            return await response.ReadOrThrowAsync<List<TransactionDto>>();
         }
 
-        public async Task<TransactionDto?>GetByIdAsync(int id)
+        public async Task<TransactionDto?> GetByIdAsync(int id)
         {
-            return await _http.GetFromJsonAsync<TransactionDto>($"api/Transactions/GetById/{id}")
-                ?? new TransactionDto();
+            var response = await _http.GetAsync(ApiRoutes.TransactionById(id));
+            return await response.ReadOrDefaultAsync<TransactionDto>();
         }
 
-        public async Task<HttpResponseMessage>CreateAsync(SaveTransactionDto dto)
+        public async Task<TransactionDto> CreateAsync(SaveTransactionDto dto)
         {
-            return await _http.PostAsJsonAsync("api/Transactions/Create", dto);
+            var response = await _http.PostAsJsonAsync(ApiRoutes.Transactions, dto);
+            return await response.ReadOrThrowAsync<TransactionDto>();
         }
 
-        public async Task<HttpResponseMessage>UpdateAsync(int id, SaveTransactionDto dto)
+        public async Task<TransactionDto> UpdateAsync(int id, SaveTransactionDto dto)
         {
-            return await _http.PutAsJsonAsync($"api/Transactions/Update/{id}", dto);
+            var response = await _http.PutAsJsonAsync(ApiRoutes.TransactionById(id), dto);
+            return await response.ReadOrThrowAsync<TransactionDto>();
         }
 
-        public async Task<HttpResponseMessage>DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _http.DeleteAsync($"api/Transactions/Delete/{id}");
+            var response = await _http.DeleteAsync(ApiRoutes.TransactionById(id));
+            await response.EnsureSuccessOrThrowAsync();
         }
     }
 }

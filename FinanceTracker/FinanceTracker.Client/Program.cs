@@ -1,5 +1,5 @@
 using FinanceTracker.Client;
-using FinanceTracker.Client.Services;
+using FinanceTracker.Client.Middleware;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Radzen;
@@ -26,6 +26,9 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddTransient<AuthHeaderHandler>();
+builder.Services.AddTransient<ApiErrorHandler>();
+builder.Services.AddHttpClient("Api", c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+    .AddHttpMessageHandler<ApiErrorHandler>();
 
 builder.Services.AddHttpClient("FinanceTrackerAPI", client =>
 {

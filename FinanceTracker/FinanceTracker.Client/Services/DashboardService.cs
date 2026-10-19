@@ -11,8 +11,8 @@
 
         public async Task<DashboardDto> GetDashboardAsync(int month, int year)
         {
-            return await _http.GetFromJsonAsync<DashboardDto>($"api/Dashboard/GetDashboard?month={month}&year={year}")
-                ?? new DashboardDto();
+            var response = await _http.GetAsync(ApiRoutes.DashboardByMonth(month, year));
+            return await response.ReadOrThrowAsync<DashboardDto>();
         }
     }
 }
