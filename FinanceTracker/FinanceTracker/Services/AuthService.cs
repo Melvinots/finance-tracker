@@ -61,13 +61,7 @@ namespace FinanceTracker.Services
 
             if (user is null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 throw new AuthFailedException();
-            /*
-            if (user is null)
-                throw new UnauthorizedAccessException("Invalid email.");
 
-            if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                throw new UnauthorizedAccessException("Invalid password.");
-            */
             return await GenerateAuthResponseAsync(user);
         }
 
@@ -203,7 +197,7 @@ namespace FinanceTracker.Services
 
             if (!System.Net.Mail.MailAddress.TryCreate(email, out var address) || address.Address != email)
             {
-                throw new ValidationFailedException("Please enter a valid email address.");
+                throw new ValidationFailedException("Please enter a valid email address.", "Email");
             }
         }
 

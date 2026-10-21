@@ -60,7 +60,7 @@ namespace FinanceTracker.Services
                 ?? throw new ValidationFailedException("Amount is required.", "Amount");
 
             var transaction = await _repo.GetByIdAsync(id, userId)
-                ?? throw new ValidationFailedException("Transaction not found.", "TransactionId");
+                ?? throw new NotFoundException("Transaction not found.");
 
             transaction.Amount = amount;
             transaction.Description = dto.Description;
@@ -84,7 +84,7 @@ namespace FinanceTracker.Services
         public async Task DeleteAsync(int id, int userId)
         {
             var transaction = await _repo.GetByIdAsync(id, userId)
-                ?? throw new ValidationFailedException("Transaction not found.", "TransactionId");
+                ?? throw new NotFoundException("Transaction not found.");
 
             await _repo.DeleteAsync(transaction);
         }

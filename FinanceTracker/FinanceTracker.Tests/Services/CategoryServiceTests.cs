@@ -1,4 +1,5 @@
-﻿using FinanceTracker.Models;
+﻿using FinanceTracker.Exceptions;
+using FinanceTracker.Models;
 using FinanceTracker.Repositories;
 using FinanceTracker.Services;
 using FinanceTracker.Shared.DTOs.Categories;
@@ -126,7 +127,7 @@ namespace FinanceTracker.Tests.Services
         {
             _repo.Setup(r => r.GetByIdAsync(1, UserId)).ReturnsAsync((Category?)null);
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(
+            await Assert.ThrowsAsync<NotFoundException>(
                 () => _sut.UpdateAsync(1, new SaveCategoryDto(), UserId));
 
             _repo.Verify(r => r.UpdateAsync(It.IsAny<Category>()), Times.Never);
@@ -168,7 +169,7 @@ namespace FinanceTracker.Tests.Services
         {
             _repo.Setup(r => r.GetByIdAsync(1, UserId)).ReturnsAsync((Category?)null);
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(
+            await Assert.ThrowsAsync<NotFoundException>(
                 () => _sut.DeleteAsync(1, UserId));
 
             _repo.Verify(r => r.DeleteWithReassignmentAsync(
@@ -181,7 +182,7 @@ namespace FinanceTracker.Tests.Services
             var systemCategory = new Category { Id = 1, UserId = UserId, IsSystemDefault = true };
             _repo.Setup(r => r.GetByIdAsync(1, UserId)).ReturnsAsync(systemCategory);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(
+            await Assert.ThrowsAsync<ConflictException>(
                 () => _sut.DeleteAsync(1, UserId));
 
             // The guard runs first: no fallback lookup, no delete

@@ -52,7 +52,7 @@ namespace FinanceTracker.Services
                 ?? throw new ValidationFailedException("Limit Amount is required.", "LimitAmount");
 
             var budget = await _repo.GetByIdAsync(id, userId)
-                ?? throw new ValidationFailedException("Budget not found.", "BudgetId");
+                ?? throw new NotFoundException("Budget not found.");
 
             budget.LimitAmount = amount;
             budget.Month = dto.Month;
@@ -65,7 +65,7 @@ namespace FinanceTracker.Services
         public async Task DeleteAsync(int id, int userId)
         {
             var budget = await _repo.GetByIdAsync(id, userId)
-                ?? throw new ValidationFailedException("Budget not found.", "BudgetId");
+                ?? throw new NotFoundException("Budget not found.");
 
             await _repo.DeleteAsync(budget);
         }

@@ -1,4 +1,5 @@
-﻿using FinanceTracker.Models;
+﻿using FinanceTracker.Exceptions;
+using FinanceTracker.Models;
 using FinanceTracker.Repositories;
 using FinanceTracker.Services;
 using FinanceTracker.Shared.DTOs.Transactions;
@@ -157,7 +158,7 @@ namespace FinanceTracker.Tests.Services
         {
             var dto = new SaveTransactionDto { Amount = null, CategoryId = 2 };
 
-            await Assert.ThrowsAsync<ArgumentException>(() => _sut.CreateAsync(dto, UserId));
+            await Assert.ThrowsAsync<ValidationFailedException>(() => _sut.CreateAsync(dto, UserId));
 
             // Validation runs first: no category lookup, no fallback creation, no save
             _repo.Verify(r => r.GetCategoryByIdAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
@@ -172,7 +173,7 @@ namespace FinanceTracker.Tests.Services
         {
             var dto = new SaveTransactionDto { Amount = null, CategoryId = 2 };
 
-            await Assert.ThrowsAsync<ArgumentException>(() => _sut.UpdateAsync(1, dto, UserId));
+            await Assert.ThrowsAsync<ValidationFailedException>(() => _sut.UpdateAsync(1, dto, UserId));
 
             _repo.Verify(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
             _repo.Verify(r => r.UpdateAsync(It.IsAny<Transaction>()), Times.Never);
@@ -186,7 +187,7 @@ namespace FinanceTracker.Tests.Services
             // Amount must be valid, or the amount check would throw first
             var dto = new SaveTransactionDto { Amount = 10m, CategoryId = 2 };
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(() => _sut.UpdateAsync(1, dto, UserId));
+            await Assert.ThrowsAsync<NotFoundException>(() => _sut.UpdateAsync(1, dto, UserId));
 
             _repo.Verify(r => r.GetCategoryByIdAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
             _repo.Verify(r => r.UpdateAsync(It.IsAny<Transaction>()), Times.Never);
@@ -207,7 +208,7 @@ namespace FinanceTracker.Tests.Services
 
             var dto = new SaveTransactionDto { Amount = 10m, CategoryId = 777 };
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(() => _sut.UpdateAsync(1, dto, UserId));
+            await Assert.ThrowsAsync<ValidationFailedException>(() => _sut.UpdateAsync(1, dto, UserId));
 
             _repo.Verify(r => r.UpdateAsync(It.IsAny<Transaction>()), Times.Never);
         }
@@ -286,7 +287,7 @@ namespace FinanceTracker.Tests.Services
         {
             _repo.Setup(r => r.GetByIdAsync(1, UserId)).ReturnsAsync((Transaction?)null);
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(() => _sut.DeleteAsync(1, UserId));
+            await Assert.ThrowsAsync<NotFoundException>(() => _sut.DeleteAsync(1, UserId));
 
             _repo.Verify(r => r.DeleteAsync(It.IsAny<Transaction>()), Times.Never);
         }
