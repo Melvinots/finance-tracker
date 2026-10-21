@@ -1,10 +1,10 @@
-﻿using FinanceTracker.Shared.DTOs.Auth;
-using System.Text;
+﻿using FinanceTracker.Settings;
+using FinanceTracker.Shared.DTOs.Auth;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
-using Microsoft.Extensions.Options;
-using FinanceTracker.Settings;
+using System.Text;
 
 namespace FinanceTracker.Services
 {
@@ -25,7 +25,7 @@ namespace FinanceTracker.Services
                 .AnyAsync(u => u.Email == dto.Email.ToLower());
 
             if (exists)
-                throw new InvalidOperationException("Email already registered.");
+                throw new ConflictException("Email already registered.");
 
             ValidateEmail(dto.Email);
             ValidatePassword(dto.Password);
@@ -59,12 +59,15 @@ namespace FinanceTracker.Services
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == dto.Email.ToLower());
 
+            if (user is null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+                throw new AuthFailedException();
+            /*
             if (user is null)
                 throw new UnauthorizedAccessException("Invalid email.");
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 throw new UnauthorizedAccessException("Invalid password.");
-
+            */
             return await GenerateAuthResponseAsync(user);
         }
 
@@ -75,7 +78,7 @@ namespace FinanceTracker.Services
                 .FirstOrDefaultAsync(r => r.Token == refreshToken);
 
             if (token is null || token.IsRevoked || token.ExpiresAt < DateTime.UtcNow)
-                throw new UnauthorizedAccessException("Invalid or expired refresh token.");
+                throw new AuthFailedException("Invalid or expired refresh token.");
 
             token.IsRevoked = true;
             await _context.SaveChangesAsync();
@@ -196,34 +199,33 @@ namespace FinanceTracker.Services
         private void ValidateEmail(string? email)
         {
             if (string.IsNullOrWhiteSpace(email))
-                throw new InvalidOperationException("Email is required.");
+                throw new ValidationFailedException("Email is required.", "Email");
 
-            if (!System.Net.Mail.MailAddress.TryCreate(email, out var address)
-                || address.Address != email)
+            if (!System.Net.Mail.MailAddress.TryCreate(email, out var address) || address.Address != email)
             {
-                throw new InvalidOperationException("Please enter a valid email address.");
+                throw new ValidationFailedException("Please enter a valid email address.");
             }
         }
 
         private void ValidatePassword(string? password)
         {
             if (string.IsNullOrWhiteSpace(password))
-                throw new InvalidOperationException("Password is required.");
+                throw new ValidationFailedException("Password is required.", "Password");
 
             if (password.Length < 8)
-                throw new InvalidOperationException("Password must be at least 8 characters long.");
+                throw new ValidationFailedException("Password must be at least 8 characters long.", "Password");
 
             if (!password.Any(char.IsUpper))
-                throw new InvalidOperationException("Password must contain at least one uppercase letter.");
+                throw new ValidationFailedException("Password must contain at least one uppercase letter.", "Password");
 
             if (!password.Any(char.IsLower))
-                throw new InvalidOperationException("Password must contain at least one lowercase letter.");
+                throw new ValidationFailedException("Password must contain at least one lowercase letter.", "Password");
 
             if (!password.Any(char.IsDigit))
-                throw new InvalidOperationException("Password must contain at least one number.");
+                throw new ValidationFailedException("Password must contain at least one number.", "Password");
 
             if (!password.Any(c => !char.IsLetterOrDigit(c)))
-                throw new InvalidOperationException("Password must contain at least one special character.");
+                throw new ValidationFailedException("Password must contain at least one special character.", "Password");
         }
     }
 }

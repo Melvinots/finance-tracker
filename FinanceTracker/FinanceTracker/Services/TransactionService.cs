@@ -28,7 +28,7 @@ namespace FinanceTracker.Services
         public async Task<TransactionDto> CreateAsync(SaveTransactionDto dto, int userId)
         {
             var amount = dto.Amount
-                ?? throw new ArgumentException("Amount is required.", nameof(dto));
+                ?? throw new ValidationFailedException("Amount is required.", "Amount");
 
             var category = await _repo.GetCategoryByIdAsync(dto.CategoryId, userId);
 
@@ -57,10 +57,10 @@ namespace FinanceTracker.Services
         public async Task<TransactionDto> UpdateAsync(int id, SaveTransactionDto dto, int userId)
         {
             var amount = dto.Amount
-                ?? throw new ArgumentException("Amount is required.", nameof(dto));
+                ?? throw new ValidationFailedException("Amount is required.", "Amount");
 
             var transaction = await _repo.GetByIdAsync(id, userId)
-                ?? throw new KeyNotFoundException("Transaction not found.");
+                ?? throw new ValidationFailedException("Transaction not found.", "TransactionId");
 
             transaction.Amount = amount;
             transaction.Description = dto.Description;
@@ -71,7 +71,7 @@ namespace FinanceTracker.Services
             if (transaction.CategoryId != dto.CategoryId)
             {
                 var newCategory = await _repo.GetCategoryByIdAsync(dto.CategoryId, userId)
-                    ?? throw new KeyNotFoundException("Category not found.");
+                    ?? throw new ValidationFailedException("Category not found.", "CategoryId");
 
                 transaction.CategoryId = dto.CategoryId;
                 transaction.Category = newCategory;
@@ -84,7 +84,7 @@ namespace FinanceTracker.Services
         public async Task DeleteAsync(int id, int userId)
         {
             var transaction = await _repo.GetByIdAsync(id, userId)
-                ?? throw new KeyNotFoundException("Transaction not found.");
+                ?? throw new ValidationFailedException("Transaction not found.", "TransactionId");
 
             await _repo.DeleteAsync(transaction);
         }

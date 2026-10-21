@@ -1,4 +1,6 @@
-﻿
+﻿using FinanceTracker.Exceptions;
+using Microsoft.AspNetCore.Mvc;
+
 namespace FinanceTracker.Middleware
 {
     public class ExceptionHandlingMiddleware
@@ -18,47 +20,47 @@ namespace FinanceTracker.Middleware
             {
                 await _next(context);
             }
-            catch (KeyNotFoundException ex)
+            catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
             {
-                _logger.LogWarning(ex, "Resource not found");
-                await WriteProblem(context, StatusCodes.Status404NotFound, "Not Found", ex.Message);
+                // The client went away. Nothing to send, nothing to log as an error.
             }
-            catch (UnauthorizedAccessException ex)
+            catch (AppException ex)
             {
-                _logger.LogWarning(ex, "Unauthorized access attempt");
-                await WriteProblem(context, StatusCodes.Status401Unauthorized, "Unauthorized", ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                _logger.LogWarning(ex, "Invalid operation");
-                await WriteProblem(context, StatusCodes.Status400BadRequest, "Bad Request", ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                _logger.LogWarning(ex, "Invalid argument");
-                await WriteProblem(context, StatusCodes.Status400BadRequest, "Bad Request", ex.Message);
+                _logger.LogWarning(ex, "{Type} on {Path}", ex.GetType().Name, context.Request.Path);
+
+                var (status, title) = ex switch
+                {
+                    NotFoundException => (StatusCodes.Status404NotFound, "Not Found"),
+                    ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
+                    AuthFailedException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
+                    _ => (StatusCodes.Status400BadRequest, "Validation Failed")
+                };
+
+                await WriteProblem(context, status, title, ex.Message, (ex as ValidationFailedException)?.Errors);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception on {Path}", context.Request.Path);
-                await WriteProblem(context, StatusCodes.Status500InternalServerError, "Internal Server Error", "An unexpected error occurred.");
+                await WriteProblem(context, StatusCodes.Status500InternalServerError,
+                    "Internal Server Error", "An unexpected error occurred.");
             }
         }
 
-        private static async Task WriteProblem(HttpContext context, int statusCode, string title, string detail)
+        private static Task WriteProblem(HttpContext context, int status, string title, string detail,
+            IReadOnlyDictionary<string, string[]>? errors = null)
         {
-            var problemDetails = new ProblemDetails
+            var problem = new ProblemDetails
             {
-                Status = statusCode,
+                Status = status,
                 Title = title,
                 Detail = detail,
                 Instance = context.Request.Path
             };
+            problem.Extensions["traceId"] = context.TraceIdentifier;
+            if (errors is not null) problem.Extensions["errors"] = errors;
 
-            context.Response.ContentType = "application/problem+json";
-            context.Response.StatusCode = statusCode;
-
-            await context.Response.WriteAsJsonAsync(problemDetails);
+            context.Response.StatusCode = status;
+            return context.Response.WriteAsJsonAsync(problem, options: null, contentType: "application/problem+json");
         }
     }
 }

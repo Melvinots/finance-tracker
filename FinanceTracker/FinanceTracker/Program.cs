@@ -55,10 +55,49 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings.Secret))
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async ctx =>
+            {
+                ctx.HandleResponse();
+                ctx.Response.StatusCode = 401;
+                var problem = new ProblemDetails
+                {
+                    Status = 401,
+                    Title = "Unauthorized",
+                    Detail = "Your session has expired. Please log in again.",
+                    Instance = ctx.Request.Path
+                };
+                problem.Extensions["traceId"] = ctx.HttpContext.TraceIdentifier;
+                await ctx.Response.WriteAsJsonAsync(problem, options: null, contentType: "application/problem+json");
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(o =>
+    {
+        o.InvalidModelStateResponseFactory = ctx =>
+        {
+            var errors = ctx.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .ToDictionary(e => e.Key, e => e.Value!.Errors.Select(x => x.ErrorMessage).ToArray());
+
+            var problem = new ProblemDetails
+            {
+                Status = 400,
+                Title = "Validation Failed",
+                Detail = errors.Values.First()[0],
+                Instance = ctx.HttpContext.Request.Path
+            };
+            problem.Extensions["errors"] = errors;
+            problem.Extensions["traceId"] = ctx.HttpContext.TraceIdentifier;
+
+            return new BadRequestObjectResult(problem) { ContentTypes = { "application/problem+json" } };
+        };
+    });
 
 //builder.Services.AddCors(options =>
 //{

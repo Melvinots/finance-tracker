@@ -46,7 +46,7 @@ namespace FinanceTracker.Services
         public async Task<CategoryDto> UpdateAsync(int id, SaveCategoryDto dto, int userId)
         {
             var category = await _repo.GetByIdAsync(id, userId)
-                ?? throw new KeyNotFoundException("Category not found.");
+                ?? throw new ValidationFailedException("Category not found.", "CategoryId");
 
             category.Name = dto.Name;
             category.Color = dto.Color;
@@ -59,13 +59,13 @@ namespace FinanceTracker.Services
         public async Task DeleteAsync(int id, int userId)
         {
             var category = await _repo.GetByIdAsync(id, userId)
-                ?? throw new KeyNotFoundException("Category not found.");
+                ?? throw new ValidationFailedException("Category not found.", "CategoryId");
 
             if (category.IsSystemDefault)
-                throw new InvalidOperationException("This category cannot be deleted.");
+                throw new ConflictException("This category cannot be deleted.");
 
             var fallbackCategory = await _repo.GetSystemDefaultAsync(userId)
-                ?? throw new InvalidOperationException("Fallback category not found");
+                ?? throw new ValidationFailedException("Fallback category not found.", "CategoryId");
             
             await _repo.DeleteWithReassignmentAsync(category, fallbackCategory.Id, userId);
         }

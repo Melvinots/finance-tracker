@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using FinanceTracker.Client.Infrastucture.Api;
+using System.Net;
 
 namespace FinanceTracker.Client.Middleware
 {
@@ -27,15 +28,14 @@ namespace FinanceTracker.Client.Middleware
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "Network error calling {Url}", request.RequestUri);
-                throw new ApiException("Can't reach the server. Check your connection.", ex);
+                throw new ApiException(ApiErrorKind.Network, "Can't reach the server. Check your connection.", ex)
+                { Technical = $"{request.Method} {request.RequestUri}" };
+            }
+            catch (TaskCanceledException ex) when (!ct.IsCancellationRequested)
+            {
+                throw new ApiException(ApiErrorKind.Timeout, "The server took too long to respond.", ex)
+                { Technical = $"{request.Method} {request.RequestUri}" };
             }
         }
-    }
-
-    public class ApiException : Exception
-    {
-        public string? Technical { get; init; }
-        public ApiException(string message, Exception? inner = null) : base(message, inner) { }
     }
 }

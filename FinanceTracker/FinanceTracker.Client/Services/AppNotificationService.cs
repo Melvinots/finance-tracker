@@ -1,4 +1,5 @@
-﻿using Radzen;
+﻿using FinanceTracker.Client.Infrastucture.Api;
+using Radzen;
 
 namespace FinanceTracker.Client.Services
 {
@@ -25,21 +26,58 @@ namespace FinanceTracker.Client.Services
             });
         }
 
-        public void Error(string summary, 
-            string? detail = "Please check your connection and try again.", Exception? ex = null, int duration = 4000)
+        public void Error(string summary, string? detail = "Please check your connection and try again.", Exception? ex = null, int duration = 4000)
         {
+            if (ex is OperationCanceledException) return;
+
+            var message = detail ?? "An unexpected error occurred.";
+
+            if (ex is ApiException api)
+            {
+                message = api.Message;
+
+                if (api.Kind == ApiErrorKind.Server && !string.IsNullOrEmpty(api.TraceId))
+                {
+                    message += $" (Ref: {api.TraceId})";
+                    duration = Math.Max(duration, 8000);
+                }
+            }
+
             _notificationService.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
                 Summary = summary,
-                Detail = detail ?? "An unexpected error occurred.",
+                Detail = message,
                 Duration = duration,
                 Payload = DateTime.Now.Ticks
             });
 
-            if (ex is not null)
+            Log(summary, ex);
+        }
+
+        private void Log(string summary, Exception? ex)
+        {
+            switch (ex)
             {
-                _logger.LogError(ex, "{Summary}", summary);
+                case null:
+                    break;
+
+                // Expected outcomes (validation, conflict, not found, network): not bugs
+                case ApiException { Kind: not ApiErrorKind.Server } api:
+                    _logger.LogWarning(api, "{Summary}. {Technical} TraceId={TraceId}",
+                        summary, api.Technical, api.TraceId);
+                    break;
+
+                // Server faults: these deserve attention
+                case ApiException api:
+                    _logger.LogError(api, "{Summary}. {Technical} TraceId={TraceId}",
+                        summary, api.Technical, api.TraceId);
+                    break;
+
+                // Anything else is an unexpected client bug
+                default:
+                    _logger.LogError(ex, "{Summary}", summary);
+                    break;
             }
         }
 
