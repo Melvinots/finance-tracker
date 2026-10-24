@@ -78,7 +78,7 @@ The API follows REST conventions: resource-based URLs, HTTP verbs for the action
 
 | Resource | Endpoints |
 | -------- | --------- |
-| Auth | `POST /api/auth/register`<br>`POST /api/auth/login`<br>`POST /api/auth/refresh`<br>`POST /api/auth/logout`<br>`POST /api/auth/forgot-password` |
+| Auth | `POST /api/auth/register`<br>`POST /api/auth/login`<br>`POST /api/auth/refresh`<br>`POST /api/auth/revoke`<br>`POST /api/auth/forgot-password` |
 | Transactions | `GET /api/transactions`<br>`GET /api/transactions/{id}`<br>`POST /api/transactions`<br>`PUT /api/transactions/{id}`<br>`DELETE /api/transactions/{id}` |
 | Categories | `GET /api/categories`<br>`GET /api/categories/{id}`<br>`GET /api/categories/{id}/transaction-count`<br>`POST /api/categories`<br>`PUT /api/categories/{id}`<br>`DELETE /api/categories/{id}` |
 | Budgets | `GET /api/budgets?month=&year=`<br>`GET /api/budgets/{id}`<br>`POST /api/budgets`<br>`PUT /api/budgets/{id}`<br>`DELETE /api/budgets/{id}` |
